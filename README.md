@@ -5,5 +5,4 @@
 ## Only for the application download, no source code.
 
 # IsoAlgo3d
-## 3D WebGL Viewer for Piping PCF/IDF.
-### https://eryar.github.io/PipeCAD/
+3D WebGL Viewer for Piping PCF/IDF. https://eryar.github.io/PipeCAD/
