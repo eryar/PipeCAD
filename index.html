@@ -42,8 +42,25 @@
     
     xeogl.setDefaultScene(scene);
 
+    scene.gammaInput = false;
+    scene.gammaOutput = false;
+
     var camera = scene.camera;
     camera.projection = "ortho";
+
+    camera.eye = [1.8160498142242432, -251.0963897705078, 37.38420486450195];
+    camera.look = [0, -0.0011444091796875, 11.182900428771973];
+    camera.up = [0, 0, 1]; // +Z is up
+
+    // Configure camera for a World-space in which +Z is considered "up"
+    camera.worldAxis = [
+        1, 0, 0, // Right
+        0, 0, 1, // Up
+        0, 1, 0  // Forward
+    ];
+
+    // Gimbal lock camera yaw rotation to World +Z axis
+    camera.gimbalLock = true;
 
     // Cameral control for 3d view rotate, zoom, pan.
     var cameraControl = new xeogl.CameraControl();
