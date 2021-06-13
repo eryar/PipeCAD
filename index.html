@@ -76,6 +76,13 @@
     // layui
     layui.use('upload', function(){
         var upload = layui.upload;
+        var layer = layui.layer;
+
+        layer.open({
+            title: 'IsoAlgo3d',
+            content: '仅供测试，如需使用请联系作者(eryar@163.com)!',
+            icon: 0
+        });
        
         // Upload instance.
         var uploadInst = upload.render({
