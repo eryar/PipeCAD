@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>IsoAlgo3d - Pipeline 3D Viewer</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui">
+    
+    <link href="css/styles.css" rel="stylesheet"/>
+
+    <script src="js/libs/xeogl.js"></script>
+    <script src="js/helpers/axisHelper.js"></script>
+    <script src="js/geometry/vectorTextGeometry.js"></script>
+    <script src="js/annotations/pin.js"></script>
+    <script src="js/annotations/annotation.js"></script>
+
+    <link href="js/layui/css/layui.css" rel="stylesheet"/>
+    <script src="js/layui/layui.js"></script>
+        
+<body>
+
+<div id="logos">
+    <a href="http://www.cppblog.com/eryar/" target="_blank">
+    <img src="images/IsoAlgo.png"></a>
+</div>
+
+<button type="button" class="layui-btn" id="loadFile">
+    <i class="layui-icon">&#xe67c;</i>Piping File
+</button>
+
+<script>
+
+    var IsoAlgo = {
+      onRuntimeInitialized: function() {
+        IsoAlgo.initViewer();
+      }
+    };
+
+    var scene = new xeogl.Scene({
+      transparent: true,
+      backgroundColor: [1, 1, 1, 1]
+    });
+    
+    xeogl.setDefaultScene(scene);
+
+    var camera = scene.camera;
+    camera.projection = "ortho";
+
+    // Cameral control for 3d view rotate, zoom, pan.
+    var cameraControl = new xeogl.CameraControl();
+
+    var cameraFlight = new xeogl.CameraFlightAnimation();
+
+    new xeogl.AxisHelper({
+        camera: scene.camera,
+        size: [160, 160],
+        visible: true
+    });
+
+    // layui
+    layui.use('upload', function(){
+        var upload = layui.upload;
+       
+        // Upload instance.
+        var uploadInst = upload.render({
+            elem: '#loadFile'
+            ,url: '/pipe'
+            ,accept: 'file'
+            ,exts: 'pcf|idf'  
+            ,auto: false
+            ,choose: function(obj) {
+
+                obj.preview(function(index, file, result) {
+                    var aFileReader = new FileReader();
+                    aFileReader.onload = function() {
+
+                        if (file.name.endsWith('idf')) {
+                            IsoAlgo.loadIdf(this.result);
+                        }
+                        else if (file.name.endsWith('pcf')) {
+                            IsoAlgo.loadPcf(this.result);
+                        }
+                        else {
+                            alert('Please select PCF/IDF piping file!');
+                        }
+
+                        IsoAlgo.fitViewer();
+                    }
+                    aFileReader.readAsText(file);
+                })
+            } 
+        });
+    });
+
+</script>
+<script src="js/IsoAlgo/IsoAlgo.js"></script>
+
+</body>
+</html>
