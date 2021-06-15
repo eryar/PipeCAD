@@ -99,10 +99,12 @@
                     var aFileReader = new FileReader();
                     aFileReader.onload = function() {
 
-                        if (file.name.endsWith('idf')) {
+                        var aName = file.name.toLowerCase();
+
+                        if (aName.endsWith('.idf')) {
                             IsoAlgo.loadIdf(this.result);
                         }
-                        else if (file.name.endsWith('pcf')) {
+                        else if (aName.endsWith('.pcf')) {
                             IsoAlgo.loadPcf(this.result);
                         }
                         else {
