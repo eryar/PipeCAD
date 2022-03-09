@@ -9,5 +9,5 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 ## Documentation
- [:cn:](./data/docs/cn/README.md) | [:ru:](./data/docs/ru/README.md) | [:uk:](./data/docs/uk/README.md)
+ [:cn:](./data/docs/cn/README.md) | [:ru:](./data/docs/ru/README.md) | [:uk:](./data/docs/en/README.md)
 
