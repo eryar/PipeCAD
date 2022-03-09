@@ -8,6 +8,11 @@
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
+## Download
+![Windows](https://img.shields.io/badge/Windows-0078D6?style=for-the-badge&logo=windows&logoColor=white)
+
+https://github.com/eryar/PipeCAD/releases
+
 ## Documentation
  [:cn:](./data/docs/cn/README.md) | [:ru:](./data/docs/ru/README.md) | [:uk:](./data/docs/en/README.md)
 
