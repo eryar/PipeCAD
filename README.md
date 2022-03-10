@@ -1,7 +1,7 @@
 # PipeCAD - Piping Design Software
 
 <p align="center">
-  <img width="460" height="300" src="https://github.com/rompik/PipeCAD/blob/main/data/screenshots/000.png">
+  <img width="460" height="300" src="https://github.com/rompik/PipeCAD/blob/main/data/screenshots/logo.png">
 </p>
 
 ***
