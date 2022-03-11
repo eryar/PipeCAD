@@ -27,5 +27,9 @@ There is a Sample project in PipeCAD, You can use the user <code>SYSTEM</code> a
 
 There are some videos to illustrate how to use PipeCAD: https://space.bilibili.com/1548012589
 
-# IsoAlgo3d
+# Feedback
+* Report bug or other issues of PipeCAD here: https://github.com/eryar/PipeCAD/issues
+* Send Email to PipeCAD@qq.com
+
+## IsoAlgo3d
 3D WebGL Viewer for Piping PCF/IDF File: https://eryar.github.io/PipeCAD/
