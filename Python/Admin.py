@@ -272,7 +272,6 @@ class AdminMain(QWidget):
     def create(self):
         aElement = self.comboElements.currentText
         if aElement.startswith("Team"):
-            #aTeamDialog = TeamDialog(self)
             self.teamDialog.create()
         elif aElement.startswith("User"):
             #aUserDialog = UserDialog(self)
@@ -441,27 +440,56 @@ class TeamDialog(QDialog):
     def init(self, theTeamItem = None):
         self.textName.setText("")
         self.textDescription.setText("")
+
+        # Project Users.
+        if self.uswlItem == None:
+            return
+        # if
+
+        aTeamUserSet = set()
         
         if theTeamItem is not None:
             self.teamItem = theTeamItem
             self.textName.setText(theTeamItem.Name[1:])
             self.textDescription.setText(theTeamItem.Description)
 
-        # Project Users.
-        if self.uswlItem == None:
-            return
+            aTeamItems = PipeCad.CollectItem("LTEA", self.uswlItem)
+            for aTeamItem in aTeamItems:
+                if aTeamItem.Temf == theTeamItem:
+                    aRow = self.tableTeamUsers.rowCount
+                    self.tableTeamUsers.insertRow(aRow)
+
+                    aUserItem = aTeamItem.Owner.Owner
+                    aTeamUserSet.add(aUserItem)
+
+                    aListItem = QTableWidgetItem(aUserItem.Name)
+                    aListItem.setData(Qt.UserRole, aUserItem)
+
+                    self.tableTeamUsers.setItem(aRow, 0, aListItem)
+                    self.tableTeamUsers.setItem(aRow, 1, QTableWidgetItem(aUserItem.Security))
+                    self.tableTeamUsers.setItem(aRow, 2, QTableWidgetItem(aUserItem.Description))
+                # if
+            # for
+        # if
 
         aUserItems = self.uswlItem.Member
-        self.tableProjectUsers.setRowCount(len(aUserItems))
+        self.tableProjectUsers.setRowCount(0)
 
-        for r in range(self.tableProjectUsers.rowCount):
-            aUserItem = aUserItems[r]
+        for aUserItem in aUserItems:
+            if aUserItem in aTeamUserSet:
+                continue
+            # if
+
+            aRow = self.tableProjectUsers.rowCount
+            self.tableProjectUsers.insertRow(aRow)
+
             aItem = QTableWidgetItem(aUserItem.Name)
             aItem.setData(Qt.UserRole, aUserItem)
 
-            self.tableProjectUsers.setItem(r, 0, aItem)
-            self.tableProjectUsers.setItem(r, 1, QTableWidgetItem(aUserItem.Security))
-            self.tableProjectUsers.setItem(r, 2, QTableWidgetItem(aUserItem.Description))
+            self.tableProjectUsers.setItem(aRow, 0, aItem)
+            self.tableProjectUsers.setItem(aRow, 1, QTableWidgetItem(aUserItem.Security))
+            self.tableProjectUsers.setItem(aRow, 2, QTableWidgetItem(aUserItem.Description))
+        # for
 
         self.tableProjectUsers.resizeColumnsToContents()
 
@@ -563,10 +591,13 @@ class TeamDialog(QDialog):
                         PipeCad.SetCurrentItem(aTmliItem)
                     else:
                         PipeCad.SetCurrentItem(aLteaItems[-1])
+                    # if
 
                     PipeCad.CreateItem("LTEA")
                     aLteaItem = PipeCad.CurrentItem()
                     aLteaItem.Temf = aTeamItem
+                # if
+            # if
         # for
 
         PipeCad.CommitTransaction()
@@ -574,9 +605,64 @@ class TeamDialog(QDialog):
     # createTeam
 
     def modifyTeam(self):
+
+        # Get Team Users.
+        aUserSet = set()
+
+        aUserTeams = PipeCad.CollectItem("LTEA", self.uswlItem)
+        for aTeamItem in aUserTeams:
+            if aTeamItem.Temf == self.teamItem:
+                aUserItem = aTeamItem.Owner.Owner
+                aUserSet.add(aUserItem)
+            # if
+        # for
+
+        # Check Team Members.
+        aMemberSet = set()
+
+        for r in range (self.tableTeamUsers.rowCount):
+            aUserItem = self.tableTeamUsers.item(r, 0).data(Qt.UserRole)
+            if aUserItem is not None:
+                aMemberSet.add(aUserItem)
+            # if
+        # for
+
         PipeCad.StartTransaction("Modify User")
+
         self.teamItem.Name = "*" + self.textName.text
         self.teamItem.Description = self.textDescription.text
+
+        # Add new users to the team.
+        aAddUsers = aMemberSet.difference(aUserSet)
+        for aUserItem in aAddUsers:
+            aTmliItems = aUserItem.Member
+            if len(aTmliItems) > 0:
+                aTmliItem = aTmliItems[0]
+                aLteaItems = aTmliItem.Member
+                if len(aLteaItems) == 0:
+                    PipeCad.SetCurrentItem(aTmliItem)
+                else:
+                    PipeCad.SetCurrentItem(aLteaItems[-1])
+                # if
+
+                PipeCad.CreateItem("LTEA")
+                aLteaItem = PipeCad.CurrentItem()
+                aLteaItem.Temf = self.teamItem
+            # if
+        # for
+
+        # Remove users from the team.
+        aRemUsers = aUserSet.difference(aMemberSet)
+        for aUserItem in aRemUsers:
+            aLteaItems = PipeCad.CollectItem("LTEA", aUserItem)
+            for aLteaItem in aLteaItems:
+                if aLteaItem.Temf == self.teamItem:
+                    PipeCad.SetCurrentItem(aLteaItem)
+                    PipeCad.DeleteItem("LTEA")
+                # if
+            # for
+        # for
+
         PipeCad.CommitTransaction()
         PipeCad.SaveWork()
     # modifyTeam
@@ -586,6 +672,7 @@ class TeamDialog(QDialog):
         if len(aName) < 1:
             QMessageBox.warning(self, "", self.tr("Please input team name!"))
             return
+        # if
 
         if self.tmwlItem is None:
             return
@@ -594,6 +681,7 @@ class TeamDialog(QDialog):
             self.createTeam()
         else:
             self.modifyTeam()
+        # if
 
         self.parent().refreshList()
 
@@ -737,6 +825,7 @@ class UserDialog(QDialog):
             if theUserItem.Type == "USER":
                 self.userItem = theUserItem
                 self.textName.setText(theUserItem.Name)
+                self.comboSecurity.setCurrentText(theUserItem.Security)
                 self.textDescription.setText(theUserItem.Description)
                 self.textPassword.setText(theUserItem.Password)
                 self.textConfirm.setText(theUserItem.Password)
@@ -773,6 +862,7 @@ class UserDialog(QDialog):
         # if
 
         aTeamItems = self.tmwlItem.Member
+        self.tableProjectTeams.setRowCount(0)
 
         for r in range(len(aTeamItems)):
             aTeamItem = aTeamItems[r]
@@ -895,11 +985,58 @@ class UserDialog(QDialog):
     # createUser
 
     def modifyUser(self):
+        # Get user team list.
+        aTeamSet = set()
+        aLteaItems = PipeCad.CollectItem("LTEA", self.userItem)
+        for aLteaItem in aLteaItems:
+            if aLteaItem.Temf is not None:
+                aTeamSet.add(aLteaItem.Temf)
+            # if
+        # for
+
+        # Get team member list.
+        aMemberSet = set()
+
+        for r in range (self.tableUserTeams.rowCount):
+            aTeamItem = self.tableUserTeams.item(r, 0).data(Qt.UserRole)
+            aMemberSet.add(aTeamItem)
+        # for
+
         PipeCad.StartTransaction("Modify User")
         self.userItem.Name = self.textName.text
+        self.userItem.Description = self.textDescription.text
+        self.userItem.Security = self.comboSecurity.currentText
         if self.userItem.Password != self.textPassword.text:
             self.userItem.Password = self.textPassword.text
+        # if
+
+        # Set current item to add new team.
+        aTmliItem = self.userItem.Member[0]
+        if len(aTmliItem.Member) > 0:
+            PipeCad.SetCurrentItem(aTmliItem.Member[-1])
+        else:
+            PipeCad.SetCurrentItem(aTmliItem)
+        # if
+
+        # Add new team to the user.
+        aAddTeams = aMemberSet.difference(aTeamSet)
+        for aTeamItem in aAddTeams:
+            PipeCad.CreateItem("LTEA")
+            aLteaItem = PipeCad.CurrentItem()
+            aLteaItem.Temf = aTeamItem
+        # for
+
+        # Remove teams from the user.
+        aRemTeams = aTeamSet.difference(aMemberSet)
+        for aLteaItem in aLteaItems:
+            if aLteaItem.Temf in aRemTeams:
+                PipeCad.SetCurrentItem(aLteaItem)
+                PipeCad.DeleteItem("LTEA")
+            # if
+        # for
+
         PipeCad.CommitTransaction()
+        PipeCad.SaveWork()
     # modifyUser
 
     def accept(self):
@@ -908,10 +1045,12 @@ class UserDialog(QDialog):
         if len(aName) < 1 or len(aPassword) < 1:
             QMessageBox.warning(self, "", self.tr("Please input user name and password!"))
             return
+        # if
 
         if self.textPassword.text != self.textConfirm.text:
             QMessageBox.warning(self, "", self.tr("The passwords do not match!"))
             return
+        # if
 
         if self.uswlItem is None:
             return
@@ -920,6 +1059,7 @@ class UserDialog(QDialog):
             self.createUser()
         else:
             self.modifyUser()
+        # if
 
         self.parent().refreshList()
 
@@ -1432,7 +1572,50 @@ class MdbDialog(QDialog):
     # createMdb
 
     def modifyMdb(self):
-        print("Modify MDB")
+        # Get databse set.
+        aDatabaseSet = set()
+        for aDblItem in self.mdbItem.Member:
+            aDatabaseSet.add(aDblItem.Dbref)
+        # for
+
+        # Get current databse set.
+        aCurrentSet = set()
+        for r in range (self.tableCurrentDatabases.rowCount):
+            aDbItem = self.tableCurrentDatabases.item(r, 0).data(Qt.UserRole)
+            aCurrentSet.add(aDbItem)
+        # for
+
+        PipeCad.StartTransaction("Modify MDB")
+        self.mdbItem.Name = self.textName.text
+        self.mdbItem.Description = self.textDescription.text
+
+        if len(self.mdbItem.Member) > 0:
+            PipeCad.SetCurrentItem(self.mdbItem.Member[-1])
+        else:
+            PipeCad.SetCurrentItem(self.mdbItem)
+        # if
+
+        # Add new database to the MDB.
+        aAddDbs = aCurrentSet.difference(aDatabaseSet)
+        for aDbItem in aAddDbs:
+            PipeCad.CreateItem("DBL")
+            aDblItem = PipeCad.CurrentItem()
+            if aDbItem is not None:
+                aDblItem.Dbref = aDbItem
+            # if
+        # for
+
+        # Remove database from the MDB.
+        aRemDbs = aDatabaseSet.difference(aCurrentSet)
+        for aDblItem in self.mdbItem.Member:
+            if aDblItem.Dbref in aRemDbs:
+                PipeCad.SetCurrentItem(aDblItem)
+                PipeCad.DeleteItem("DBL")
+            # if
+        # for
+
+        PipeCad.CommitTransaction()
+        PipeCad.SaveWork()
     # modifyMdb
 
     def accept(self):
@@ -1440,6 +1623,7 @@ class MdbDialog(QDialog):
         if len(aName) < 1:
             QMessageBox.warning(self, "", "Please input MDB name!")
             return
+        # if
 
         if self.mdbwItem is None:
             return
@@ -1448,6 +1632,7 @@ class MdbDialog(QDialog):
             self.createMdb()
         else:
             self.modifyMdb()
+        # if
 
         self.parent().refreshList()
 
