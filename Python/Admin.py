@@ -274,14 +274,12 @@ class AdminMain(QWidget):
         if aElement.startswith("Team"):
             self.teamDialog.create()
         elif aElement.startswith("User"):
-            #aUserDialog = UserDialog(self)
             self.userDialog.create()
         elif aElement.startswith("Database"):
-            #aDatabaseDialog = DatabaseDialog(self)
             self.dbDialog.create()
         elif aElement.startswith("MDB"):
-            #aMdbDialog = MdbDialog(self)
             self.mdbDialog.create()
+        # if
     # create
 
     def copy(self):
@@ -291,17 +289,14 @@ class AdminMain(QWidget):
     def modify(self):
         aElement = self.comboElements.currentText
         if aElement.startswith("Team"):
-            aTeamDialog = TeamDialog(self)
-            aTeamDialog.modify()
+            self.teamDialog.modify()
         elif aElement.startswith("User"):
-            aUserDialog = UserDialog(self)
-            aUserDialog.modify()
+            self.userDialog.modify()
         elif aElement.startswith("Database"):
-            aDatabaseDialog = DatabaseDialog(self)
-            aDatabaseDialog.modify()
+            self.dbDialog.modify()
         elif aElement.startswith("MDB"):
-            aMdbDialog = MdbDialog(self)
-            aMdbDialog.modify()
+            self.mdbDialog.modify()
+        # if
 
     # modify
 
@@ -440,6 +435,8 @@ class TeamDialog(QDialog):
     def init(self, theTeamItem = None):
         self.textName.setText("")
         self.textDescription.setText("")
+        self.tableTeamUsers.setRowCount(0)
+        self.tableProjectUsers.setRowCount(0)
 
         # Project Users.
         if self.uswlItem == None:
@@ -473,8 +470,6 @@ class TeamDialog(QDialog):
         # if
 
         aUserItems = self.uswlItem.Member
-        self.tableProjectUsers.setRowCount(0)
-
         for aUserItem in aUserItems:
             if aUserItem in aTeamUserSet:
                 continue
@@ -1172,9 +1167,20 @@ class DatabaseDialog(QDialog):
             self.buttonNumber.setEnabled(False)
             self.comboType.setEnabled(False)
             self.textCreate.setEnabled(False)
+        else:
+            self.textName.setText("")
+            self.textDescription.setText("")
+            self.textNumber.setText("")
+
+            self.textNumber.setEnabled(True)
+            self.buttonNumber.setEnabled(True)
+            self.comboType.setEnabled(True)
+            self.textCreate.setEnabled(True)
+        # if
 
         if self.tmwlItem is None:
             return
+        # if
 
         aTeamItems = self.tmwlItem.Member
         self.tableProjectTeams.setRowCount(len(aTeamItems))
@@ -1186,6 +1192,7 @@ class DatabaseDialog(QDialog):
 
             self.tableProjectTeams.setItem(r, 0, aItem)
             self.tableProjectTeams.setItem(r, 1, QTableWidgetItem(aTeamItem.Description))
+        # for
 
         self.tableProjectTeams.resizeColumnsToContents()
 
@@ -1431,6 +1438,9 @@ class MdbDialog(QDialog):
 
     def init(self, theMdbItem = None):
         aDbNumers = []
+        self.tableCurrentDatabases.setRowCount(0)
+        self.tableProjectDatabases.setRowCount(0)
+        
         if theMdbItem is not None:
             self.mdbItem = theMdbItem
             self.textName.setText(theMdbItem.Name)
