@@ -21,7 +21,7 @@ PipeCAD provide customization by Python. The python plugins locate in the
 The Python plugins are open source with <strong>MIT</strong> license.
 
 ## Download
-Send Email to PipeCAD@qq.com with subject: <strong>PipeCAD Personal Edition</strong>.
+Download PipeCAD from here: https://github.com/eryar/PipeCAD/releases
 
 There is a Sample project in PipeCAD, You can use the user <code>SYSTEM</code> and password <code>XXXXXX</code> to login the Sample project.
 
