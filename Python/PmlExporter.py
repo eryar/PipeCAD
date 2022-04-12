@@ -38,7 +38,7 @@ def Export():
         return
     # if
 
-    aFileName = QFileDialog.getSaveFileName(PipeCad, PipeCad.tr("Export PDMS PML"), "", PipeCad.tr("PML Macro (*.pml)"))
+    aFileName = QFileDialog.getSaveFileName(PipeCad, PipeCad.tr("Export PDMS PML"), "", PipeCad.tr("PDMS PML Macro (*.pml)"))
     if len(aFileName) < 1:
         return
     # if
@@ -56,7 +56,11 @@ def Export():
     # PML Macro Content.
     aPos = aTreeItem.Position
     aPmlFile.write("\nINPUT BEGIN")
-    aPmlFile.write("\nNEW EQUIPMENT /" + aTreeItem.Name)
+    if len(aTreeItem.Name) > 0:
+        aPmlFile.write("\nNEW EQUIPMENT /" + aTreeItem.Name)
+    else:
+        aPmlFile.write("\nNEW EQUIPMENT")
+    # if
     aPmlFile.write("\nPOS E%f N%f U%f" % (aPos.x, aPos.y, aPos.z))
     aPmlFile.write("\n")
 
@@ -73,6 +77,29 @@ def Export():
         elif aItem.Type == "CONE":
             # Cone
             aPmlFile.write("\nNEW CONE DTOP %f DBOT %f HEIG %f" % (aItem.Tdiameter, aItem.Bdiameter, aItem.Height))
+        elif aItem.Type == "EXTR":
+            # Extrusion
+            aPmlFile.write("\nNEW EXTR HEIG %f" % (aItem.Height))
+            aPmlFile.write("\n!aExtrItem = ce")
+            for aChildItem in aItem.Member:
+                if aChildItem.Type == "LOOP":
+                    aPmlFile.write("\nNEW LOOP")
+                    for aVertItem in aChildItem.Member:
+                        aPnt = aVertItem.Position
+                        aPmlFile.write("\nNEW VERT POS E%f N%f U%f" % (aPnt.x, aPnt.y, aPnt.z))
+                    # for
+                elif aChildItem.Type == "NXTR":
+                    aPmlFile.write("\nNEW NXTR HEIG %f" % (aChildItem.Height))
+                    for aLoopItem in aChildItem.Member:
+                        aPmlFile.write("\nNEW LOOP")
+                        for aVertItem in aLoopItem.Member:
+                            aPnt = aVertItem.Position
+                            aPmlFile.write("\nNEW VERT POS E%f N%f U%f" % (aPnt.x, aPnt.y, aPnt.z))
+                        # for
+                    # for
+                # if
+            # for
+            aPmlFile.write("\n!!ce = !aExtrItem")
         elif aItem.Type == "NOZZ":
             # Nozzle
             if len(aItem.Name) > 0:
