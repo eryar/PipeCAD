@@ -1,5 +1,5 @@
 # ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-# :: Welcome to PipeCAD!                                      ::
+# :: Welcome to PipeCad!                                      ::
 # ::  ____                        ____     ______  ____       ::
 # :: /\  _`\   __                /\  _`\  /\  _  \/\  _`\     ::
 # :: \ \ \L\ \/\_\  _____      __\ \ \/\_\\ \ \L\ \ \ \/\ \   ::
@@ -11,7 +11,7 @@
 # ::                   \/_/                                   ::
 # ::                                                          ::
 # ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-# PipeCAD - Piping Design Software.
+# PipeCad - Piping Design Software.
 # Copyright (C) 2021 Wuhan OCADE IT. Co., Ltd.
 # Author: Shing Liu(eryar@163.com)
 # Date: 21:16 2021-09-16
@@ -19,176 +19,232 @@
 
 from PythonQt.QtCore import *
 from PythonQt.QtGui import *
-
 from PipeCAD import *
 
 import os
 import subprocess
+from functools import partial
+import sys
 
 class LoginDialog(QDialog):
+   
     def __init__(self, parent = None):
+    
         QDialog.__init__(self, parent)
         
+        self.selected_project_code = ""
+        #self.selected_project_button = QPushButton()
+          
         self.setupUi()
 
-    # __init__
-
-    def setupUi(self):
-        self.resize(330, 200)
-        self.setWindowTitle(self.tr("PipeCAD Login"))
-
-        self.verticalLayout = QVBoxLayout(self)
-        self.verticalLayout.setSpacing(6)
-        self.verticalLayout.setContentsMargins(11, 11, 11, 11)
-
-        self.gridLayout = QGridLayout()
-        self.gridLayout.setSpacing(6)
-
-        self.labelProject = QLabel(self.tr("Project"))
-        self.comboBoxProject = QComboBox()
-        self.buttonCreate = QPushButton(self.tr("Create"))
-
+    def setupUi( self ):
+        
+        self.widget = QWidget() 
+        
+        self.resize(350, 300)
+        self.setWindowTitle(self.tr("PipeCad Login"))
+        
+        self.hBoxLayoutProjects = QHBoxLayout()
+        self.hBoxLayoutProjects.setSpacing(2)
+        #self.hBoxLayoutProjects.setContentsMargins(11, 11, 11, 11)
+        
+        self.groupButtonsProject = QButtonGroup()
+        
+        # self.btnProjectLeft = QPushButton( "", self)           
+        # self.btnProjectLeft.setMinimumSize( 30 , 40 )
+        # self.btnProjectLeft.setMaximumSize( 30 , 40 )
+        # #<a href="https://www.flaticon.com/free-icons/previous" title="previous icons">Previous icons created by Pixel perfect - Flaticon</a>
+        # self.btnProjectLeft.setIcon( QIcon('plugins/PipeCad/icons/login/128x128_arrow_left.png') )
+        # self.btnProjectLeft.setIconSize( QSize( 30 , 40 ) )
+        # self.btnProjectLeft.setAutoDefault(False)
+        # self.hBoxLayoutProjects.addWidget(self.btnProjectLeft)
+             
         for aProject in (PipeCad.Projects):
-            self.comboBoxProject.addItem(aProject.Number)
-        # for
+            self.btnProject = QPushButton( "", self)           
+            self.btnProject.setMinimumSize( 256 , 104 )
+            self.btnProject.setMaximumSize( 256 , 104 )
+            #Icon downloaded from <a href="https://www.flaticon.com/free-icons/factory" title="factory icons">Factory icons created by vectorsmarket15 - Flaticon</a>
+            self.btnProject.setIcon( QIcon('plugins/PipeCad/icons/login/128x128_select_project.png') )
+            self.btnProject.setIconSize( QSize(96,96) )
+            self.btnProject.setStyleSheet("QPushButton { text-align: left; }")
+            self.btnProject.setText("   Project: " + aProject.Name + " \n   Code: " + aProject.Code + " \n   Number: " + aProject.Number + "\n   Description: " + aProject.Description )
+            self.btnProject.setObjectName( aProject.Code )
+            self.groupButtonsProject.addButton( self.btnProject )
+            self.btnProject.setAutoDefault(False)
+            self.btnProject.clicked.connect( self.select_project )
+            self.hBoxLayoutProjects.addWidget( self.btnProject )
+        
+        # self.btnProjectRight = QPushButton( "", self)           
+        # self.btnProjectRight.setMinimumSize( 30 , 40 )
+        # self.btnProjectRight.setMaximumSize( 30 , 40 )
+        # #<a href="https://www.flaticon.com/free-icons/previous" title="previous icons">Previous icons created by Pixel perfect - Flaticon</a>
+        # self.btnProjectRight.setIcon( QIcon('plugins/PipeCad/icons/login/128x128_arrow_right.png') )
+        # self.btnProjectRight.setIconSize( QSize( 30 , 40 ) )
+        # self.btnProjectRight.setAutoDefault(False)
+        # self.hBoxLayoutProjects.addWidget(self.btnProjectRight)
 
-        self.comboBoxProject.currentIndexChanged.connect(self.projectChanged)
-        self.buttonCreate.clicked.connect(self.createProject)
-
-        self.gridLayout.addWidget(self.labelProject, 0, 0, 1, 1)
-        self.gridLayout.addWidget(self.comboBoxProject, 0, 1, 1, 1)
-        self.gridLayout.addWidget(self.buttonCreate, 0, 2, 1, 1)
-
+        self.buttonCreate = QPushButton(self.tr("Create New Project"))        
         self.labelUsername = QLabel(self.tr("Username"))
+        self.labelUsername.setFont( QFont('Times', 12) )
         self.comboBoxUser = QComboBox()
         self.comboBoxUser.setEditable(True)
-
-        self.gridLayout.addWidget(self.labelUsername, 1, 0, 1, 1)
-        self.gridLayout.addWidget(self.comboBoxUser, 1, 1, 1, 1)
-
+        
         self.labelPassword = QLabel(self.tr("Password"))
-        self.lineEditPassword = QLineEdit(self)
+        self.labelPassword.setFont( QFont('Times', 12) )
+        self.lineEditPassword = QLineEdit( self )
         self.lineEditPassword.setEchoMode(QLineEdit.Password)
-        self.lineEditPassword.textChanged.connect(self.passwordChanged)
-
+        
         PipeCad.SetIndicator(self.lineEditPassword)
-
-        self.gridLayout.addWidget(self.labelPassword, 2, 0, 1, 1)
-        self.gridLayout.addWidget(self.lineEditPassword, 2, 1, 1, 1)
-
+            
         self.buttonChange = QPushButton(self.tr("Change"))
-        self.buttonChange.clicked.connect(self.changePassword)
-        self.gridLayout.addWidget(self.buttonChange, 2, 2, 1, 1)
-
+        
         self.labelMdb = QLabel(self.tr("MDB"))
+        self.labelMdb.setFont( QFont('Times', 12) )
         self.comboBoxMdb = QComboBox()
         self.comboBoxMdb.setEditable(True)
-
-        self.gridLayout.addWidget(self.labelMdb, 3, 0, 1, 1)
-        self.gridLayout.addWidget(self.comboBoxMdb, 3, 1, 1, 1)
-
-        self.labelModule = QLabel(self.tr("Module"))
-        self.comboBoxModule = QComboBox()
-        self.comboBoxModule.addItem("Admin")
-        self.comboBoxModule.addItem("Paragon")
-        self.comboBoxModule.addItem("Design")
+        
         self.checkBox = QCheckBox(self.tr("Read Only"))
-
-        self.gridLayout.addWidget(self.labelModule, 4, 0, 1, 1)
-        self.gridLayout.addWidget(self.comboBoxModule, 4, 1, 1, 1)
-        self.gridLayout.addWidget(self.checkBox, 4, 2, 1, 1)
-
+        
+        self.verticalSpacer = QSpacerItem( 20, 40, QSizePolicy.Minimum, QSizePolicy.Expanding )
+        
+        self.btnDesign = QPushButton( "", self )
+        self.btnParagon = QPushButton( "", self )
+        self.btnAdmin = QPushButton( "", self )
+        
+        self.btnDesign.setObjectName( "Design" )
+        self.btnParagon.setObjectName( "Paragon" )
+        self.btnAdmin.setObjectName( "Admin" )
+                
+        #<a href="https://www.flaticon.com/free-icons/worker" title="worker icons">Worker icons created by Freepik - Flaticon</a>
+        self.btnDesign.setIcon( QIcon('plugins/PipeCad/icons/login/128x128_select_design.png') )
+        
+        #Icon downloaded from <a href="https://www.flaticon.com/free-icons/algorithm" title="algorithm icons">Algorithm icons created by Eucalyp - Flaticon</a>
+        self.btnParagon.setIcon( QIcon('plugins/PipeCad/icons/login/128x128_select_paragon.png') )
+        
+        #Icon downloaded from <a href="https://www.flaticon.com/free-icons/data-processing" title="data processing icons">Data processing icons created by Eucalyp - Flaticon</a>
+        self.btnAdmin.setIcon( QIcon('plugins/PipeCad/icons/login/128x128_select_admin.png') )
+        
+        self.btnDesign.setIconSize( QSize(96,96) )
+        self.btnParagon.setIconSize( QSize(96,96) )
+        self.btnAdmin.setIconSize( QSize(96,96) )
+        
+        self.btnDesign.setToolTip('Module <b>Design</b>')
+        self.btnParagon.setToolTip('Module <b>Paragon</b>')
+        self.btnAdmin.setToolTip('Module <b>Admin</b>')
+                
+        #Setup Widgets Layout
+        self.gridLayout = QGridLayout()
+        self.gridLayout.addWidget(self.labelUsername, 0, 0, 1, 1)
+        self.gridLayout.addWidget(self.comboBoxUser, 0, 1, 1, 1)
+        self.gridLayout.addWidget(self.labelPassword, 1, 0, 1, 1)
+        self.gridLayout.addWidget(self.lineEditPassword, 1, 1, 1, 1)
+        self.gridLayout.addWidget(self.buttonChange, 1, 2, 1, 1)
+        self.gridLayout.addWidget(self.labelMdb, 2, 0, 1, 1)
+        self.gridLayout.addWidget(self.comboBoxMdb, 2, 1, 1, 1)
+        self.gridLayout.addWidget(self.checkBox, 2, 2, 1, 1)
+               
+        self.horBoxLayoutModules = QHBoxLayout()
+        self.horBoxLayoutModules.addWidget( self.btnDesign )
+        self.horBoxLayoutModules.addWidget( self.btnParagon )
+        self.horBoxLayoutModules.addWidget( self.btnAdmin )
+        
+        self.groupButtonsModule = QButtonGroup()
+        self.groupButtonsModule.addButton( self.btnDesign )
+        self.groupButtonsModule.addButton( self.btnParagon )
+        self.groupButtonsModule.addButton( self.btnAdmin )
+        
+        self.verticalLayout = QVBoxLayout( self )
+        self.verticalLayout.setContentsMargins(11, 11, 11, 11)  
+        self.verticalLayout.addLayout(self.hBoxLayoutProjects)
         self.verticalLayout.addLayout(self.gridLayout)
-        self.verticalSpacer = QSpacerItem(20, 40, QSizePolicy.Minimum, QSizePolicy.Expanding)
         self.verticalLayout.addItem(self.verticalSpacer)
-
-        self.buttonBox = QDialogButtonBox()
-        self.buttonBox.setStandardButtons(QDialogButtonBox.Cancel|QDialogButtonBox.Ok)
-        self.buttonBox.button(QDialogButtonBox.Ok).setEnabled(False)
-
-        self.verticalLayout.addWidget(self.buttonBox)
-
-        self.retranslateUi()
-
-        if len(PipeCad.Projects) > 0:
-            self.projectChanged(0)
-
-        self.buttonBox.accepted.connect(self.accept)
-        self.buttonBox.rejected.connect(self.reject)
-    # setupUi
-
-    def retranslateUi(self):
-        self.setWindowTitle(QCoreApplication.translate("LoginDlg", u"PipeCAD Login", None))
-        self.labelPassword.setText(QCoreApplication.translate("LoginDlg", u"Password", None))
-        self.comboBoxModule.setItemText(0, QCoreApplication.translate("LoginDlg", u"Admin", None))
-        self.comboBoxModule.setItemText(1, QCoreApplication.translate("LoginDlg", u"Paragon", None))
-        self.comboBoxModule.setItemText(2, QCoreApplication.translate("LoginDlg", u"Design", None))
-
-        self.labelModule.setText(QCoreApplication.translate("LoginDlg", u"Module", None))
-        self.labelUsername.setText(QCoreApplication.translate("LoginDlg", u"Username", None))
-        self.checkBox.setText(QCoreApplication.translate("LoginDlg", u"Read Only", None))
-        self.buttonChange.setText(QCoreApplication.translate("LoginDlg", u"Change", None))
-        self.labelProject.setText(QCoreApplication.translate("LoginDlg", u"Project", None))
-        self.labelMdb.setText(QCoreApplication.translate("LoginDlg", u"MDB", None))
-    # retranslateUi
-
+        self.verticalLayout.addLayout(self.horBoxLayoutModules)
+        self.verticalLayout.addWidget(self.buttonCreate)
+        
+        self.labelSoftwareVersion = QLabel( "v. " + PipeCad.GetVersion() )
+        self.labelSoftwareVersion.setAlignment(Qt.AlignRight)
+        self.verticalLayout.addWidget(self.labelSoftwareVersion)
+       
+        self.comboBoxUser.currentIndexChanged.connect( self.select_user )
+        self.buttonChange.clicked.connect( self.changePassword )
+        self.groupButtonsModule.buttonClicked.connect( self.accept )
+        self.buttonCreate.clicked.connect( self.createProject )
+        self.groupButtonsProject.buttonClicked.connect( self.select_project )
+        
+        # Deactive widgets before selecting project 
+        self.comboBoxUser.setEnabled(False)
+        self.lineEditPassword.setEnabled(False)
+        self.buttonChange.setEnabled(False)
+        self.comboBoxMdb.setEnabled(False)
+        self.checkBox.setEnabled(False)
+        self.btnDesign.setEnabled(False)
+        self.btnParagon.setEnabled(False)
+        self.btnAdmin.setEnabled(False)
+        
+        
+    def select_project( self, id ):
+        self.comboBoxUser.setEnabled(True)
+        self.lineEditPassword.setEnabled(True)
+        self.buttonChange.setEnabled(True)
+        self.checkBox.setEnabled(True)
+        
+        self.comboBoxUser.clear()
+        self.comboBoxMdb.clear()
+        for Project in PipeCad.Projects:
+            if Project.Code == id.objectName:
+                self.selected_project_code = Project.Code
+                self.setWindowTitle(self.tr("PipeCad Login - Project " + Project.Code))                
+                for aUser in Project.UserList:
+                    self.comboBoxUser.addItem(aUser.Name)
+                
+                if len(Project.MdbList) == 0:
+                    self.comboBoxMdb.setEnabled(False)
+                    self.btnDesign.setEnabled(False)
+                    self.btnParagon.setEnabled(False)
+                else:
+                    self.comboBoxMdb.setEnabled(True)
+                    self.btnDesign.setEnabled(True)
+                    self.btnParagon.setEnabled(True)
+                    
+                    for aMdb in Project.MdbList:
+                        self.comboBoxMdb.addItem(aMdb.Name)
+                        
+    def select_user( self, index ):       
+        if self.comboBoxUser.currentText == "SYSTEM":
+            self.btnParagon.setEnabled(True)
+            self.btnAdmin.setEnabled(True)
+        else:
+            self.btnParagon.setEnabled(False)
+            self.btnAdmin.setEnabled(False)
+        
+    def accept( self, id ):
+        print(self.selected_project_code)
+        for Project in PipeCad.Projects:
+            if Project.Code == self.selected_project_code:
+                #CreateSession(aMdb, aUser, aPassword, aModule)
+                aSession = Project.CreateSession( self.comboBoxMdb.currentText, self.comboBoxUser.currentText, self.lineEditPassword.text, str(id.objectName) )
+                if aSession is None:
+                    return
+                
+                QDialog.accept( self )
+                PipeCad.Login()
+ 
     def createProject(self):
         subprocess.Popen("ProjectCreation.bat")
         self.reject()
     # createProject
 
-    def projectChanged(self, theIndex):
-        self.comboBoxUser.clear()
-        self.comboBoxMdb.clear()
-
-        aProject = PipeCad.Projects[theIndex]
-        for aUser in aProject.UserList:
-            self.comboBoxUser.addItem(aUser.Name)
-
-        for aMdb in aProject.MdbList:
-            self.comboBoxMdb.addItem(aMdb.Name)
-    # projectChanged
-
-    def passwordChanged(self):
-        if len(self.lineEditPassword.text) > 0:
-            self.buttonBox.button(QDialogButtonBox.Ok).setEnabled(True)
-        else:
-            self.buttonBox.button(QDialogButtonBox.Ok).setEnabled(False)
-    # passwordChanged
-
     def changePassword(self):
-        aIndex = self.comboBoxProject.currentIndex
         aUser = self.comboBoxUser.currentText
-        aProject = PipeCad.Projects[aIndex]
+        for Project in PipeCad.Projects:
+            if Project.Code == self.selected_project_code:
+                aPasswordDlg = PasswordDialog( Project, aUser, self )
+                aPasswordDlg.exec()  
 
-        aPasswordDlg = PasswordDialog(aProject, aUser, self)
-        aPasswordDlg.exec()
     # changePassword
-
-    def reject(self):
-        sys.exit()
-    # reject
     
-    def accept(self):
-        aIndex = self.comboBoxProject.currentIndex
-        aUser = self.comboBoxUser.currentText
-        aMdb = self.comboBoxMdb.currentText
-        aModule = self.comboBoxModule.currentText
-        aPassword = self.lineEditPassword.text
-
-        aProject = PipeCad.Projects[aIndex]
-
-        aSession = aProject.CreateSession(aMdb, aUser, aPassword, aModule)
-        if aSession is None:
-            return
-
-        QDialog.accept(self)
-        
-        PipeCad.Login()
-    # accept
-
-
 class PasswordDialog(QDialog):
+   
     def __init__(self, theProject, theUser, parent = None):
         QDialog.__init__(self, parent)
 
