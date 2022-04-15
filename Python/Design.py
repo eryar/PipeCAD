@@ -169,3 +169,83 @@ def CreateZone():
 def Search():
     QMessageBox.warning(PipeCad, "", "Not implement yet!")
 # Search
+
+
+class TextDialog(QDialog):
+    def __init__(self, parent = None):
+        QDialog.__init__(self, parent)
+
+        self.setupUi()
+    # __init__
+
+    def setupUi(self):
+        #self.resize(280, 180)
+        self.setWindowTitle(self.tr("Create 3D Text"))
+
+        self.verticalLayout = QVBoxLayout(self)
+
+        # Form layout.
+        self.formLayout = QFormLayout()
+        self.verticalLayout.addLayout(self.formLayout)
+
+        # Text.
+        self.labelText = QLabel("Text")
+        self.textText = QLineEdit("Hello PipeCAD!")
+
+        self.formLayout.setWidget(0, QFormLayout.LabelRole, self.labelText)
+        self.formLayout.setWidget(0, QFormLayout.FieldRole, self.textText)
+
+        # Size
+        self.labelSize = QLabel("Size")
+        self.textSize = QLineEdit("80")
+
+        self.formLayout.setWidget(1, QFormLayout.LabelRole, self.labelSize)
+        self.formLayout.setWidget(1, QFormLayout.FieldRole, self.textSize)
+
+        # Font.
+        self.labelFont = QLabel("Font")
+        self.comboFont = QFontComboBox()
+
+        self.formLayout.setWidget(2, QFormLayout.LabelRole, self.labelFont)
+        self.formLayout.setWidget(2, QFormLayout.FieldRole, self.comboFont)
+
+        # Dialog Button.
+        self.buttonBox = QDialogButtonBox()
+        self.buttonBox.setStandardButtons(QDialogButtonBox.Cancel|QDialogButtonBox.Ok)
+
+        self.buttonBox.accepted.connect(self.accept)
+        self.buttonBox.rejected.connect(self.reject)
+
+        self.verticalLayout.addWidget(self.buttonBox)
+    # setupUi
+
+    def accept(self):
+        aText = self.textText.text
+        aSize = self.textSize.text
+        aFont = self.comboFont.currentFont.family()
+
+        if len(aText) < 1:
+            QMessageBox.warning(PipeCad, "", self.tr("Please input text!"))
+        # if
+
+        aTreeItem = PipeCad.CurrentItem()
+        if aTreeItem.Type == "ZONE" or aTreeItem.Owner.Type == "ZONE":
+            pass
+        else:
+            QMessageBox.warning(self, "", self.tr("Please create 3d text in ZONE!"))
+            return
+        # if
+
+        PipeCad.CreateText(aText, aFont, float(aSize))
+
+        QDialog.accept(self)
+    # accept
+
+# TextDialog
+
+# Singleton Instance.
+aTextDlg = TextDialog(PipeCad)
+
+def CreateText():
+    aTextDlg.show()
+# CreateText
