@@ -19,4 +19,4 @@
 from PipeCAD.Login import *
 
 aLoginDlg = LoginDialog()
-aLoginDlg.exec()
+aLoginDlg.show()
