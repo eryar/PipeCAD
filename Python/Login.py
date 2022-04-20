@@ -1,5 +1,5 @@
 # ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-# :: Welcome to PipeCad!                                      ::
+# :: Welcome to PipeCAD!                                      ::
 # ::  ____                        ____     ______  ____       ::
 # :: /\  _`\   __                /\  _`\  /\  _  \/\  _`\     ::
 # :: \ \ \L\ \/\_\  _____      __\ \ \/\_\\ \ \L\ \ \ \/\ \   ::
@@ -11,7 +11,7 @@
 # ::                   \/_/                                   ::
 # ::                                                          ::
 # ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-# PipeCad - Piping Design Software.
+# PipeCAD - Piping Design Software.
 # Copyright (C) 2021 Wuhan OCADE IT. Co., Ltd.
 # Author: Shing Liu(eryar@163.com)
 # Date: 21:16 2021-09-16
@@ -28,25 +28,21 @@ import sys
 
 class LoginDialog(QDialog):
    
-    def __init__(self, parent = None):
-    
+    def __init__(self, parent = None):    
         QDialog.__init__(self, parent)
         
-        self.selected_project_code = ""
-        #self.selected_project_button = QPushButton()
+        self.selectedProject = None
+        self.projectDict = dict()
           
         self.setupUi()
+    # __init__
 
-    def setupUi( self ):
-        
-        self.widget = QWidget() 
-        
+    def setupUi( self ):        
         self.resize(350, 300)
-        self.setWindowTitle(self.tr("PipeCad Login"))
+        self.setWindowTitle(self.tr("PipeCAD Login"))
         
         self.hBoxLayoutProjects = QHBoxLayout()
         self.hBoxLayoutProjects.setSpacing(2)
-        #self.hBoxLayoutProjects.setContentsMargins(11, 11, 11, 11)
         
         self.groupButtonsProject = QButtonGroup()
         
@@ -58,7 +54,9 @@ class LoginDialog(QDialog):
         # self.btnProjectLeft.setIconSize( QSize( 30 , 40 ) )
         # self.btnProjectLeft.setAutoDefault(False)
         # self.hBoxLayoutProjects.addWidget(self.btnProjectLeft)
-             
+
+        self.projectDict.clear()
+
         for aProject in (PipeCad.Projects):
             self.btnProject = QPushButton( "", self)           
             self.btnProject.setMinimumSize( 256 , 104 )
@@ -67,12 +65,15 @@ class LoginDialog(QDialog):
             self.btnProject.setIcon( QIcon('plugins/PipeCad/icons/login/128x128_select_project.png') )
             self.btnProject.setIconSize( QSize(96,96) )
             self.btnProject.setStyleSheet("QPushButton { text-align: left; }")
-            self.btnProject.setText("   Project: " + aProject.Name + " \n   Code: " + aProject.Code + " \n   Number: " + aProject.Number + "\n   Description: " + aProject.Description )
+            self.btnProject.setText("Project: " + aProject.Name + " \nCode: " + aProject.Code + " \nNumber: " + aProject.Number + "\nDescription: \n" + aProject.Description )
             self.btnProject.setObjectName( aProject.Code )
             self.groupButtonsProject.addButton( self.btnProject )
             self.btnProject.setAutoDefault(False)
-            self.btnProject.clicked.connect( self.select_project )
+            #self.btnProject.clicked.connect( self.selectProject )
             self.hBoxLayoutProjects.addWidget( self.btnProject )
+
+            self.projectDict[aProject.Code] = aProject
+        # for
         
         # self.btnProjectRight = QPushButton( "", self)           
         # self.btnProjectRight.setMinimumSize( 30 , 40 )
@@ -83,14 +84,16 @@ class LoginDialog(QDialog):
         # self.btnProjectRight.setAutoDefault(False)
         # self.hBoxLayoutProjects.addWidget(self.btnProjectRight)
 
+        aFont = QFont("Times", 12)
+
         self.buttonCreate = QPushButton(self.tr("Create New Project"))        
         self.labelUsername = QLabel(self.tr("Username"))
-        self.labelUsername.setFont( QFont('Times', 12) )
+        self.labelUsername.setFont(aFont)
         self.comboBoxUser = QComboBox()
         self.comboBoxUser.setEditable(True)
         
         self.labelPassword = QLabel(self.tr("Password"))
-        self.labelPassword.setFont( QFont('Times', 12) )
+        self.labelPassword.setFont(aFont)
         self.lineEditPassword = QLineEdit( self )
         self.lineEditPassword.setEchoMode(QLineEdit.Password)
         
@@ -99,7 +102,7 @@ class LoginDialog(QDialog):
         self.buttonChange = QPushButton(self.tr("Change"))
         
         self.labelMdb = QLabel(self.tr("MDB"))
-        self.labelMdb.setFont( QFont('Times', 12) )
+        self.labelMdb.setFont(aFont)
         self.comboBoxMdb = QComboBox()
         self.comboBoxMdb.setEditable(True)
         
@@ -165,11 +168,11 @@ class LoginDialog(QDialog):
         self.labelSoftwareVersion.setAlignment(Qt.AlignRight)
         self.verticalLayout.addWidget(self.labelSoftwareVersion)
        
-        self.comboBoxUser.currentIndexChanged.connect( self.select_user )
+        self.comboBoxUser.currentIndexChanged.connect( self.selectUser )
         self.buttonChange.clicked.connect( self.changePassword )
         self.groupButtonsModule.buttonClicked.connect( self.accept )
         self.buttonCreate.clicked.connect( self.createProject )
-        self.groupButtonsProject.buttonClicked.connect( self.select_project )
+        self.groupButtonsProject.buttonClicked.connect( self.selectProject )
         
         # Deactive widgets before selecting project 
         self.comboBoxUser.setEnabled(False)
@@ -180,9 +183,9 @@ class LoginDialog(QDialog):
         self.btnDesign.setEnabled(False)
         self.btnParagon.setEnabled(False)
         self.btnAdmin.setEnabled(False)
+    # setupUi
         
-        
-    def select_project( self, id ):
+    def selectProject( self, theButton ):
         self.comboBoxUser.setEnabled(True)
         self.lineEditPassword.setEnabled(True)
         self.buttonChange.setEnabled(True)
@@ -190,44 +193,60 @@ class LoginDialog(QDialog):
         
         self.comboBoxUser.clear()
         self.comboBoxMdb.clear()
-        for Project in PipeCad.Projects:
-            if Project.Code == id.objectName:
-                self.selected_project_code = Project.Code
-                self.setWindowTitle(self.tr("PipeCad Login - Project " + Project.Code))                
-                for aUser in Project.UserList:
-                    self.comboBoxUser.addItem(aUser.Name)
-                
-                if len(Project.MdbList) == 0:
-                    self.comboBoxMdb.setEnabled(False)
-                    self.btnDesign.setEnabled(False)
-                    self.btnParagon.setEnabled(False)
-                else:
-                    self.comboBoxMdb.setEnabled(True)
-                    self.btnDesign.setEnabled(True)
-                    self.btnParagon.setEnabled(True)
-                    
-                    for aMdb in Project.MdbList:
-                        self.comboBoxMdb.addItem(aMdb.Name)
-                        
-    def select_user( self, index ):       
+
+        aProjectCode = theButton.objectName
+        self.selectedProject = self.projectDict.get(aProjectCode)
+
+        if self.selectedProject is None:
+            return
+        # if
+
+        self.setWindowTitle(self.tr("PipeCAD Login - Project " + self.selectedProject.Code))
+
+        for aUser in self.selectedProject.UserList:
+            self.comboBoxUser.addItem(aUser.Name)
+        # for
+        
+        if len(self.selectedProject.MdbList) == 0:
+            self.comboBoxMdb.setEnabled(False)
+            self.btnDesign.setEnabled(False)
+            self.btnParagon.setEnabled(False)
+        else:
+            self.comboBoxMdb.setEnabled(True)
+            self.btnDesign.setEnabled(True)
+            self.btnParagon.setEnabled(True)
+            
+            for aMdb in self.selectedProject.MdbList:
+                self.comboBoxMdb.addItem(aMdb.Name)
+            # for
+        # if
+    # selectProject
+
+    def selectUser(self):
         if self.comboBoxUser.currentText == "SYSTEM":
             self.btnParagon.setEnabled(True)
             self.btnAdmin.setEnabled(True)
         else:
             self.btnParagon.setEnabled(False)
             self.btnAdmin.setEnabled(False)
+        # if
+    # selectUser
         
-    def accept( self, id ):
-        print(self.selected_project_code)
-        for Project in PipeCad.Projects:
-            if Project.Code == self.selected_project_code:
-                #CreateSession(aMdb, aUser, aPassword, aModule)
-                aSession = Project.CreateSession( self.comboBoxMdb.currentText, self.comboBoxUser.currentText, self.lineEditPassword.text, str(id.objectName) )
-                if aSession is None:
-                    return
-                
-                QDialog.accept( self )
-                PipeCad.Login()
+    def accept(self, theButton):
+
+        if self.selectedProject is None:
+            return
+        # if
+
+        aSession = self.selectedProject.CreateSession( self.comboBoxMdb.currentText, self.comboBoxUser.currentText, self.lineEditPassword.text, str(theButton.objectName) )
+        if aSession is None:
+            return
+        # if
+
+        QDialog.accept(self)
+
+        PipeCad.Login()
+    # accept
  
     def createProject(self):
         subprocess.Popen("ProjectCreation.bat")
@@ -235,12 +254,15 @@ class LoginDialog(QDialog):
     # createProject
 
     def changePassword(self):
-        aUser = self.comboBoxUser.currentText
-        for Project in PipeCad.Projects:
-            if Project.Code == self.selected_project_code:
-                aPasswordDlg = PasswordDialog( Project, aUser, self )
-                aPasswordDlg.exec()  
 
+        if self.selectedProject is None:
+            return
+        # if
+
+        aUser = self.comboBoxUser.currentText
+
+        aPasswordDlg = PasswordDialog(self.selectedProject, aUser, self)
+        aPasswordDlg.exec()
     # changePassword
     
 class PasswordDialog(QDialog):
