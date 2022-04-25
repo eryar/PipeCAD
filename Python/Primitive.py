@@ -927,3 +927,166 @@ aRectangularTorusDlg = RectangularDialog(PipeCad)
 def CreateRectangularTorus():
     aRectangularTorusDlg.show()
 # CreateCircularTorus
+
+def ConnectPoint():
+    print("ConnectPoint")
+# ConnectPoint
+
+
+class ExplicitDialog(QDialog):
+    def __init__(self, theFromItem, theToItem, theParent = None):
+        QDialog.__init__(self, theParent)
+
+        self.fromItem = theFromItem
+        self.toItem = theToItem
+
+        self.setupUi()
+    # __init__
+
+    def setupUi(self):
+        self.setWindowTitle(self.tr("Explicit P-Point Connection"))
+
+        self.verticalLayout = QVBoxLayout(self)
+
+        # Grid layout.
+        self.gridLayout = QGridLayout()
+
+        self.labelPoint1 = QLabel(self.tr("Connect Point"))
+        self.comboPoint1 = QComboBox()
+        self.comboPoint1.setMinimumWidth(60)
+        self.comboPoint1.currentIndexChanged.connect(self.point1Changed)
+        self.labelItem1 = QLabel("%s %d of %s" % (self.fromItem.Type, self.fromItem.Sequence + 1, self.fromItem.RefNo))
+        self.labelItem1.setMinimumWidth(160)
+
+        for i in range(7):
+            aKey = ("P%d" % i)
+            aPoint = self.fromItem.linkPoint(aKey)
+            if aPoint is not None:
+                self.comboPoint1.addItem(aKey, aPoint)
+            # if
+        # for
+
+        self.gridLayout.addWidget(self.labelPoint1, 0, 0)
+        self.gridLayout.addWidget(self.comboPoint1, 0, 1)
+        self.gridLayout.addWidget(self.labelItem1, 0, 2)
+
+        self.labelPoint2 = QLabel(self.tr("To Point"))
+        self.comboPoint2 = QComboBox()
+        self.comboPoint2.currentIndexChanged.connect(self.point2Changed)
+        self.labelItem2 = QLabel("%s %d of %s" % (self.toItem.Type, self.toItem.Sequence + 1, self.toItem.RefNo))
+
+        for i in range(7):
+            aKey = ("P%d" % i)
+            aPoint = self.toItem.linkPoint(aKey)
+            if aPoint is not None:
+                self.comboPoint2.addItem(aKey, aPoint)
+            # if
+        # for
+
+        self.gridLayout.addWidget(self.labelPoint2, 1, 0)
+        self.gridLayout.addWidget(self.comboPoint2, 1, 1)
+        self.gridLayout.addWidget(self.labelItem2, 1, 2)
+
+        self.verticalLayout.addLayout(self.gridLayout)
+
+        # Action buttons.
+        self.buttonBox = QDialogButtonBox()
+        self.buttonBox.setStandardButtons(QDialogButtonBox.Cancel|QDialogButtonBox.Ok)
+
+        self.buttonBox.accepted.connect(self.accept)
+        self.buttonBox.rejected.connect(self.reject)
+
+        self.verticalLayout.addWidget(self.buttonBox)
+    # setupUi
+
+    def point1Changed(self):
+        aPoint = self.comboPoint1.currentData
+        if aPoint is None:
+            return
+        # if
+
+        PipeCad.AddAidAxis(aPoint, 100)
+        PipeCad.Redraw()
+    # point1Changed
+
+    def point2Changed(self):
+        aPoint = self.comboPoint2.currentData
+        if aPoint is None:
+            return
+        # if
+
+        PipeCad.AddAidAxis(aPoint, 200)
+        PipeCad.Redraw()
+    # point2Changed
+
+    def reject(self):
+        PipeCad.RemoveAid(100)
+        PipeCad.RemoveAid(200)
+        PipeCad.Redraw()
+
+        QDialog.reject(self)
+    # reject
+
+    def accept(self):
+        if self.fromItem is None or self.toItem is None:
+            return
+        # if
+
+        aP1 = self.comboPoint1.currentData
+        aP2 = self.comboPoint2.currentData
+
+        if aP1 is None or aP2 is None:
+            QMessageBox.warning(self, "", self.tr("Please select P-Point to connect!"))
+            return
+        # if
+
+        try:
+            self.fromItem.Connect(aP1, aP2)
+        except Exception as e:
+            QMessageBox.critical(self, "", e)
+            raise e
+        # try
+
+        PipeCad.RemoveAid(100)
+        PipeCad.RemoveAid(200)
+        PipeCad.Redraw()
+
+        QDialog.accept(self)
+    # accept
+
+# ExplicitDialog
+
+def ConnectExplicit():
+    aTreeItem = PipeCad.CurrentItem()
+    if aTreeItem is None:
+        return
+    # if
+
+    aTypeSet = {"BOX", "CYLI", "SLCY", "SNOU", "DISH", "CONE", "NOZZ", "PYRA", "CTOR", "RTOR",
+                "NBOX", "NCYL", "NSLC", "NSNO", "NDIS", "NCON", "NCTO", "NRTO"}
+
+    aType = aTreeItem.Type
+    if aType not in aTypeSet:
+        QMessageBox.critical(PipeCad, "", PipeCad.tr("You must be positioned at a Primitive level or below!"))
+        return
+    # if
+
+    if aType in {"EQUI", "TEXT"}:
+        QMessageBox.critical(PipeCad, "", PipeCad.tr("You must be positioned at an Equipment Primitive or below!"))
+        return
+    # if
+
+    aPickItem = PipeCad.PickItem()
+    if aPickItem is None:
+        return
+    # if
+
+    if aTreeItem == aPickItem:
+        QMessageBox.critical(PipeCad, "", PipeCad.tr("Cannot connect item to itself!"))
+        return
+    # if
+
+    aExplicitDlg = ExplicitDialog(aTreeItem, aPickItem, PipeCad)
+    aExplicitDlg.show()
+
+# ConnectExplicit
