@@ -44,23 +44,23 @@ class AdminMain(QWidget):
 
         self.horizontalLayout = QHBoxLayout()
 
-        self.labelElements = QLabel("Elements")
+        self.labelElements = QLabel(QT_TRANSLATE_NOOP("Admin", "Elements"))
         self.horizontalLayout.addWidget(self.labelElements)
 
         self.comboElements = QComboBox()
-        self.comboElements.addItem("Teams")
-        self.comboElements.addItem("Users")
-        self.comboElements.addItem("Databases")
-        self.comboElements.addItem("MDBs")
+        self.comboElements.addItem(QT_TRANSLATE_NOOP("Admin", "Teams"), "Team")
+        self.comboElements.addItem(QT_TRANSLATE_NOOP("Admin", "Users"), "User")
+        self.comboElements.addItem(QT_TRANSLATE_NOOP("Admin", "Databases"), "Database")
+        self.comboElements.addItem(QT_TRANSLATE_NOOP("Admin", "MDBs"), "MDB")
 
         aSizePolicy = QSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
         self.comboElements.setSizePolicy(aSizePolicy)
 
-        self.comboElements.currentTextChanged.connect(self.elementChanged)
+        self.comboElements.currentIndexChanged.connect(self.elementChanged)
 
         self.horizontalLayout.addWidget(self.comboElements)
 
-        self.buttonRefresh = QPushButton("Refresh List")
+        self.buttonRefresh = QPushButton(QT_TRANSLATE_NOOP("Admin", "Refresh List"))
         self.horizontalLayout.addWidget(self.buttonRefresh)
 
         self.buttonRefresh.clicked.connect(self.refreshList)
@@ -82,17 +82,17 @@ class AdminMain(QWidget):
 
         self.horizontalLayout = QHBoxLayout()
 
-        self.buttonSort = QPushButton("Sort")
+        self.buttonSort = QPushButton(QT_TRANSLATE_NOOP("Admin", "Sort"))
         self.horizontalLayout.addWidget(self.buttonSort)
         self.buttonSort.clicked.connect(self.sortList)
 
         self.comboSort = QComboBox()
-        self.comboSort.addItem("Name")
-        self.comboSort.addItem("Description")
+        self.comboSort.addItem(QT_TRANSLATE_NOOP("Admin", "Name"))
+        self.comboSort.addItem(QT_TRANSLATE_NOOP("Admin", "Description"))
         self.comboSort.setSizePolicy(aSizePolicy)
         self.horizontalLayout.addWidget(self.comboSort)
 
-        self.labelFilter = QLabel("Filter")
+        self.labelFilter = QLabel(QT_TRANSLATE_NOOP("Admin", "Filter"))
         self.horizontalLayout.addWidget(self.labelFilter)
 
         self.lineFilter = QLineEdit("*")
@@ -100,26 +100,26 @@ class AdminMain(QWidget):
 
         self.verticalLayout.addLayout(self.horizontalLayout)
 
-        self.groupOption = QGroupBox("Operations")
+        self.groupOption = QGroupBox(QT_TRANSLATE_NOOP("Admin", "Operations"))
         self.verticalLayout.addWidget(self.groupOption)
 
         self.verticalLayout = QVBoxLayout(self.groupOption)
 
         self.horizontalLayout = QHBoxLayout()
 
-        self.buttonCreate = QPushButton("Create")
+        self.buttonCreate = QPushButton(QT_TRANSLATE_NOOP("Admin", "Create"))
         self.buttonCreate.clicked.connect(self.create)
         self.horizontalLayout.addWidget(self.buttonCreate)
 
-        self.buttonCopy = QPushButton("Copy")
+        self.buttonCopy = QPushButton(QT_TRANSLATE_NOOP("Admin", "Copy"))
         self.buttonCopy.clicked.connect(self.copy)
         self.horizontalLayout.addWidget(self.buttonCopy)
 
-        self.buttonModify = QPushButton("Modify")
+        self.buttonModify = QPushButton(QT_TRANSLATE_NOOP("Admin", "Modify"))
         self.buttonModify.clicked.connect(self.modify)
         self.horizontalLayout.addWidget(self.buttonModify)
 
-        self.buttonDelete = QPushButton("Delete")
+        self.buttonDelete = QPushButton(QT_TRANSLATE_NOOP("Admin", "Delete"))
         self.buttonDelete.clicked.connect(self.delete)
         self.horizontalLayout.addWidget(self.buttonDelete)
 
@@ -135,15 +135,18 @@ class AdminMain(QWidget):
 
     # setupUi
         
-    def elementChanged(self, theElement):
-        if theElement.startswith("Team"):
+    def elementChanged(self, theIndex):
+        aElement = self.comboElements.currentData
+
+        if aElement.startswith("Team"):
             self.buildTeamList()
-        elif theElement.startswith("User"):
+        elif aElement.startswith("User"):
             self.buildUserList()
-        elif theElement.startswith("MDB"):
-            self.buildMdbList()
-        elif theElement.startswith("Databases"):
+        elif aElement.startswith("Database"):
             self.buildDbList()
+        elif aElement.startswith("MDB"):
+            self.buildMdbList()
+        # if
 
         #self.tableWidget.resizeColumnsToContents()
     # elementChanged
@@ -153,11 +156,12 @@ class AdminMain(QWidget):
         aItem = self.tableWidget.item(aRow, 0)
         if aItem is not None:
             PipeCad.SetCurrentItem(aItem.data(Qt.UserRole))
+        # if
     # currentItemChanged
 
     def buildTeamList(self):
         aRow = 0
-        aHeaderLabels = ["Name", "Description"]
+        aHeaderLabels = [QT_TRANSLATE_NOOP("Admin", "Name"), QT_TRANSLATE_NOOP("Admin", "Description")]
 
         self.tableWidget.setRowCount(aRow)
         self.tableWidget.setColumnCount(2)
@@ -171,7 +175,7 @@ class AdminMain(QWidget):
 
         aTeamItems = self.tmwlItem.Member
         for aTeamItem in aTeamItems:
-            aItem = QTableWidgetItem("<TEAM> " + aTeamItem.Name[1:])
+            aItem = QTableWidgetItem(QT_TRANSLATE_NOOP("Admin", "<TEAM> %s") % aTeamItem.Name[1:])
             aItem.setData(Qt.UserRole, aTeamItem)
 
             self.tableWidget.setRowCount(aRow + 1)
@@ -183,7 +187,7 @@ class AdminMain(QWidget):
 
     def buildUserList(self):
         aRow = 0
-        aHeaderLabels = ["Name", "Security", "Description"]
+        aHeaderLabels = [QT_TRANSLATE_NOOP("Admin", "Name"), QT_TRANSLATE_NOOP("Admin", "Security"), QT_TRANSLATE_NOOP("Admin", "Description")]
         self.tableWidget.setRowCount(aRow)
         self.tableWidget.setColumnCount(3)
         self.tableWidget.setHorizontalHeaderLabels(aHeaderLabels)
@@ -193,10 +197,11 @@ class AdminMain(QWidget):
         
         if self.uswlItem == None:
             return
+        # if
 
         aUserItems = self.uswlItem.Member
         for aUserItem in aUserItems:
-            aItem = QTableWidgetItem("<USER> " + aUserItem.Name)
+            aItem = QTableWidgetItem(QT_TRANSLATE_NOOP("Admin", "<USER> %s") % aUserItem.Name)
             aItem.setData(Qt.UserRole, aUserItem)
 
             self.tableWidget.setRowCount(aRow + 1)
@@ -209,7 +214,7 @@ class AdminMain(QWidget):
 
     def buildMdbList(self):
         aRow = 0
-        aHeaderLabels = ["Name", "Description"]
+        aHeaderLabels = [QT_TRANSLATE_NOOP("Admin", "Name"), QT_TRANSLATE_NOOP("Admin", "Description")]
         self.tableWidget.setRowCount(aRow)
         self.tableWidget.setColumnCount(2)
         self.tableWidget.setHorizontalHeaderLabels(aHeaderLabels)
@@ -222,7 +227,7 @@ class AdminMain(QWidget):
 
         aMdbItems = self.mdbwItem.Member
         for aMdbItem in aMdbItems:
-            aItem = QTableWidgetItem("<MDB> " + aMdbItem.Name)
+            aItem = QTableWidgetItem(QT_TRANSLATE_NOOP("Admin", "<MDB> %s") % aMdbItem.Name)
             aItem.setData(Qt.UserRole, aMdbItem)
 
             self.tableWidget.setRowCount(aRow + 1)
@@ -234,7 +239,7 @@ class AdminMain(QWidget):
 
     def buildDbList(self):
         aRow = 0
-        aHeaderLabels = ["Name", "Type", "DB Number", "Description"]
+        aHeaderLabels = [QT_TRANSLATE_NOOP("Admin", "Name"), QT_TRANSLATE_NOOP("Admin", "Type"), QT_TRANSLATE_NOOP("Admin", "DB Number"), QT_TRANSLATE_NOOP("Admin", "Description")]
         self.tableWidget.setRowCount(aRow)
         self.tableWidget.setColumnCount(4)
         self.tableWidget.setHorizontalHeaderLabels(aHeaderLabels)
@@ -247,7 +252,7 @@ class AdminMain(QWidget):
 
         aDbItems = PipeCad.CollectItem("DB")
         for aDbItem in aDbItems:
-            aItem = QTableWidgetItem("<DB> " + aDbItem.Name[1:])
+            aItem = QTableWidgetItem(QT_TRANSLATE_NOOP("Admin", "<DB> %s") % aDbItem.Name[1:])
             aItem.setData(Qt.UserRole, aDbItem)
 
             self.tableWidget.setRowCount(aRow + 1)
@@ -256,6 +261,7 @@ class AdminMain(QWidget):
             self.tableWidget.setItem(aRow, 2, QTableWidgetItem(str(aDbItem.DbNumber)))
             self.tableWidget.setItem(aRow, 3, QTableWidgetItem(aDbItem.Description))
             aRow += 1
+        # for
 
     # buildDbList
 
@@ -270,7 +276,7 @@ class AdminMain(QWidget):
     # sortList
 
     def create(self):
-        aElement = self.comboElements.currentText
+        aElement = self.comboElements.currentData
         if aElement.startswith("Team"):
             self.teamDialog.create()
         elif aElement.startswith("User"):
@@ -287,7 +293,7 @@ class AdminMain(QWidget):
     # copy
 
     def modify(self):
-        aElement = self.comboElements.currentText
+        aElement = self.comboElements.currentData
         if aElement.startswith("Team"):
             self.teamDialog.modify()
         elif aElement.startswith("User"):
@@ -302,28 +308,28 @@ class AdminMain(QWidget):
 
     def delete(self):
         aItem = PipeCad.CurrentItem()
-        aElement = self.comboElements.currentText
+        aElement = self.comboElements.currentData
         if aElement.startswith("Team"):
-            aReply = QMessageBox.question(self, "", "Okay to delete team " + aItem.Name[1:])
+            aReply = QMessageBox.question(self, "", QT_TRANSLATE_NOOP("Admin", "Okay to delete team %s") % aItem.Name[1:])
             if aReply == QMessageBox.Yes:
                 PipeCad.DeleteItem("TEAM")
                 self.buildTeamList()
             # if
         elif aElement.startswith("User"):
-            aReply = QMessageBox.question(self, "", "Okay to delete user " + aItem.Name)
+            aReply = QMessageBox.question(self, "", QT_TRANSLATE_NOOP("Admin", "Okay to delete user %s") % aItem.Name)
             if aReply == QMessageBox.Yes:
                 PipeCad.DeleteItem("USER")
                 self.buildUserList()
             # if
         elif aElement.startswith("Database"):
-            aReply = QMessageBox.question(self, "", "Okay to delete database " + aItem.Name[1:])
+            aReply = QMessageBox.question(self, "", QT_TRANSLATE_NOOP("Admin", "Okay to delete database %s") % aItem.Name[1:])
             if aReply == QMessageBox.Yes:
                 aItem.DeleteDatabase()
                 PipeCad.DeleteItem("DB")
                 self.buildDbList()
             # if
         elif aElement.startswith("MDB"):
-            aReply = QMessageBox.question(self, "", "Okay to delete mdb " + aItem.Name)
+            aReply = QMessageBox.question(self, "", QT_TRANSLATE_NOOP("Admin", "Okay to delete mdb %s") % aItem.Name)
             if aReply == QMessageBox.Yes:
                 PipeCad.DeleteItem("MDB")
                 self.buildMdbList()
@@ -345,26 +351,26 @@ class TeamDialog(QDialog):
 
         self.formLayout = QFormLayout()
 
-        self.labelName = QLabel("Name")
+        self.labelName = QLabel(QT_TRANSLATE_NOOP("Admin", "Name"))
         self.textName = QLineEdit()
         self.formLayout.setWidget(0, QFormLayout.LabelRole, self.labelName)
         self.formLayout.setWidget(0, QFormLayout.FieldRole, self.textName)
 
-        self.labelDescription = QLabel("Description")
+        self.labelDescription = QLabel(QT_TRANSLATE_NOOP("Admin", "Description"))
         self.textDescription = QLineEdit()
         self.formLayout.setWidget(1, QFormLayout.LabelRole, self.labelDescription)
         self.formLayout.setWidget(1, QFormLayout.FieldRole, self.textDescription)
 
         self.verticalLayout.addLayout(self.formLayout)
 
-        self.groupBox = QGroupBox("Team Membership")
+        self.groupBox = QGroupBox(QT_TRANSLATE_NOOP("Admin", "Team Membership"))
         self.horizontalLayout = QHBoxLayout(self.groupBox)
 
         self.layoutTable = QVBoxLayout()
-        self.labelProjectUsers = QLabel("Project Users")
+        self.labelProjectUsers = QLabel(QT_TRANSLATE_NOOP("Admin", "Project Users"))
         self.tableProjectUsers = QTableWidget()
         self.tableProjectUsers.setColumnCount(3)
-        self.tableProjectUsers.setHorizontalHeaderLabels(["Name", "Security", "Description"])
+        self.tableProjectUsers.setHorizontalHeaderLabels([QT_TRANSLATE_NOOP("Admin", "Name"), QT_TRANSLATE_NOOP("Admin", "Security"), QT_TRANSLATE_NOOP("Admin", "Description")])
         self.tableProjectUsers.setEditTriggers(QAbstractItemView.NoEditTriggers)
         self.tableProjectUsers.setAlternatingRowColors(True)
         self.tableProjectUsers.setSelectionMode(QAbstractItemView.ExtendedSelection)
@@ -399,10 +405,10 @@ class TeamDialog(QDialog):
         self.horizontalLayout.addLayout(self.layoutButton)
         
         self.layoutTable = QVBoxLayout()
-        self.labelTeamUsers = QLabel("Team Members")
+        self.labelTeamUsers = QLabel(QT_TRANSLATE_NOOP("Admin", "Team Members"))
         self.tableTeamUsers = QTableWidget()
         self.tableTeamUsers.setColumnCount(3)
-        self.tableTeamUsers.setHorizontalHeaderLabels(["Name", "Security", "Description"])
+        self.tableTeamUsers.setHorizontalHeaderLabels([QT_TRANSLATE_NOOP("Admin", "Name"), QT_TRANSLATE_NOOP("Admin", "Security"), QT_TRANSLATE_NOOP("Admin", "Description")])
         self.tableTeamUsers.setEditTriggers(QAbstractItemView.NoEditTriggers)
         self.tableTeamUsers.setAlternatingRowColors(True)
         self.tableTeamUsers.setSelectionMode(QAbstractItemView.ExtendedSelection)
@@ -493,13 +499,13 @@ class TeamDialog(QDialog):
     # init
 
     def create(self):
-        self.setWindowTitle(self.tr("Create Team"))
+        self.setWindowTitle(QT_TRANSLATE_NOOP("Admin", "Create Team"))
         self.init()
         self.show()
     # createTeam
 
     def modify(self):
-        self.setWindowTitle(self.tr("Modify Team"))
+        self.setWindowTitle(QT_TRANSLATE_NOOP("Admin", "Modify Team"))
         self.init(PipeCad.CurrentItem())
         self.show()
     # modifyTeam
@@ -665,7 +671,7 @@ class TeamDialog(QDialog):
     def accept(self):
         aName = self.textName.text
         if len(aName) < 1:
-            QMessageBox.warning(self, "", self.tr("Please input team name!"))
+            QMessageBox.warning(self, "", QT_TRANSLATE_NOOP("Admin", "Please input team name!"))
             return
         # if
 
@@ -696,10 +702,10 @@ class UserDialog(QDialog):
 
         self.gridLayout = QGridLayout()
 
-        self.labelName = QLabel("Name")
+        self.labelName = QLabel(QT_TRANSLATE_NOOP("Admin", "Name"))
         self.textName = QLineEdit()
 
-        self.labelDescription = QLabel("Description")
+        self.labelDescription = QLabel(QT_TRANSLATE_NOOP("Admin", "Description"))
         self.textDescription = QLineEdit()
 
         self.gridLayout.addWidget(self.labelName, 0, 0)
@@ -707,22 +713,22 @@ class UserDialog(QDialog):
         self.gridLayout.addWidget(self.labelDescription, 0, 2)
         self.gridLayout.addWidget(self.textDescription, 0, 3)
 
-        self.labelPassword = QLabel("Password")
+        self.labelPassword = QLabel(QT_TRANSLATE_NOOP("Admin", "Password"))
         self.textPassword = QLineEdit()
         self.textPassword.setEchoMode(QLineEdit.Password)
-        self.textPassword.setPlaceholderText("Enter Password")
+        self.textPassword.setPlaceholderText(QT_TRANSLATE_NOOP("Admin", "Enter Password"))
         self.textPassword.textChanged.connect(self.confirmPassword)
         PipeCad.SetIndicator(self.textPassword)
 
-        self.labelSecurity = QLabel("Security")
+        self.labelSecurity = QLabel(QT_TRANSLATE_NOOP("Admin", "Security"))
         self.comboSecurity = QComboBox()
         self.comboSecurity.addItem("General")
         self.comboSecurity.addItem("Free")
 
-        self.labelConfirm = QLabel("Confirm")
+        self.labelConfirm = QLabel(QT_TRANSLATE_NOOP("Admin", "Confirm"))
         self.textConfirm = QLineEdit()
         self.textConfirm.setEchoMode(QLineEdit.Password)
-        self.textConfirm.setPlaceholderText("Confirm Password")
+        self.textConfirm.setPlaceholderText(QT_TRANSLATE_NOOP("Admin", "Confirm Password"))
         self.textConfirm.textChanged.connect(self.confirmPassword)
         PipeCad.SetIndicator(self.textConfirm)
 
@@ -739,14 +745,14 @@ class UserDialog(QDialog):
 
         self.verticalLayout.addLayout(self.gridLayout)
 
-        self.groupBox = QGroupBox("User Membership")
+        self.groupBox = QGroupBox(QT_TRANSLATE_NOOP("Admin", "User Membership"))
         self.horizontalLayout = QHBoxLayout(self.groupBox)
 
         self.layoutTable = QVBoxLayout()
-        self.labelProjectTeams = QLabel("Project Teams")
+        self.labelProjectTeams = QLabel(QT_TRANSLATE_NOOP("Admin", "Project Teams"))
         self.tableProjectTeams = QTableWidget()
         self.tableProjectTeams.setColumnCount(2)
-        self.tableProjectTeams.setHorizontalHeaderLabels(["Name", "Description"])
+        self.tableProjectTeams.setHorizontalHeaderLabels([QT_TRANSLATE_NOOP("Admin", "Name"), QT_TRANSLATE_NOOP("Admin", "Description")])
         self.tableProjectTeams.setEditTriggers(QAbstractItemView.NoEditTriggers)
         self.tableProjectTeams.setAlternatingRowColors(True)
         self.tableProjectTeams.setSelectionMode(QAbstractItemView.ExtendedSelection)
@@ -782,10 +788,10 @@ class UserDialog(QDialog):
         self.horizontalLayout.addLayout(self.layoutButton)
         
         self.layoutTable = QVBoxLayout()
-        self.labelUserTeams = QLabel("Team Membership")
+        self.labelUserTeams = QLabel(QT_TRANSLATE_NOOP("Admin", "Team Membership"))
         self.tableUserTeams = QTableWidget()
         self.tableUserTeams.setColumnCount(2)
-        self.tableUserTeams.setHorizontalHeaderLabels(["Name", "Description"])
+        self.tableUserTeams.setHorizontalHeaderLabels([QT_TRANSLATE_NOOP("Admin", "Name"), QT_TRANSLATE_NOOP("Admin", "Description")])
         self.tableUserTeams.setEditTriggers(QAbstractItemView.NoEditTriggers)
         self.tableUserTeams.setAlternatingRowColors(True)
         self.tableUserTeams.setSelectionMode(QAbstractItemView.ExtendedSelection)
@@ -878,13 +884,13 @@ class UserDialog(QDialog):
     # init
 
     def create(self):
-        self.setWindowTitle(self.tr("Create User"))
+        self.setWindowTitle(QT_TRANSLATE_NOOP("Admin", "Create User"))
         self.init()
         self.show()
     # createTeam
 
     def modify(self):
-        self.setWindowTitle(self.tr("Modify User"))
+        self.setWindowTitle(QT_TRANSLATE_NOOP("Admin", "Modify User"))
         self.init(PipeCad.CurrentItem())
         self.show()
     # modifyTeam
@@ -892,9 +898,9 @@ class UserDialog(QDialog):
     def confirmPassword(self):
         if len(self.textPassword.text) > 0 or len(self.textConfirm.text) > 0:
             if self.textPassword.text == self.textConfirm.text:
-                self.labelInfo.setText("<font color=Green>Matched</font>")
+                self.labelInfo.setText(QT_TRANSLATE_NOOP("Admin", "<font color=Green>Matched</font>"))
             else:
-                self.labelInfo.setText("<font color=Red>Not match</font>")
+                self.labelInfo.setText(QT_TRANSLATE_NOOP("Admin", "<font color=Red>Not match</font>"))
         else:
             self.labelInfo.setText("")
     # confirmPassword
@@ -1038,12 +1044,12 @@ class UserDialog(QDialog):
         aName = self.textName.text
         aPassword = self.textPassword.text
         if len(aName) < 1 or len(aPassword) < 1:
-            QMessageBox.warning(self, "", self.tr("Please input user name and password!"))
+            QMessageBox.warning(self, "", QT_TRANSLATE_NOOP("Admin", "Please input user name and password!"))
             return
         # if
 
         if self.textPassword.text != self.textConfirm.text:
-            QMessageBox.warning(self, "", self.tr("The passwords do not match!"))
+            QMessageBox.warning(self, "", QT_TRANSLATE_NOOP("Admin", "The passwords do not match!"))
             return
         # if
 
@@ -1075,15 +1081,15 @@ class DatabaseDialog(QDialog):
         self.verticalLayout = QVBoxLayout(self)
 
         self.horizontalLayout = QHBoxLayout()
-        self.labelDatabase = QLabel("Database")
+        self.labelDatabase = QLabel(QT_TRANSLATE_NOOP("Admin", "Database"))
         self.horizontalLayout.addWidget(self.labelDatabase)
         self.verticalLayout.addLayout(self.horizontalLayout)
 
-        self.groupBox = QGroupBox("Project Teams")
+        self.groupBox = QGroupBox(QT_TRANSLATE_NOOP("Admin", "Project Teams"))
         self.horizontalLayout = QHBoxLayout(self.groupBox)
         self.tableProjectTeams = QTableWidget()
         self.tableProjectTeams.setColumnCount(2)
-        self.tableProjectTeams.setHorizontalHeaderLabels(["Name", "Description"])
+        self.tableProjectTeams.setHorizontalHeaderLabels([QT_TRANSLATE_NOOP("Admin", "Name"), QT_TRANSLATE_NOOP("Admin", "Description")])
         self.tableProjectTeams.setEditTriggers(QAbstractItemView.NoEditTriggers)
         self.tableProjectTeams.setAlternatingRowColors(True)
         self.tableProjectTeams.setSelectionMode(QAbstractItemView.ExtendedSelection)
@@ -1098,25 +1104,25 @@ class DatabaseDialog(QDialog):
 
         self.gridLayout = QGridLayout()
 
-        self.labelName = QLabel("Name")
+        self.labelName = QLabel(QT_TRANSLATE_NOOP("Admin", "Name"))
         self.textName = QLineEdit()
         self.textName.textChanged.connect(self.teamChanged)
         self.gridLayout.addWidget(self.labelName, 0, 0)
         self.gridLayout.addWidget(self.textName, 0, 1)
 
-        self.labelDescription = QLabel("Description")
+        self.labelDescription = QLabel(QT_TRANSLATE_NOOP("Admin", "Description"))
         self.textDescription = QLineEdit()
         self.gridLayout.addWidget(self.labelDescription, 1, 0)
         self.gridLayout.addWidget(self.textDescription, 1, 1)
 
-        self.labelType = QLabel("Database Type")
+        self.labelType = QLabel(QT_TRANSLATE_NOOP("Admin", "Database Type"))
         self.comboType = QComboBox()
         self.comboType.addItems(["Design", "Catalogue"])
         self.comboType.currentTextChanged.connect(self.dbTypeChanged)
         self.gridLayout.addWidget(self.labelType, 2, 0)
         self.gridLayout.addWidget(self.comboType, 2, 1)
 
-        self.labelCreate = QLabel("Create SITE")
+        self.labelCreate = QLabel(QT_TRANSLATE_NOOP("Admin", "Create SITE"))
         self.textCreate = QLineEdit()
         self.gridLayout.addWidget(self.labelCreate, 3, 0)
         self.gridLayout.addWidget(self.textCreate, 3, 1)
@@ -1130,10 +1136,10 @@ class DatabaseDialog(QDialog):
         # self.gridLayout.addWidget(self.textArea, 4, 1)
         # self.gridLayout.addWidget(self.buttonArea, 4, 2)
 
-        self.labelNumber = QLabel("DB Number")
+        self.labelNumber = QLabel(QT_TRANSLATE_NOOP("Admin", "DB Number"))
         self.textNumber = QLineEdit()
-        self.textNumber.setPlaceholderText("Set by System")
-        self.buttonNumber = QPushButton("System")
+        self.textNumber.setPlaceholderText(QT_TRANSLATE_NOOP("Admin", "Set by System"))
+        self.buttonNumber = QPushButton(QT_TRANSLATE_NOOP("Admin", "System"))
         self.buttonNumber.clicked.connect(self.setDbNumber)
         self.gridLayout.addWidget(self.labelNumber, 5, 0)
         self.gridLayout.addWidget(self.textNumber, 5, 1)
@@ -1199,13 +1205,13 @@ class DatabaseDialog(QDialog):
     # init
 
     def create(self):
-        self.setWindowTitle(self.tr("Create Database"))
+        self.setWindowTitle(QT_TRANSLATE_NOOP("Admin", "Create Database"))
         self.init()
         self.show()
     # create
 
     def modify(self):
-        self.setWindowTitle(self.tr("Modify Database"))
+        self.setWindowTitle(QT_TRANSLATE_NOOP("Admin", "Modify Database"))
         self.init(PipeCad.CurrentItem())
         self.show()
     # modify
@@ -1215,14 +1221,16 @@ class DatabaseDialog(QDialog):
         aItem = self.tableProjectTeams.item(aRow, 0)
         aName = self.textName.text
         if aItem is not None:
-            self.labelDatabase.setText("Database: <font color=Brown>" + aItem.text()[6:] + "/" + aName + " </font>")
+            self.labelDatabase.setText(QT_TRANSLATE_NOOP("Admin", "Database: <font color=Brown>%s/%s </font>") % (aItem.text()[6:], aName))
+        # if
     # teamChanged
 
     def dbTypeChanged(self, theType):
         if theType == "Catalogue":
-            self.labelCreate.setText("Create CATA")
+            self.labelCreate.setText(QT_TRANSLATE_NOOP("Admin", "Create CATA"))
         else:
-            self.labelCreate.setText("Create SITE")
+            self.labelCreate.setText(QT_TRANSLATE_NOOP("Admin", "Create SITE"))
+        # if
     # dbTypeChanged
 
     def setAreaNumber(self):
@@ -1245,7 +1253,7 @@ class DatabaseDialog(QDialog):
 
             # Check the input database number range.
             if aNumber > 8000 or aNumber < 1:
-                QMessageBox.critical(self, "", "Database Number range is [1~8000]!")
+                QMessageBox.critical(self, "", QT_TRANSLATE_NOOP("Admin", "Database Number range is [1~8000]!"))
                 raise ValueError ("Database Number range is [1~8000]!")
 
             # Check the input database number used.
@@ -1268,7 +1276,7 @@ class DatabaseDialog(QDialog):
         aDbItem.DbType = self.comboType.currentText[0:4].upper()
         #aDbItem.Area = aArea
         aDbItem.DbNumber = aNumber
-        aDbItem.CreateDatabase(self.textCreate.text)
+        aDbItem.CreateDbElement(self.textCreate.text)
         PipeCad.CommitTransaction()
         PipeCad.SaveWork()
     # createDb
@@ -1286,7 +1294,7 @@ class DatabaseDialog(QDialog):
     def accept(self):
         aName = self.textName.text
         if len(aName) < 1:
-            QMessageBox.warning(self, "", "Please input database name!")
+            QMessageBox.warning(self, "", QT_TRANSLATE_NOOP("Admin", "Please input database name!"))
             return
         # if
 
@@ -1354,24 +1362,24 @@ class MdbDialog(QDialog):
 
         self.formLayout = QFormLayout()
 
-        self.labelName = QLabel("Name")
+        self.labelName = QLabel(QT_TRANSLATE_NOOP("Admin", "Name"))
         self.textName = QLineEdit()
         self.formLayout.setWidget(0, QFormLayout.LabelRole, self.labelName)
         self.formLayout.setWidget(0, QFormLayout.FieldRole, self.textName)
 
-        self.labelDescription = QLabel("Description")
+        self.labelDescription = QLabel(QT_TRANSLATE_NOOP("Admin", "Description"))
         self.textDescription = QLineEdit()
         self.formLayout.setWidget(1, QFormLayout.LabelRole, self.labelDescription)
         self.formLayout.setWidget(1, QFormLayout.FieldRole, self.textDescription)
 
         self.verticalLayout.addLayout(self.formLayout)
 
-        self.groupBoxProject = QGroupBox("Project Databases")
+        self.groupBoxProject = QGroupBox(QT_TRANSLATE_NOOP("Admin", "Project Databases"))
         self.horizontalLayout = QHBoxLayout(self.groupBoxProject)
 
         self.tableProjectDatabases = QTableWidget()
         self.tableProjectDatabases.setColumnCount(4)
-        self.tableProjectDatabases.setHorizontalHeaderLabels(["Name", "Type", "DB Number", "Description"])
+        self.tableProjectDatabases.setHorizontalHeaderLabels([QT_TRANSLATE_NOOP("Admin", "Name"), QT_TRANSLATE_NOOP("Admin", "Type"), QT_TRANSLATE_NOOP("Admin", "DB Number"), QT_TRANSLATE_NOOP("Admin", "Description")])
         self.tableProjectDatabases.setEditTriggers(QAbstractItemView.NoEditTriggers)
         self.tableProjectDatabases.setAlternatingRowColors(True)
         self.tableProjectDatabases.setSelectionMode(QAbstractItemView.ExtendedSelection)
@@ -1404,12 +1412,12 @@ class MdbDialog(QDialog):
 
         self.verticalLayout.addLayout(self.layoutButton)
         
-        self.groupBoxCurrent = QGroupBox("Current Databases")
+        self.groupBoxCurrent = QGroupBox(QT_TRANSLATE_NOOP("Admin", "Current Databases"))
         self.horizontalLayout = QHBoxLayout(self.groupBoxCurrent)
 
         self.tableCurrentDatabases = QTableWidget()
         self.tableCurrentDatabases.setColumnCount(4)
-        self.tableCurrentDatabases.setHorizontalHeaderLabels(["Name", "Type", "DB Number", "Description"])
+        self.tableCurrentDatabases.setHorizontalHeaderLabels([QT_TRANSLATE_NOOP("Admin", "Name"), QT_TRANSLATE_NOOP("Admin", "Type"), QT_TRANSLATE_NOOP("Admin", "DB Number"), QT_TRANSLATE_NOOP("Admin", "Description")])
         self.tableCurrentDatabases.setEditTriggers(QAbstractItemView.NoEditTriggers)
         self.tableCurrentDatabases.setAlternatingRowColors(True)
         self.tableCurrentDatabases.setSelectionMode(QAbstractItemView.ExtendedSelection)
@@ -1491,13 +1499,13 @@ class MdbDialog(QDialog):
     # init
 
     def create(self):
-        self.setWindowTitle(self.tr("Create Multiple Database"))
+        self.setWindowTitle(QT_TRANSLATE_NOOP("Admin", "Create Multiple Database"))
         self.init()
         self.show()
     # create
 
     def modify(self):
-        self.setWindowTitle(self.tr("Modify Multiple Database"))
+        self.setWindowTitle(QT_TRANSLATE_NOOP("Admin", "Modify Multiple Database"))
         self.init(PipeCad.CurrentItem())
         self.show()
     # modify
@@ -1631,7 +1639,7 @@ class MdbDialog(QDialog):
     def accept(self):
         aName = self.textName.text
         if len(aName) < 1:
-            QMessageBox.warning(self, "", "Please input MDB name!")
+            QMessageBox.warning(self, "", QT_TRANSLATE_NOOP("Admin", "Please input MDB name!"))
             return
         # if
 
@@ -1667,47 +1675,47 @@ class ProjectDialog(QDialog):
 
     def setupUi(self):
         self.setMinimumWidth(380)
-        self.setWindowTitle(self.tr("Project Information"))
+        self.setWindowTitle(QT_TRANSLATE_NOOP("Admin", "Project Information"))
 
         aStatItem = self.statItem
 
         self.verticalLayout = QVBoxLayout(self)
-        self.groupBox = QGroupBox("Project")
+        self.groupBox = QGroupBox(QT_TRANSLATE_NOOP("Admin", "Project"))
         self.formLayout = QFormLayout(self.groupBox)
 
-        self.labelProject = QLabel("Project")
+        self.labelProject = QLabel(QT_TRANSLATE_NOOP("Admin", "Project"))
         self.textProject = QLineEdit(aStatItem.ProjectNumber)
         self.textProject.setEnabled(False)
 
         self.formLayout.setWidget(0, QFormLayout.LabelRole, self.labelProject)
         self.formLayout.setWidget(0, QFormLayout.FieldRole, self.textProject)
 
-        self.labelCode = QLabel("Code")
+        self.labelCode = QLabel(QT_TRANSLATE_NOOP("Admin", "Code"))
         self.textCode = QLineEdit(PipeCad.CurrentProject.Code)
         self.textCode.setEnabled(False)
 
         self.formLayout.setWidget(1, QFormLayout.LabelRole, self.labelCode)
         self.formLayout.setWidget(1, QFormLayout.FieldRole, self.textCode)
 
-        self.labelNumber = QLabel("Number")
+        self.labelNumber = QLabel(QT_TRANSLATE_NOOP("Admin", "Number"))
         self.textNumber = QLineEdit(aStatItem.ProjectNumber)
 
         self.formLayout.setWidget(2, QFormLayout.LabelRole, self.labelNumber)
         self.formLayout.setWidget(2, QFormLayout.FieldRole, self.textNumber)
 
-        self.labelName = QLabel("Name")
+        self.labelName = QLabel(QT_TRANSLATE_NOOP("Admin", "Name"))
         self.textName = QLineEdit(aStatItem.ProjectName)
 
         self.formLayout.setWidget(3, QFormLayout.LabelRole, self.labelName)
         self.formLayout.setWidget(3, QFormLayout.FieldRole, self.textName)
 
-        self.labelDescription = QLabel("Description")
+        self.labelDescription = QLabel(QT_TRANSLATE_NOOP("Admin", "Description"))
         self.textDescription = QLineEdit(aStatItem.ProjectDescription)
 
         self.formLayout.setWidget(4, QFormLayout.LabelRole, self.labelDescription)
         self.formLayout.setWidget(4, QFormLayout.FieldRole, self.textDescription)
 
-        self.labelMessage = QLabel("Message")
+        self.labelMessage = QLabel(QT_TRANSLATE_NOOP("Admin", "Message"))
         self.textMessage = QLineEdit(aStatItem.ProjectMessage)
 
         self.formLayout.setWidget(5, QFormLayout.LabelRole, self.labelMessage)
@@ -1756,10 +1764,10 @@ class UserProcessDialog(QDialog):
 
     def setupUi(self):
         self.resize(500, 350)
-        self.setWindowTitle("Expunge User Process")
+        self.setWindowTitle(QT_TRANSLATE_NOOP("Admin", "Expunge User Process"))
 
         self.verticalLayout = QVBoxLayout(self)
-        self.groupBox = QGroupBox("Project Users")
+        self.groupBox = QGroupBox(QT_TRANSLATE_NOOP("Admin", "Project Users"))
 
         self.verticalLayoutBox = QHBoxLayout(self.groupBox)
         self.tableUser = QTableWidget()

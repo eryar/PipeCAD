@@ -26,6 +26,7 @@ import subprocess
 from functools import partial
 import sys
 
+
 class LoginDialog(QDialog):
    
     def __init__(self, parent = None):    
@@ -39,7 +40,7 @@ class LoginDialog(QDialog):
 
     def setupUi( self ):        
         self.resize(350, 300)
-        self.setWindowTitle(self.tr("PipeCAD Login"))
+        self.setWindowTitle(QT_TRANSLATE_NOOP("Login", "PipeCAD Login"))
         
         self.hBoxLayoutProjects = QHBoxLayout()
         self.hBoxLayoutProjects.setSpacing(2)
@@ -65,7 +66,7 @@ class LoginDialog(QDialog):
             self.btnProject.setIcon( QIcon('plugins/PipeCad/icons/login/128x128_select_project.png') )
             self.btnProject.setIconSize( QSize(96,96) )
             self.btnProject.setStyleSheet("QPushButton { text-align: left; }")
-            self.btnProject.setText("Project: " + aProject.Name + " \nCode: " + aProject.Code + " \nNumber: " + aProject.Number + "\nDescription: \n" + aProject.Description )
+            self.btnProject.setText(QT_TRANSLATE_NOOP("Login", "Project: %s \nCode: %s \nNumber: %s \nDescription: \n%s") % (aProject.Name, aProject.Code, aProject.Number, aProject.Description))
             self.btnProject.setObjectName( aProject.Code )
             self.groupButtonsProject.addButton( self.btnProject )
             self.btnProject.setAutoDefault(False)
@@ -86,27 +87,27 @@ class LoginDialog(QDialog):
 
         aFont = QFont("Times", 12)
 
-        self.buttonCreate = QPushButton(self.tr("Create New Project"))        
-        self.labelUsername = QLabel(self.tr("Username"))
+        self.buttonCreate = QPushButton(QT_TRANSLATE_NOOP("Login", "Create New Project"))        
+        self.labelUsername = QLabel(QT_TRANSLATE_NOOP("Login", "Username"))
         self.labelUsername.setFont(aFont)
         self.comboBoxUser = QComboBox()
         self.comboBoxUser.setEditable(True)
         
-        self.labelPassword = QLabel(self.tr("Password"))
+        self.labelPassword = QLabel(QT_TRANSLATE_NOOP("Login", "Password"))
         self.labelPassword.setFont(aFont)
         self.lineEditPassword = QLineEdit( self )
         self.lineEditPassword.setEchoMode(QLineEdit.Password)
         
         PipeCad.SetIndicator(self.lineEditPassword)
             
-        self.buttonChange = QPushButton(self.tr("Change"))
+        self.buttonChange = QPushButton(QT_TRANSLATE_NOOP("Login", "Change"))
         
-        self.labelMdb = QLabel(self.tr("MDB"))
+        self.labelMdb = QLabel(QT_TRANSLATE_NOOP("Login", "MDB"))
         self.labelMdb.setFont(aFont)
         self.comboBoxMdb = QComboBox()
         self.comboBoxMdb.setEditable(True)
         
-        self.checkBox = QCheckBox(self.tr("Read Only"))
+        self.checkBox = QCheckBox(QT_TRANSLATE_NOOP("Login", "Read Only"))
         
         self.verticalSpacer = QSpacerItem( 20, 40, QSizePolicy.Minimum, QSizePolicy.Expanding )
         
@@ -131,9 +132,9 @@ class LoginDialog(QDialog):
         self.btnParagon.setIconSize( QSize(96,96) )
         self.btnAdmin.setIconSize( QSize(96,96) )
         
-        self.btnDesign.setToolTip('Module <b>Design</b>')
-        self.btnParagon.setToolTip('Module <b>Paragon</b>')
-        self.btnAdmin.setToolTip('Module <b>Admin</b>')
+        self.btnDesign.setToolTip(QT_TRANSLATE_NOOP("Login", 'Module <b>Design</b>'))
+        self.btnParagon.setToolTip(QT_TRANSLATE_NOOP("Login", 'Module <b>Paragon</b>'))
+        self.btnAdmin.setToolTip(QT_TRANSLATE_NOOP("Login", 'Module <b>Admin</b>'))
                 
         #Setup Widgets Layout
         self.gridLayout = QGridLayout()
@@ -201,7 +202,7 @@ class LoginDialog(QDialog):
             return
         # if
 
-        self.setWindowTitle(self.tr("PipeCAD Login - Project " + self.selectedProject.Code))
+        self.setWindowTitle(QT_TRANSLATE_NOOP("Login", "PipeCAD Login - Project %s") % self.selectedProject.Code)
 
         for aUser in self.selectedProject.UserList:
             self.comboBoxUser.addItem(aUser.Name)
@@ -279,26 +280,26 @@ class PasswordDialog(QDialog):
 
     def setupUi(self):
         #self.resize(330, 200)
-        self.setWindowTitle(self.tr("Change Password"))
+        self.setWindowTitle(QT_TRANSLATE_NOOP("Login", "Change Password"))
 
         self.verticalLayout = QVBoxLayout(self)
         self.formLayout = QFormLayout()
 
-        self.labelCurrent = QLabel("Current Password")
+        self.labelCurrent = QLabel(QT_TRANSLATE_NOOP("Login", "Current Password"))
         self.textCurrent = QLineEdit()
         self.textCurrent.setEchoMode(QLineEdit.Password)
         PipeCad.SetIndicator(self.textCurrent)
         self.formLayout.setWidget(0, QFormLayout.LabelRole, self.labelCurrent)
         self.formLayout.setWidget(0, QFormLayout.FieldRole, self.textCurrent)
 
-        self.labelNew = QLabel("New Password")
+        self.labelNew = QLabel(QT_TRANSLATE_NOOP("Login", "New Password"))
         self.textNew = QLineEdit("")
         self.textNew.setEchoMode(QLineEdit.Password)
         PipeCad.SetIndicator(self.textNew)
         self.formLayout.setWidget(1, QFormLayout.LabelRole, self.labelNew)
         self.formLayout.setWidget(1, QFormLayout.FieldRole, self.textNew)
 
-        self.labelConfirm = QLabel("Confirm Password")
+        self.labelConfirm = QLabel(QT_TRANSLATE_NOOP("Login", "Confirm Password"))
         self.textConfirm = QLineEdit()
         self.textConfirm.setEchoMode(QLineEdit.Password)
         PipeCad.SetIndicator(self.textConfirm)
@@ -322,12 +323,12 @@ class PasswordDialog(QDialog):
         aConfirm = self.textConfirm.text
 
         if aNew != aConfirm or (len(aNew) + len(aConfirm)) < 1:
-            QMessageBox.critical(self, "", "The passwords you typed do not match!")
+            QMessageBox.critical(self, "", QT_TRANSLATE_NOOP("Login", "The passwords you typed do not match!"))
             return
         # if
 
         if self.project.ChangePassword(self.user, aCurrent, aNew):
-            QMessageBox.information(self, "", "Password Changed!")
+            QMessageBox.information(self, "", QT_TRANSLATE_NOOP("Login", "Password Changed!"))
         else:
             return
         # if

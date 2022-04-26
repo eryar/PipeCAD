@@ -34,7 +34,7 @@ class IsoAlgoDialog(QDialog):
     # __init__
 
     def setupUi(self):
-        self.setWindowTitle(self.tr("Pipe Isometrics"))
+        self.setWindowTitle(QT_TRANSLATE_NOOP("IsoAlgo", "Pipe Isometrics"))
         self.setWindowFlags(Qt.Window)
 
         self.verticalLayout = QVBoxLayout(self)
@@ -45,12 +45,12 @@ class IsoAlgoDialog(QDialog):
         # Action buttons.
         self.horizontalLayout = QHBoxLayout(self)
 
-        self.buttonPreview = QPushButton("Preview")
-        self.buttonPreview.setToolTip("Preview Pipe Isometrics")
+        self.buttonPreview = QPushButton(QT_TRANSLATE_NOOP("IsoAlgo", "Preview"))
+        self.buttonPreview.setToolTip(QT_TRANSLATE_NOOP("IsoAlgo", "Preview Pipe Isometrics"))
         self.buttonPreview.clicked.connect(self.previewIso)
 
-        self.buttonExport = QPushButton("Export")
-        self.buttonExport.setToolTip("Export Pipe Isometrics to DXF")
+        self.buttonExport = QPushButton(QT_TRANSLATE_NOOP("IsoAlgo", "Export"))
+        self.buttonExport.setToolTip(QT_TRANSLATE_NOOP("IsoAlgo", "Export Pipe Isometrics to DXF"))
         self.buttonExport.clicked.connect(self.exportIso)
 
         self.buttonBox = QDialogButtonBox()
@@ -74,7 +74,7 @@ class IsoAlgoDialog(QDialog):
         if len(aName) > 1 and len(aIsoEnv) > 1:
             aFileName = aIsoEnv + "/" + aName + ".pcf"
             PcfExporter.ExportPcf(aTreeItem, aFileName)
-            self.setWindowTitle(self.tr("Pipe Isometrics: ") + aName)
+            self.setWindowTitle(QT_TRANSLATE_NOOP("IsoAlgo", "Pipe Isometrics: ") + aName)
             self.isoGraphicsView.PreviewIso(aFileName)
         # if
     # previewIso
