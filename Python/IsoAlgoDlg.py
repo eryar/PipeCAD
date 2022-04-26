@@ -45,6 +45,10 @@ class IsoAlgoDialog(QDialog):
         # Action buttons.
         self.horizontalLayout = QHBoxLayout(self)
 
+        self.buttonPCF = QPushButton("PCF")
+        self.buttonPCF.setToolTip(QT_TRANSLATE_NOOP("IsoAlgo", "Preview the selected PCF"))
+        self.buttonPCF.clicked.connect(self.previewPcf)
+
         self.buttonPreview = QPushButton(QT_TRANSLATE_NOOP("IsoAlgo", "Preview"))
         self.buttonPreview.setToolTip(QT_TRANSLATE_NOOP("IsoAlgo", "Preview Pipe Isometrics"))
         self.buttonPreview.clicked.connect(self.previewIso)
@@ -60,6 +64,7 @@ class IsoAlgoDialog(QDialog):
 
         self.horizontalLayout.addWidget(self.buttonPreview)
         self.horizontalLayout.addWidget(self.buttonExport)
+        self.horizontalLayout.addWidget(self.buttonPCF)
         self.horizontalLayout.addWidget(self.buttonBox)
         self.verticalLayout.addLayout(self.horizontalLayout)
 
@@ -78,6 +83,14 @@ class IsoAlgoDialog(QDialog):
             self.isoGraphicsView.PreviewIso(aFileName)
         # if
     # previewIso
+
+    def previewPcf(self):
+        aIsoEnv = os.getenv(PipeCad.CurrentProject.Code + "ISO")
+        aFileName = QFileDialog.getOpenFileName(self, "Select PCF File", aIsoEnv)
+        if len(aFileName) > 0:
+            self.isoGraphicsView.PreviewIso(aFileName)
+        # if
+    # previewPcf
 
     def exportIso(self):
         aIsoEnv = os.getenv(PipeCad.CurrentProject.Code + "ISO")
