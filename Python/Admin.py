@@ -565,19 +565,23 @@ class TeamDialog(QDialog):
     def createTeam(self):
         aName = self.textName.text
 
+        if len(aName) < 1:
+            QMessageBox.critical(self, "", QT_TRANSLATE_NOOP("Admin", "Cannot create team - No team name specified!"))
+            return
+        # if
+
         PipeCad.SetCurrentItem(self.tmwlItem)
         PipeCad.StartTransaction("Create Team")
 
         try:
-            PipeCad.CreateItem("TEAM", "*" + aName)
+            PipeCad.CreateTeam(aName, self.textDescription.text)
         except NameError as e:
-            # str(e)
             # repr(e)
             QMessageBox.critical(self, "", str(e))
             raise
+        # try
 
         aTeamItem = PipeCad.CurrentItem()
-        aTeamItem.Description = self.textDescription.text
         PipeCad.CreateItem("DBLI")
 
         # Add team to user team list.
@@ -822,15 +826,23 @@ class UserDialog(QDialog):
     # setupUi
 
     def init(self, theUserItem = None):
+        self.userItem = theUserItem
+        self.tableUserTeams.setRowCount(0)
+
         if theUserItem is not None:
             if theUserItem.Type == "USER":
-                self.userItem = theUserItem
                 self.textName.setText(theUserItem.Name)
                 self.comboSecurity.setCurrentText(theUserItem.Security)
                 self.textDescription.setText(theUserItem.Description)
                 self.textPassword.setText(theUserItem.Password)
                 self.textConfirm.setText(theUserItem.Password)
             # if
+        else:
+            self.textName.setText("")
+            self.comboSecurity.setCurrentText("General")
+            self.textDescription.setText("")
+            self.textPassword.setText("")
+            self.textConfirm.setText("")
         # if
 
         # Project Teams.
@@ -880,7 +892,6 @@ class UserDialog(QDialog):
         # for
 
         self.tableProjectTeams.resizeColumnsToContents()
-
     # init
 
     def create(self):
@@ -961,15 +972,15 @@ class UserDialog(QDialog):
         PipeCad.StartTransaction("Create User")
 
         try:
-            PipeCad.CreateItem("USER", aName)
+            PipeCad.CreateUser(aName, self.textDescription.text)
         except NameError as e:
             QMessageBox.critical(self, "", str(e))
             raise
+        # try
 
         aUserItem = PipeCad.CurrentItem()
         aUserItem.Security = self.comboSecurity.currentText
         aUserItem.Password = self.textPassword.text
-        aUserItem.Description = self.textDescription.text
 
         PipeCad.CreateItem("TMLI")
         aTmliItem = PipeCad.CurrentItem()
@@ -1055,6 +1066,7 @@ class UserDialog(QDialog):
 
         if self.uswlItem is None:
             return
+        # if
 
         if self.userItem is None:
             self.createUser()
@@ -1160,8 +1172,9 @@ class DatabaseDialog(QDialog):
     # setupUi
 
     def init(self, theDbItem = None):
+        self.dbItem = theDbItem
+        
         if theDbItem is not None:
-            self.dbItem = theDbItem
             self.textName.setText(theDbItem.Name[theDbItem.Name.index("/")+1:])
             self.textDescription.setText(theDbItem.Description)
             #self.textArea.setText(str(theDbItem.Area))
@@ -1198,6 +1211,12 @@ class DatabaseDialog(QDialog):
 
             self.tableProjectTeams.setItem(r, 0, aItem)
             self.tableProjectTeams.setItem(r, 1, QTableWidgetItem(aTeamItem.Description))
+
+            if theDbItem is not None:
+                if theDbItem.Name.startswith(aTeamItem.Name):
+                    self.tableProjectTeams.setCurrentItem(aItem)
+                # if
+            # if
         # for
 
         self.tableProjectTeams.resizeColumnsToContents()
@@ -1255,27 +1274,16 @@ class DatabaseDialog(QDialog):
             if aNumber > 8000 or aNumber < 1:
                 QMessageBox.critical(self, "", QT_TRANSLATE_NOOP("Admin", "Database Number range is [1~8000]!"))
                 raise ValueError ("Database Number range is [1~8000]!")
-
-            # Check the input database number used.
-            aDatabases = PipeCad.CollectItem("DB", self.tmwlItem)
-            for aDatabase in aDatabases:
-                if aDatabase.DbNumber == aNumber:
-                    aMessage = "Database Number " + str(aNumber) + " is used!"
-                    QMessageBox.critical(self, "", aMessage)
-                    raise ValueError (aMessage)
-                # if
-            # for
+            # if
         else:
             aNumber = self.tmwlItem.NextDbNumber()
         # if
 
+        aDbType = self.comboType.currentText[0:4].upper()
+
         PipeCad.StartTransaction("Create Database")
-        PipeCad.CreateItem("DB", theName)
+        PipeCad.CreateDb(theName, aDbType, aNumber, self.textDescription.text)
         aDbItem = PipeCad.CurrentItem()
-        aDbItem.Description = self.textDescription.text
-        aDbItem.DbType = self.comboType.currentText[0:4].upper()
-        #aDbItem.Area = aArea
-        aDbItem.DbNumber = aNumber
         aDbItem.CreateDbElement(self.textCreate.text)
         PipeCad.CommitTransaction()
         PipeCad.SaveWork()
@@ -1314,6 +1322,7 @@ class DatabaseDialog(QDialog):
             PipeCad.SetCurrentItem(aDbItems[-1])
         else:
             PipeCad.SetCurrentItem(aDbliItem)
+        # if
 
         # Check the input database name.
         aDbName = aTeamItem.Name + "/" + aName
@@ -1446,11 +1455,11 @@ class MdbDialog(QDialog):
 
     def init(self, theMdbItem = None):
         aDbNumers = []
+        self.mdbItem = theMdbItem
         self.tableCurrentDatabases.setRowCount(0)
         self.tableProjectDatabases.setRowCount(0)
         
         if theMdbItem is not None:
-            self.mdbItem = theMdbItem
             self.textName.setText(theMdbItem.Name)
             self.textDescription.setText(theMdbItem.Description)
 
@@ -1471,6 +1480,9 @@ class MdbDialog(QDialog):
             # for
 
             self.tableCurrentDatabases.resizeColumnsToContents()
+        else:
+            self.textName.setText("")
+            self.textDescription.setText("")
         # if
 
         if self.tmwlItem is None:
@@ -1570,10 +1582,9 @@ class MdbDialog(QDialog):
         aName = self.textName.text
         
         PipeCad.SetCurrentItem(self.mdbwItem)
+
         PipeCad.StartTransaction("Create MDB")
-        PipeCad.CreateItem("MDB", aName)
-        aMdbItem = PipeCad.CurrentItem()
-        aMdbItem.Description = self.textDescription.text
+        PipeCad.CreateMdb(aName, self.textDescription.text)
         
         for r in range (self.tableCurrentDatabases.rowCount):
             aDbItem = self.tableCurrentDatabases.item(r, 0).data(Qt.UserRole)
