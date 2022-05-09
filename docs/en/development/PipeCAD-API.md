@@ -100,9 +100,14 @@
 ```
 ## PipeCad.SetCurrentItem
 
+Syntax:
 ```python
     PipeCad.SetCurrentItem(aItem.data(Qt.UserRole))
 ```
+
+Example:
+
+
 ## PipeCad.SetIndicator
 
 ```python
@@ -122,4 +127,11 @@
 
 ```python
     PipeCad.Update()
+```
+
+
+## Load Python script
+For loading Python script (for ex. C:\Data\Script.py) there will use next command:
+```python
+	exec(open("C:\Data\PythonLoad.py",encoding='utf8').read())
 ```
