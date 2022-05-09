@@ -18,9 +18,9 @@
 
 from PythonQt.QtCore import *
 from PythonQt.QtGui import *
-from PythonQt.PipeCAD import *
+from PythonQt.pipecad import *
 
-from PipeCAD import *
+from pipecad import *
 
 
 class ComponentDialog():
@@ -34,6 +34,8 @@ class ComponentDialog():
         self.ArriveBore = ""
         self.LeaveBore = ""
         self.altSpec = None
+        self.tagId = PipeCad.NextAidNumber()
+        self.branchTagId = PipeCad.NextAidNumber()
     # __init__
 
     def visibilityChanged(self, theVisibility):
@@ -42,6 +44,9 @@ class ComponentDialog():
         else:
             PipeCad.currentItemChanged.disconnect()
             PipeCad.removeDockWidget(self.dockWidget)
+
+            PipeCad.RemoveAid(self.tagId)
+            PipeCad.RemoveAid(self.branchTagId)
         # if
     # visibilityChanged
 
@@ -320,23 +325,53 @@ class ComponentDialog():
     def currentItemChanged(self):
         self.currentItem = PipeCad.CurrentItem()
 
+        aTagPosition = Position(0, 0, 0)
+        aTagDirection = Direction(0, 0, 1)
+
         if self.currentItem.Type == "BRAN":
             if self.radioForwards.checked:
                 self.ArriveBore = self.currentItem.Hbore
+                aTagPosition = self.currentItem.Hposition
+                aTagDirection = self.currentItem.Hdirection
             elif self.radioBackwards.checked:
                 self.ArriveBore = self.currentItem.Tbore
+                aTagPosition = self.currentItem.Tposition
+                aTagDirection = self.currentItem.Tdirection
+            # if
         elif self.currentItem.Owner.Type == "BRAN":
             if self.radioForwards.checked:
                 aPoint = self.currentItem.LeavePoint
                 if aPoint is not None:
                     self.ArriveBore = aPoint.Bore
+                    aTagPosition = aPoint.Position
+                    aTagDirection = aPoint.Direction
+                # if
             elif self.radioBackwards.checked:
                 aPoint = self.currentItem.ArrivePoint
                 if aPoint is not None:
                     self.ArriveBore = aPoint.Bore
+                    aTagPosition = aPoint.Position
+                    aTagDirection = aPoint.Direction
+                # if
+            # if
+        else:
+            return
+        # if
 
         self.textCreation.setText("<font color=Brown>" + self.currentItem.Name + "</font>")
         self.textBore.setText("<font color=Brown>" + self.ArriveBore + "</font>")
+
+        # Tag position and direction.
+        # print("Tag current position")
+        aOffset = float(self.ArriveBore)
+        aOrthDir = aTagDirection.Orthogonal()
+        aPosition = aTagPosition.Offset(aOrthDir, aOffset)
+
+        PipeCad.RemoveAid(self.tagId)
+        PipeCad.AddAidText(aPosition, self.currentItem.Type, self.tagId)
+        PipeCad.AddAidArrow(aPosition, aTagDirection, aOffset, 2, 0.4, self.tagId)
+        PipeCad.AddAidCylinder(aPosition, aOrthDir.Reversed(), aOffset * 2, 2, self.tagId)
+        PipeCad.Redraw()
     # currentItemChanged
 
     def setBranch(self):
@@ -362,8 +397,9 @@ class ComponentDialog():
         # if
 
         if self.branItem is None:
-            QMessageBox.warning(PipeCad, "", "This command can only be used at a Branch or piping component.")
+            QMessageBox.warning(PipeCad, "", QT_TRANSLATE_NOOP("Design", "This command can only be used at a Branch or piping component."))
             return
+        # if
 
         # Branch
         self.textBranch.setText("<font color=Brown>" + self.branItem.Name + "</font>")
@@ -372,6 +408,14 @@ class ComponentDialog():
 
         self.currentItem = PipeCad.CurrentItem()
         self.textCreation.setText("<font color=Brown>" + self.currentItem.Name + "</font>")
+
+        # Mark head and tail.
+        PipeCad.RemoveAid(self.branchTagId)
+        PipeCad.AddAidText(self.branItem.Hposition, "Head", self.branchTagId)
+        PipeCad.AddAidText(self.branItem.Tposition, "Tail", self.branchTagId)
+        PipeCad.Redraw()
+
+        self.currentItemChanged()
 
         # Type
         self.comboType.clear()
@@ -432,8 +476,7 @@ class ComponentDialog():
         for aSpcoItem in aSubItem.Member:
             if aSpcoItem.Answer == self.ArriveBore:
                 aScomItem = aSpcoItem.Catref
-                aSdteItem = aSpcoItem.Detref
-                if aSdteItem is not None and aScomItem is not None:
+                if aScomItem is not None:
                     aRow = self.tableWidget.rowCount
                     self.tableWidget.insertRow(aRow)
 
@@ -452,7 +495,7 @@ class ComponentDialog():
                     aSkeyItem.setData(Qt.UserRole, aSpcoItem)
 
                     self.tableWidget.setItem(aRow, 0, aSkeyItem)
-                    self.tableWidget.setItem(aRow, 1, QTableWidgetItem(aSdteItem.Rtext))
+                    self.tableWidget.setItem(aRow, 1, QTableWidgetItem(aSpcoItem.Dtxr))
     # subTypeChanged
 
     def setArriveLeave(self, theArrive, theLeave):

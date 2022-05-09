@@ -16,7 +16,7 @@
 # Author: Shing Liu(eryar@163.com)
 # Date: 21:16 2021-09-16
 
-from PipeCAD.Login import *
+from pipecad.Login import *
 
 aLoginDlg = LoginDialog()
 aLoginDlg.show()

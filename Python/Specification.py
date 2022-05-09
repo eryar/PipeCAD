@@ -20,7 +20,7 @@ from PythonQt.QtCore import *
 from PythonQt.QtGui import *
 from PythonQt.QtSql import *
 
-from PipeCAD import *
+from pipecad import *
 
 
 class SpwlDialog(QDialog):

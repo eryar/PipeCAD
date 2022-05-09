@@ -19,7 +19,7 @@
 
 from PythonQt.QtCore import *
 from PythonQt.QtGui import *
-from PipeCAD import *
+from pipecad import *
 
 import os
 import subprocess
@@ -51,7 +51,7 @@ class LoginDialog(QDialog):
         # self.btnProjectLeft.setMinimumSize( 30 , 40 )
         # self.btnProjectLeft.setMaximumSize( 30 , 40 )
         # #<a href="https://www.flaticon.com/free-icons/previous" title="previous icons">Previous icons created by Pixel perfect - Flaticon</a>
-        # self.btnProjectLeft.setIcon( QIcon('plugins/PipeCad/icons/login/128x128_arrow_left.png') )
+        # self.btnProjectLeft.setIcon( QIcon('Lib/PipeCad/icons/login/128x128_arrow_left.png') )
         # self.btnProjectLeft.setIconSize( QSize( 30 , 40 ) )
         # self.btnProjectLeft.setAutoDefault(False)
         # self.hBoxLayoutProjects.addWidget(self.btnProjectLeft)
@@ -63,7 +63,7 @@ class LoginDialog(QDialog):
             self.btnProject.setMinimumSize( 256 , 104 )
             self.btnProject.setMaximumSize( 256 , 104 )
             #Icon downloaded from <a href="https://www.flaticon.com/free-icons/factory" title="factory icons">Factory icons created by vectorsmarket15 - Flaticon</a>
-            self.btnProject.setIcon( QIcon('plugins/PipeCad/icons/login/128x128_select_project.png') )
+            self.btnProject.setIcon( QIcon('Lib/PipeCad/icons/login/128x128_select_project.png') )
             self.btnProject.setIconSize( QSize(96,96) )
             self.btnProject.setStyleSheet("QPushButton { text-align: left; }")
             self.btnProject.setText(QT_TRANSLATE_NOOP("Login", "Project: %s \nCode: %s \nNumber: %s \nDescription: \n%s") % (aProject.Name, aProject.Code, aProject.Number, aProject.Description))
@@ -80,7 +80,7 @@ class LoginDialog(QDialog):
         # self.btnProjectRight.setMinimumSize( 30 , 40 )
         # self.btnProjectRight.setMaximumSize( 30 , 40 )
         # #<a href="https://www.flaticon.com/free-icons/previous" title="previous icons">Previous icons created by Pixel perfect - Flaticon</a>
-        # self.btnProjectRight.setIcon( QIcon('plugins/PipeCad/icons/login/128x128_arrow_right.png') )
+        # self.btnProjectRight.setIcon( QIcon('Lib/PipeCad/icons/login/128x128_arrow_right.png') )
         # self.btnProjectRight.setIconSize( QSize( 30 , 40 ) )
         # self.btnProjectRight.setAutoDefault(False)
         # self.hBoxLayoutProjects.addWidget(self.btnProjectRight)
@@ -120,13 +120,13 @@ class LoginDialog(QDialog):
         self.btnAdmin.setObjectName( "Admin" )
                 
         #<a href="https://www.flaticon.com/free-icons/worker" title="worker icons">Worker icons created by Freepik - Flaticon</a>
-        self.btnDesign.setIcon( QIcon('plugins/PipeCad/icons/login/128x128_select_design.png') )
+        self.btnDesign.setIcon( QIcon('Lib/PipeCad/icons/login/128x128_select_design.png') )
         
         #Icon downloaded from <a href="https://www.flaticon.com/free-icons/algorithm" title="algorithm icons">Algorithm icons created by Eucalyp - Flaticon</a>
-        self.btnParagon.setIcon( QIcon('plugins/PipeCad/icons/login/128x128_select_paragon.png') )
+        self.btnParagon.setIcon( QIcon('Lib/PipeCad/icons/login/128x128_select_paragon.png') )
         
         #Icon downloaded from <a href="https://www.flaticon.com/free-icons/data-processing" title="data processing icons">Data processing icons created by Eucalyp - Flaticon</a>
-        self.btnAdmin.setIcon( QIcon('plugins/PipeCad/icons/login/128x128_select_admin.png') )
+        self.btnAdmin.setIcon( QIcon('Lib/PipeCad/icons/login/128x128_select_admin.png') )
         
         self.btnDesign.setIconSize( QSize(96,96) )
         self.btnParagon.setIconSize( QSize(96,96) )

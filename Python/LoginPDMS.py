@@ -20,7 +20,7 @@
 from PythonQt.QtCore import *
 from PythonQt.QtGui import *
 
-from PipeCAD import *
+from pipecad import *
 
 import os
 import subprocess

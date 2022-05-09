@@ -21,10 +21,10 @@ import os
 from PythonQt.QtCore import *
 from PythonQt.QtGui import *
 from PythonQt.QtSql import *
-from PythonQt.PipeCAD import *
+from PythonQt.pipecad import *
 
-from PipeCAD import *
-from PipeCAD import PcfExporter
+from pipecad import *
+from pipecad import PcfExporter
 
 class IsoAlgoDialog(QDialog):
     def __init__(self, parent = None):

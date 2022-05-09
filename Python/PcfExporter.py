@@ -19,9 +19,9 @@
 from PythonQt.QtCore import *
 from PythonQt.QtGui import *
 from PythonQt.QtSql import *
-from PythonQt.PipeCAD import *
+from PythonQt.pipecad import *
 
-from PipeCAD import *
+from pipecad import *
 
 
 def ExportPcf(theTreeItem, theFileName):
@@ -66,7 +66,7 @@ def ExportPcf(theTreeItem, theFileName):
                 aDetref = aCompItem.Spref.Detref
                 aSkey = aDetref.Skey
                 aCode = aDetref.Name
-                aDescription = aDetref.Rtext
+                aDescription = aCompItem.Dtxr
             except Exception as e:
                 aSkey = ""
                 aCode = ""
