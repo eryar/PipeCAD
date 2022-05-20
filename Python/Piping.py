@@ -1016,7 +1016,7 @@ class PipeDialog():
             self.tableWidgetConnection.setItem(0, 2, QTableWidgetItem(aPoint.Type))
             self.tableWidgetConnection.setItem(0, 3, QTableWidgetItem(""))
             self.tableWidgetConnection.setCurrentCell(0, 0)
-        elif aPickItem.Type == "TEE":
+        elif aPickItem.Type in ("TEE", "OLET"):
             aIndex = 6 - aPickItem.Arrive- aPickItem.Leave
             aPoint = aPickItem.linkPoint("P" + str(aIndex))
 

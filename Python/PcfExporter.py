@@ -97,14 +97,14 @@ def ExportPcf(theTreeItem, theFileName):
             aPcfFile.write("\n    END-POINT    " + aArrivePoint.Position.string() + " " + aArrivePoint.Bore + " " + aArrivePoint.Type)
             aPcfFile.write("\n    END-POINT    " + aLeavePoint.Position.string() + " " + aLeavePoint.Bore + " " + aLeavePoint.Type)
 
-            if aType == "TEE":
+            if aType in ("TEE", "OLET"):
                 aBranchIndex = 6 - aCompItem.Arrive - aCompItem.Leave
                 aBranchPoint = aCompItem.linkPoint("P" + str(aBranchIndex))
                 aPcfFile.write("\n    CENTRE-POINT   " + aCompItem.Position.string())
                 aPcfFile.write("\n    BRANCH1-POINT   " + aBranchPoint.Position.string() + " " + aBranchPoint.Bore + " " + aBranchPoint.Type)
             elif aType == "ELBOW":
                 aPcfFile.write("\n    CENTRE-POINT   " + aCompItem.Position.string())
-
+            # if
 
             aPcfFile.write("\n    SKEY     " + aSkey)
             aPcfFile.write("\n    PIPING-SPEC   ")

@@ -387,6 +387,9 @@ class SmteDialog(QDialog):
         if aIndex == 0:
             # create
             self.textName.setText("")
+            self.textText1.setText("")
+            self.textText2.setText("")
+            self.textText3.setText("")
         else:
             # modify
             try:
@@ -452,6 +455,10 @@ class SmteDialog(QDialog):
         # if
 
         self.textName.setText("")
+        self.textText1.setText("")
+        self.textText2.setText("")
+        self.textText3.setText("")
+
         QDialog.accept(self)
     # accept
 # SmteDialog

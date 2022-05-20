@@ -457,8 +457,9 @@ class ComponentDialog():
         aType = self.comboType.currentText
         if aType == "Reducer":
             self.reducerInfo.show()
-        elif aType == "Tee":
+        elif aType in ("Tee", "Olet"):
             self.connectionInfo.show()
+        # if
 
     # typeChanged
 
@@ -485,7 +486,7 @@ class ComponentDialog():
                     if aType == "Reducer":
                         aBore = aParams[1]
                         self.comboLeaveBore.addItem(aBore)
-                    elif aType == "Tee":
+                    elif aType in ("Tee", "Olet"):
                         aBore = aParams[1]
                         self.comboConnectBore.addItem(aBore)
                     # if
@@ -496,6 +497,9 @@ class ComponentDialog():
 
                     self.tableWidget.setItem(aRow, 0, aSkeyItem)
                     self.tableWidget.setItem(aRow, 1, QTableWidgetItem(aSpcoItem.Dtxr))
+                # if
+            # if
+        # for
     # subTypeChanged
 
     def setArriveLeave(self, theArrive, theLeave):
