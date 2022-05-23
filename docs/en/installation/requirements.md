@@ -2,7 +2,7 @@
 
 PipeCAD does not have high hardware requirements. Because it is a 3D software, it has high requirements on graphics cards, preferably a discrete graphics card with supports OpenGL 3.3 and above.
 
-|Component	Requirement|Min|Recommended|
+|Component|Min|Recommended|
 |---|---|---|
 |Memory|1Gb|8Gb|
 |HDD Space|1Gb|Depends from project size|
