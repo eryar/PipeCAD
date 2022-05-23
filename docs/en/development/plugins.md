@@ -7,5 +7,5 @@ To install PIP you need to start batch  file %PIPECAD_EXE%\get_pip.bat. During i
 ## Loading of Python script
 For loading Python script (for ex. C:\Data\Script.py) there will use next command:
 ```python
-	exec(open("C:\Data\PythonLoad.py",encoding='utf8').read())
+    exec(open("C:\Data\PythonLoad.py",encoding='utf8').read())
 ```
