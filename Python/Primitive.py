@@ -19,9 +19,9 @@
 from PythonQt.QtCore import *
 from PythonQt.QtGui import *
 from PythonQt.QtSql import *
-from PythonQt.PipeCAD import *
+from PythonQt.pipecad import *
 
-from PipeCAD import *
+from pipecad import *
 
 
 class BoxDialog(QDialog):
@@ -938,7 +938,9 @@ class ExplicitDialog(QDialog):
         QDialog.__init__(self, theParent)
 
         self.fromItem = theFromItem
+        self.fromTag = PipeCad.NextAidNumber()
         self.toItem = theToItem
+        self.toTag = PipeCad.NextAidNumber()
 
         self.setupUi()
     # __init__
@@ -1005,7 +1007,8 @@ class ExplicitDialog(QDialog):
             return
         # if
 
-        PipeCad.AddAidAxis(aPoint, 100)
+        PipeCad.RemoveAid(self.fromTag)
+        PipeCad.AddAidAxis(aPoint, self.fromTag)
         PipeCad.Redraw()
     # point1Changed
 
@@ -1015,13 +1018,14 @@ class ExplicitDialog(QDialog):
             return
         # if
 
-        PipeCad.AddAidAxis(aPoint, 200)
+        PipeCad.RemoveAid(self.toTag)
+        PipeCad.AddAidAxis(aPoint, self.toTag)
         PipeCad.Redraw()
     # point2Changed
 
     def reject(self):
-        PipeCad.RemoveAid(100)
-        PipeCad.RemoveAid(200)
+        PipeCad.RemoveAid(self.fromTag)
+        PipeCad.RemoveAid(self.toTag)
         PipeCad.Redraw()
 
         QDialog.reject(self)
@@ -1047,8 +1051,8 @@ class ExplicitDialog(QDialog):
             raise e
         # try
 
-        PipeCad.RemoveAid(100)
-        PipeCad.RemoveAid(200)
+        PipeCad.RemoveAid(self.fromTag)
+        PipeCad.RemoveAid(self.toTag)
         PipeCad.Redraw()
 
         QDialog.accept(self)

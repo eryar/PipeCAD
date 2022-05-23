@@ -18,7 +18,7 @@ PipeCAD can be used for Plant Piping Design, PipeCAD have the following function
 PipeCAD is <code>not open source</code>, but you can use PipeCAD Personal Edition for free.
 
 PipeCAD provide customization by Python. The python plugins locate in the 
-<code>PipeCAD/plugins/PipeCAD</code> foloder. <br>
+<code>PipeCAD/Lib/pipecad</code> foloder. <br>
 The Python plugins are open source with <strong>MIT</strong> license.
 
 ## Download
@@ -34,6 +34,11 @@ There are some videos to illustrate how to use PipeCAD: https://space.bilibili.c
 # Feedback
 * Report bug or other issues of PipeCAD here: https://github.com/eryar/PipeCAD/issues
 * Send Email to PipeCAD@qq.com
+
+# Contributors
+<a href="https://contributors-img.web.app/image?repo=eryar/PipeCAD">
+  <img src="https://contributors-img.web.app/image?repo=eryar/PipeCAD" />
+</a>
 
 ## IsoAlgo3d
 3D WebGL Viewer for Piping PCF/IDF File: https://eryar.github.io/PipeCAD/

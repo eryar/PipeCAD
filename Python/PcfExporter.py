@@ -19,9 +19,9 @@
 from PythonQt.QtCore import *
 from PythonQt.QtGui import *
 from PythonQt.QtSql import *
-from PythonQt.PipeCAD import *
+from PythonQt.pipecad import *
 
-from PipeCAD import *
+from pipecad import *
 
 
 def ExportPcf(theTreeItem, theFileName):
@@ -66,7 +66,7 @@ def ExportPcf(theTreeItem, theFileName):
                 aDetref = aCompItem.Spref.Detref
                 aSkey = aDetref.Skey
                 aCode = aDetref.Name
-                aDescription = aDetref.Rtext
+                aDescription = aCompItem.Dtxr
             except Exception as e:
                 aSkey = ""
                 aCode = ""
@@ -97,14 +97,14 @@ def ExportPcf(theTreeItem, theFileName):
             aPcfFile.write("\n    END-POINT    " + aArrivePoint.Position.string() + " " + aArrivePoint.Bore + " " + aArrivePoint.Type)
             aPcfFile.write("\n    END-POINT    " + aLeavePoint.Position.string() + " " + aLeavePoint.Bore + " " + aLeavePoint.Type)
 
-            if aType == "TEE":
+            if aType in ("TEE", "OLET"):
                 aBranchIndex = 6 - aCompItem.Arrive - aCompItem.Leave
                 aBranchPoint = aCompItem.linkPoint("P" + str(aBranchIndex))
                 aPcfFile.write("\n    CENTRE-POINT   " + aCompItem.Position.string())
                 aPcfFile.write("\n    BRANCH1-POINT   " + aBranchPoint.Position.string() + " " + aBranchPoint.Bore + " " + aBranchPoint.Type)
             elif aType == "ELBOW":
                 aPcfFile.write("\n    CENTRE-POINT   " + aCompItem.Position.string())
-
+            # if
 
             aPcfFile.write("\n    SKEY     " + aSkey)
             aPcfFile.write("\n    PIPING-SPEC   ")

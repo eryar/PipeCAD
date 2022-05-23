@@ -19,9 +19,9 @@
 from PythonQt.QtCore import *
 from PythonQt.QtGui import *
 from PythonQt.QtSql import *
-from PythonQt.PipeCAD import *
+from PythonQt.pipecad import *
 
-from PipeCAD import *
+from pipecad import *
 
 class CreateDialog(QDialog):
     def __init__(self, parent = None):
@@ -387,6 +387,9 @@ class SmteDialog(QDialog):
         if aIndex == 0:
             # create
             self.textName.setText("")
+            self.textText1.setText("")
+            self.textText2.setText("")
+            self.textText3.setText("")
         else:
             # modify
             try:
@@ -452,6 +455,10 @@ class SmteDialog(QDialog):
         # if
 
         self.textName.setText("")
+        self.textText1.setText("")
+        self.textText2.setText("")
+        self.textText3.setText("")
+
         QDialog.accept(self)
     # accept
 # SmteDialog

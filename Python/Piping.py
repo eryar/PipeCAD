@@ -19,9 +19,9 @@
 from PythonQt.QtCore import *
 from PythonQt.QtGui import *
 from PythonQt.QtSql import *
-from PythonQt.PipeCAD import *
+from PythonQt.pipecad import *
 
-from PipeCAD import *
+from pipecad import *
 
 class PipeDialog():
     def __init__(self, parent = None):
@@ -1016,7 +1016,7 @@ class PipeDialog():
             self.tableWidgetConnection.setItem(0, 2, QTableWidgetItem(aPoint.Type))
             self.tableWidgetConnection.setItem(0, 3, QTableWidgetItem(""))
             self.tableWidgetConnection.setCurrentCell(0, 0)
-        elif aPickItem.Type == "TEE":
+        elif aPickItem.Type in ("TEE", "OLET"):
             aIndex = 6 - aPickItem.Arrive- aPickItem.Leave
             aPoint = aPickItem.linkPoint("P" + str(aIndex))
 

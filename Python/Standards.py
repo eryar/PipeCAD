@@ -20,7 +20,7 @@ from PythonQt.QtCore import *
 from PythonQt.QtGui import *
 from PythonQt.QtSql import *
 
-from PipeCAD import *
+from pipecad import *
 
 import os
 
@@ -86,6 +86,7 @@ class StandardDialog(QDialog):
         self.database = QSqlDatabase.addDatabase("QSQLITE", "PipeStd")
         self.database.setDatabaseName("PipeStd.db")
         self.database.open()
+        self.database.exec("PRAGMA foreign_keys = ON;")
 
         self.tableModel = QSqlTableModel(self, self.database)
 
@@ -215,6 +216,10 @@ class StandardDialog(QDialog):
         self.verticalLayout.addLayout(self.horizontalLayout)
     # setupUi
 
+    def reload(self):
+        pass
+    # initModel
+
     def customContextMenuRequested(self, thePos):
 
         aItem = self.treeWidget.itemAt(thePos)
@@ -248,6 +253,9 @@ class StandardDialog(QDialog):
         if aIndex.isValid():
             if QMessageBox.question(self, "", "Are you sure to delete the selected record?") == QMessageBox.Yes:
                 self.tableView.model().removeRow(aIndex.row())
+                self.tableView.model().select()
+            # if
+        # if
     # deleteRecord
 
     def exportRecord(self):
@@ -279,6 +287,7 @@ class StandardDialog(QDialog):
             self.tableModel.select()
 
             self.labelDiagram.setPixmap(QPixmap())
+        # if
 
     # currentItemChanged
 
@@ -288,12 +297,14 @@ class StandardDialog(QDialog):
         aCateDlg.setWindowTitle(self.tr("Add Category"))
         if aCateDlg.exec() == QDialog.Rejected:
             return
+        # if
 
         aName = aCateDlg.textName.text
         aDetail = aCateDlg.textDetail.text
         if len(aName) < 1 or len(aDetail) < 1:
             QMessageBox.warning(self, "", "Please enter category name or detail!")
             return
+        # if
 
         if aItem.type() == 1:
             aStadItem = QTreeWidgetItem(aItem.parent(), aItem, 1)
@@ -309,29 +320,22 @@ class StandardDialog(QDialog):
             return
         # if
 
-        self.tableModel.setTable("SDTE")
-        self.tableModel.select()
+        aSqlQuery = QSqlQuery(self.tableModel.database())
+        aSqlQuery.prepare("INSERT INTO sdte (pid, name, detail) VALUES (:pid, :name, :detail)")
+        aSqlQuery.bindValue(":pid", aStadItem.parent().data(0, Qt.UserRole))
+        aSqlQuery.bindValue(":name", aName)
+        aSqlQuery.bindValue(":detail", aDetail)
 
-        # Insert a dummy record.
-        aRecord = self.tableModel.record()
-        for i in range(aRecord.count()):
-            aFieldName = aRecord.fieldName(i)
-            if aFieldName == "pid":
-                aRecord.setValue(aFieldName, aStadItem.parent().data(0, Qt.UserRole))
-            elif aFieldName == "name":
-                aRecord.setValue(aFieldName, aName)
-            elif aFieldName == "detail":
-                #aRecord.setValue(aFieldName, QUuid.createUuid().toString())
-                aRecord.setValue(aFieldName, aDetail)
-            #else:
-            #    aRecord.setValue(aFieldName, 0)
+        if aSqlQuery.exec():
+            aStadItem.setData(0, Qt.UserRole, aSqlQuery.lastInsertId())
 
-        # If row is negative, the record will be appended to the end.
-        self.tableModel.insertRecord(-1, aRecord)
+            # Send current change signal to update table view.
+            self.treeWidget.setCurrentItem(aStadItem)
+        else:
+            QMessageBox.warning(self, "", "Insert Category failed!")
 
-        # Send current change signal to update table view.
-        self.treeWidget.setCurrentItem(aStadItem)
-
+            self.treeWidget.removeItemWidget(aStadItem, 0)
+        # if
     # addCategory
 
     def modifyCategory(self):
@@ -435,6 +439,9 @@ class StandardDialog(QDialog):
             self.buildBulb()
         elif aSkey == "BOLT":
             self.buildBolt()
+        elif aSkey == "WTBW":
+            self.buildWtbw()
+        # if
 
         QDialog.accept(self)
     # accept
@@ -4357,11 +4364,136 @@ class StandardDialog(QDialog):
 
         PipeCad.CommitTransaction()
     # buildBolt
+
+    def buildWtbw(self): 
+        aCateName = self.treeWidget.currentItem().text(0)
+        aToolTip = self.treeWidget.currentItem().toolTip(0)
+
+        PipeCad.StartTransaction("Build Standard VGFL Components")
+
+        PipeCad.CreateItem("CATE", aCateName)
+        aCateItem = PipeCad.CurrentItem()
+        aCateItem.Gtype = "OLET"
+        aCateItem.Description = aToolTip
+
+        PipeCad.CreateItem("SDTE", aCateName + "-D")
+        aSdteItem = PipeCad.CurrentItem()
+        aSdteItem.Skey = "WTBW"
+        aSdteItem.Rtext = aToolTip
+
+        PipeCad.CreateItem("TEXT", aCateName + "-PA1")
+        aTextItem = PipeCad.CurrentItem()
+        aTextItem.Stext = "NOMINAL RUN SIZE"
+
+        PipeCad.CreateItem("TEXT", aCateName + "-PA2")
+        aTextItem = PipeCad.CurrentItem()
+        aTextItem.Stext = "NOMINAL BRANCH SIZE"
+
+        PipeCad.CreateItem("TEXT", aCateName + "-PA3")
+        aTextItem = PipeCad.CurrentItem()
+        aTextItem.Stext = "RUN CONNECTION TYPE"
+
+        PipeCad.CreateItem("TEXT", aCateName + "-PA4")
+        aTextItem = PipeCad.CurrentItem()
+        aTextItem.Stext = "BRANCH CONNECTION TYPE"
+
+        PipeCad.CreateItem("TEXT", aCateName + "-PA5")
+        aTextItem = PipeCad.CurrentItem()
+        aTextItem.Stext = "LAY LENGTH"
+
+        PipeCad.CreateItem("TEXT", aCateName + "-PA6")
+        aTextItem = PipeCad.CurrentItem()
+        aTextItem.Stext = "BRANCH O/D"
+
+        PipeCad.CreateItem("PTSE", aCateName + "-PTSE")
+        aPtseItem = PipeCad.CurrentItem()
+
+        PipeCad.CreateItem("PTAX", aCateName + "-P1")
+        aPtaxItem = PipeCad.CurrentItem()
+        aPtaxItem.Number = 1
+        aPtaxItem.Connection = "PARAM3"
+        aPtaxItem.Bore = "PARAM1"
+        aPtaxItem.Distance = "0"
+        aPtaxItem.Axis = "-X"
+
+        PipeCad.CreateItem("PTAX", aCateName + "-P2")
+        aPtaxItem = PipeCad.CurrentItem()
+        aPtaxItem.Number = 2
+        aPtaxItem.Connection = "PARAM3"
+        aPtaxItem.Bore = "PARAM1"
+        aPtaxItem.Distance = "0"
+        aPtaxItem.Axis = "X"
+
+        PipeCad.CreateItem("PTAX", aCateName + "-P3")
+        aPtaxItem = PipeCad.CurrentItem()
+        aPtaxItem.Number = 3
+        aPtaxItem.Connection = "PARAM4"
+        aPtaxItem.Bore = "PARAM2"
+        aPtaxItem.Distance = "PARAM5"
+        aPtaxItem.Axis = "Z"
+
+        PipeCad.SetCurrentItem(aPtseItem)
+
+        PipeCad.CreateItem("GMSE", aCateName + "-GMSE")
+        aGmseItem = PipeCad.CurrentItem()
+
+        PipeCad.CreateItem("LSNO")
+        aLsnoItem = PipeCad.CurrentItem()
+        aLsnoItem.Aaxis = "Z"
+        aLsnoItem.Baxis = "Y"
+        aLsnoItem.Tdistance = "PARAM7"
+        aLsnoItem.Bdistance = "0"
+        aLsnoItem.Tdiameter = "PARAM6 * 1.2"
+        aLsnoItem.Bdiameter = "PARAM1 * 0.2"
+        aLsnoItem.Offset = "0"
+
+        PipeCad.CreateItem("LSNO")
+        aLsnoItem = PipeCad.CurrentItem()
+        aLsnoItem.Aaxis = "Z"
+        aLsnoItem.Baxis = "Y"
+        aLsnoItem.Tdistance = "PARAM5"
+        aLsnoItem.Bdistance = "PARAM7"
+        aLsnoItem.Tdiameter = "PARAM6"
+        aLsnoItem.Bdiameter = "PARAM6 * 1.2"
+        aLsnoItem.Offset = "0"
+
+        PipeCad.SetCurrentItem(aGmseItem)
+
+        aModelIndex = QModelIndex()
+        while self.tableModel.canFetchMore(aModelIndex):
+            self.tableModel.fetchMore(aModelIndex)
+        # while
+
+        for r in range(self.tableModel.rowCount()):
+            aRecord = self.tableModel.record(r)
+            aField = aRecord.field("ItemCode")
+
+            aN1 = aRecord.field("N1").value()
+            aN2 = aRecord.field("N2").value()
+            aBd = aRecord.field("BD").value()
+            aLl = aRecord.field("LL").value()
+            aWl = aRecord.field("WL").value()
+            aC1 = aRecord.field("CT1").value()
+            aC2 = aRecord.field("CT2").value()
+
+            aParam = str(aN1) + " " + str(aN2) + " " + str(aC1) + " " + str(aC2) + " " + str(aLl) + " " + str(aBd) + " " + str(aWl)
+
+            PipeCad.CreateItem("SCOM", aField.value())
+            aScomItem = PipeCad.CurrentItem()
+            aScomItem.Gtype = "OLET"
+            aScomItem.Param = aParam
+            aScomItem.Ptref = aPtseItem
+            aScomItem.Gmref = aGmseItem
+        # for
+
+        PipeCad.CommitTransaction()
+    # buildWtbw
 # StandardDialog
 
 # Singleton Instance.
 aStdDlg = StandardDialog(PipeCad)
 
 def Show():
+    aStdDlg.reload()
     aStdDlg.show()
 # Show

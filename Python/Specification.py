@@ -20,7 +20,7 @@ from PythonQt.QtCore import *
 from PythonQt.QtGui import *
 from PythonQt.QtSql import *
 
-from PipeCAD import *
+from pipecad import *
 
 
 class SpwlDialog(QDialog):
@@ -32,7 +32,7 @@ class SpwlDialog(QDialog):
 
     def setupUi(self):
         self.resize(280, 100)
-        self.setWindowTitle(self.tr("Create Specification World"))
+        self.setWindowTitle(QT_TRANSLATE_NOOP("Paragon", "Create Specification World"))
 
         self.verticalLayout = QVBoxLayout(self)
         self.formLayout = QFormLayout()
@@ -103,7 +103,7 @@ class CreateDialog(QDialog):
 
     def setupUi(self):
         self.resize(280, 100)
-        self.setWindowTitle(self.tr("Create Specification"))
+        self.setWindowTitle(QT_TRANSLATE_NOOP("Paragon", "Create Specification"))
 
         self.verticalLayout = QVBoxLayout(self)
         self.formLayout = QFormLayout()
@@ -150,7 +150,7 @@ class CreateDialog(QDialog):
             aSpecItem = PipeCad.CurrentItem()
             aSpecItem.Purpose = aPurpose
             
-            self.database = QSqlDatabase.addDatabase("QSQLITE", "PipeStd")
+            self.database = QSqlDatabase.addDatabase("QSQLITE", "PipeSpec")
             self.database.setDatabaseName("PipeStd.db")
             self.database.open()
 
@@ -195,7 +195,7 @@ class ModifyDialog(QDialog):
 
     def setupUi(self):
         self.resize(800, 600)
-        self.setWindowTitle(self.tr("Specification"))
+        self.setWindowTitle(QT_TRANSLATE_NOOP("Paragon", "Specification"))
         
         self.verticalLayout = QVBoxLayout(self)
         
@@ -221,6 +221,7 @@ class ModifyDialog(QDialog):
         self.labelSkey = QLabel("Skey")
         self.comboBoxSkey = QComboBox()
         self.comboBoxSkey.setSizeAdjustPolicy(QComboBox.AdjustToContents)
+        self.comboBoxSkey.activated.connect(self.skeyChanged)
 
         self.horizontalLayout.addWidget(self.labelSkey)
         self.horizontalLayout.addWidget(self.comboBoxSkey)
@@ -272,25 +273,25 @@ class ModifyDialog(QDialog):
         self.tableWidgetCate.addAction(aActionSetSdte)
         self.tableWidgetCate.addAction(aActionAddSpec)
 
-        aHeaderItem = QTableWidgetItem("Catref")
+        aHeaderItem = QTableWidgetItem("CATREF")
         self.tableWidgetCate.setHorizontalHeaderItem(0, aHeaderItem)
 
-        aHeaderItem = QTableWidgetItem("Bore")
+        aHeaderItem = QTableWidgetItem("BORE")
         self.tableWidgetCate.setHorizontalHeaderItem(1, aHeaderItem)
 
-        aHeaderItem = QTableWidgetItem("Detref")
+        aHeaderItem = QTableWidgetItem("DETREF")
         self.tableWidgetCate.setHorizontalHeaderItem(2, aHeaderItem)
 
-        aHeaderItem = QTableWidgetItem("Skey")
+        aHeaderItem = QTableWidgetItem("SKEY")
         self.tableWidgetCate.setHorizontalHeaderItem(3, aHeaderItem)
 
-        aHeaderItem = QTableWidgetItem("Detail")
+        aHeaderItem = QTableWidgetItem("DETAIL")
         self.tableWidgetCate.setHorizontalHeaderItem(4, aHeaderItem)
 
-        aHeaderItem = QTableWidgetItem("Matref")
+        aHeaderItem = QTableWidgetItem("MATREF")
         self.tableWidgetCate.setHorizontalHeaderItem(5, aHeaderItem)
 
-        aHeaderItem = QTableWidgetItem("Bltref")
+        aHeaderItem = QTableWidgetItem("BLTREF")
         self.tableWidgetCate.setHorizontalHeaderItem(6, aHeaderItem)
 
         self.tableWidgetCate.horizontalHeader().setStretchLastSection(True)
@@ -316,7 +317,7 @@ class ModifyDialog(QDialog):
         self.horizontalLayout.addWidget(self.buttonSbol)
 
         self.buttonAdd = QPushButton("Add")
-        self.buttonAdd.setToolTip(u"Add selected component to SPEC")
+        self.buttonAdd.setToolTip(QT_TRANSLATE_NOOP("Paragon", "Add selected component to SPEC"))
         self.buttonAdd.clicked.connect(self.addSpec)
 
         self.horizontalLayout.addWidget(self.buttonAdd)
@@ -354,7 +355,7 @@ class ModifyDialog(QDialog):
         # if
 
         # Set headings.
-        aDatabase = QSqlDatabase.addDatabase("QSQLITE", "PipeStd")
+        aDatabase = QSqlDatabase.addDatabase("QSQLITE", "PipeSpec")
         aDatabase.setDatabaseName("PipeStd.db")
         aDatabase.open()
 
@@ -376,6 +377,7 @@ class ModifyDialog(QDialog):
     def headingsChanged(self, theIndex):
         if theIndex == -1:
             return
+        # if
 
         aType = self.comboBoxHeadings.itemText(theIndex)
         aName = self.comboBoxSpec.currentText
@@ -397,6 +399,7 @@ class ModifyDialog(QDialog):
         aHeadings = self.comboBoxHeadings.itemData(theIndex).split()
         aCount = len(aHeadings)
 
+        self.tableWidgetSpec.setHorizontalHeaderLabels(aHeadings)
         self.tableWidgetSpec.setColumnCount(aCount)
         self.tableWidgetSpec.setRowCount(len(aSpcoList))
 
@@ -405,44 +408,102 @@ class ModifyDialog(QDialog):
             self.tableWidgetSpec.setHorizontalHeaderItem(i, QTableWidgetItem(aHeaderText))
         # for
 
+        aSkeySet = set()
+
         for r in range(self.tableWidgetSpec.rowCount):
             aSpcoItem = aSpcoList[r]
 
+            aSdteItem = aSpcoItem.Detref
+
+            if aSdteItem is not None:
+                aSkeySet.add(aSdteItem.Skey)
+            # if
+        # for
+
+        self.comboBoxSkey.clear()
+        self.comboBoxSkey.addItem("NONE")
+        self.comboBoxSkey.setCurrentIndex(0)
+
+        for aSkey in aSkeySet:
+            self.comboBoxSkey.addItem(aSkey)
+        # for
+
+        self.skeyChanged()
+    # headingsChanged
+
+    def skeyChanged(self):
+
+        aSkey = self.comboBoxSkey.currentText
+
+        aType = self.comboBoxHeadings.currentText
+        aName = self.comboBoxSpec.currentText
+
+        aSpecItem = PipeCad.GetItem(aName)
+        if aSpecItem == None:
+            return
+        # if
+
+        aMemberList = list(x for x in aSpecItem.Member if x.Answer == aType)
+        #aMemberList = list(filter(lambda x: True if x.Answer == aType else False, aMemberList))
+
+        aSpcoList = []
+        for aMember in aMemberList:
+            aList = PipeCad.CollectItem("SPCO", aMember)
+            aSpcoList.extend(aList)
+        # for
+
+        self.tableWidgetSpec.setRowCount(0)
+
+        for i in range(len(aSpcoList)):
+            aSpcoItem = aSpcoList[i]
+
             aCateItem = aSpcoItem.Catref
             aSdteItem = aSpcoItem.Detref
+            aSmteItem = aSpcoItem.Matref
 
             aSpcoName = aSpcoItem.Name
 
-            for i in range(aCount):
-                aHeaderText = aHeadings[i]
+            if aSkey == "NONE" or (aSdteItem is not None and aSdteItem.Skey == aSkey):
+                pass
+            else:
+                continue
+            # if
+
+            aRow = self.tableWidgetSpec.rowCount
+            self.tableWidgetSpec.insertRow(aRow)
+
+            for c in range(self.tableWidgetSpec.columnCount):
+                aHeaderText = self.tableWidgetSpec.horizontalHeaderItem(c).text()
                 if aHeaderText == "NAME":
-                    self.tableWidgetSpec.setItem(r, i, QTableWidgetItem(aSpcoName))
+                    self.tableWidgetSpec.setItem(aRow, c, QTableWidgetItem(aSpcoName))
                 elif aHeaderText == "TYPE":
-                    self.tableWidgetSpec.setItem(r, i, QTableWidgetItem(aType))
+                    self.tableWidgetSpec.setItem(aRow, c, QTableWidgetItem(aType))
                 elif aHeaderText == "PBOR0" and aCateItem is not None:
                     aParam = aCateItem.Param.split()
-                    self.tableWidgetSpec.setItem(r, i, QTableWidgetItem(aParam[0]))
+                    self.tableWidgetSpec.setItem(aRow, c, QTableWidgetItem(aParam[0]))
                 elif aHeaderText == "PBOR1" and aCateItem is not None:
                     aParam = aCateItem.Param.split()
-                    self.tableWidgetSpec.setItem(r, i, QTableWidgetItem(aParam[0]))
+                    self.tableWidgetSpec.setItem(aRow, c, QTableWidgetItem(aParam[0]))
                 elif aHeaderText == "PBOR2" and aCateItem is not None:
                     aParam = aCateItem.Param.split()
-                    self.tableWidgetSpec.setItem(r, i, QTableWidgetItem(aParam[1]))
+                    self.tableWidgetSpec.setItem(aRow, c, QTableWidgetItem(aParam[1]))
                 elif aHeaderText == "PBOR3" and aCateItem is not None:
                     aParam = aCateItem.Param.split()
-                    self.tableWidgetSpec.setItem(r, i, QTableWidgetItem(aParam[1]))
+                    self.tableWidgetSpec.setItem(aRow, c, QTableWidgetItem(aParam[1]))
                 elif aHeaderText == "SKEY" and aSdteItem is not None:
-                    self.tableWidgetSpec.setItem(r, i, QTableWidgetItem(aSdteItem.Skey))
+                    self.tableWidgetSpec.setItem(aRow, c, QTableWidgetItem(aSdteItem.Skey))
                 elif aHeaderText == "CATREF" and aCateItem is not None:
-                    self.tableWidgetSpec.setItem(r, i, QTableWidgetItem(aCateItem.Name))
+                    self.tableWidgetSpec.setItem(aRow, c, QTableWidgetItem(aCateItem.Name))
                 elif aHeaderText == "DETREF" and aSdteItem is not None:
-                    self.tableWidgetSpec.setItem(r, i, QTableWidgetItem(aSdteItem.Name))
+                    self.tableWidgetSpec.setItem(aRow, c, QTableWidgetItem(aSdteItem.Name))
                 elif aHeaderText == "DETAIL" and aSdteItem is not None:
-                    self.tableWidgetSpec.setItem(r, i, QTableWidgetItem(aSdteItem.Rtext))
+                    self.tableWidgetSpec.setItem(aRow, c, QTableWidgetItem(aSdteItem.Rtext))
+                elif aHeaderText == "MATREF" and aSmteItem is not None:
+                    self.tableWidgetSpec.setItem(aRow, c, QTableWidgetItem(aSmteItem.Name))
                 # if
             # for
         # for
-    # headingsChanged
+    # skeyChanged
 
     def setSdte(self):
         """Set Spec component name, skey, and detail text.
@@ -452,16 +513,19 @@ class ModifyDialog(QDialog):
         if aSdteItem.Type != "SDTE":
             QMessageBox.warning(self, "", "Please select a SDTE!")
             return
+        # if
 
         aRows = []
         aSelectedItems = self.tableWidgetCate.selectedItems()
         for aItem in aSelectedItems:
             aRows.append(aItem.row())
+        # for
 
         aRows = list(set(aRows))
 
         if len(aRows) < 1:
             return
+        # if
 
         for r in aRows:
             aTableItem = QTableWidgetItem(aSdteItem.Name)
@@ -470,10 +534,34 @@ class ModifyDialog(QDialog):
             self.tableWidgetCate.setItem(r, 2, aTableItem)
             self.tableWidgetCate.setItem(r, 3, QTableWidgetItem(aSdteItem.Skey))
             self.tableWidgetCate.setItem(r, 4, QTableWidgetItem(aSdteItem.Rtext))
+        # for
     # setSdte
 
     def setSmte(self):
-        QMessageBox.information(self, "", "SET SMTE")
+        aSmteItem = PipeCad.CurrentItem()
+        if aSmteItem.Type != "SMTE":
+            QMessageBox.warning(self, "", "Please select a SMTE!")
+            return
+        # if
+
+        aRows = []
+        aSelectedItems = self.tableWidgetCate.selectedItems()
+        for aItem in aSelectedItems:
+            aRows.append(aItem.row())
+        # for
+
+        aRows = list(set(aRows))
+
+        if len(aRows) < 1:
+            return
+        # if
+
+        for r in aRows:
+            aTableItem = QTableWidgetItem(aSmteItem.Name)
+            aTableItem.setData(Qt.UserRole, aSmteItem)
+
+            self.tableWidgetCate.setItem(r, 5, aTableItem)
+        # for
     # setSmte
 
     def setSbol(self):
@@ -486,7 +574,7 @@ class ModifyDialog(QDialog):
         #if aIndex.isValid():
         #    if QMessageBox.question(self, "", "Are you sure to delete the selected record?") == QMessageBox.Yes:
         #        self.tableView.model().removeRow(aIndex.row())
-
+    # delSpco
 
     def setCate(self):
         aScomList = []
