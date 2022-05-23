@@ -1,18 +1,18 @@
 # Contents
 ## Installation
-[Software and Hardware Requirements](./docs/en/installation/requirements.md)
+[Software and Hardware Requirements](./installation/requirements.md)
 
-[Installation on Windows](./docs/en/installation/windows.md)
+[Installation on Windows](./installation/windows.md)
 
 ## Project Setup
-[New Project Creation](./docs/en/installation/new_project.md)
+[New Project Creation](./installation/new_project.md)
 
-[Existing Project Connection](./docs/en/installation/existing_project.md)
+[Existing Project Connection](./installation/existing_project.md)
 
 ## Development
-[PipeCAD API](./docs/en/development/api.md)
+[PipeCAD API](./development/api.md)
 
-[Python Plugins](./docs/en/development/plugins.md)
+[Python Plugins](./development/plugins.md)
 
 ## Video Training Examples
 
