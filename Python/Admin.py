@@ -570,7 +570,6 @@ class TeamDialog(QDialog):
             return
         # if
 
-        PipeCad.SetCurrentItem(self.tmwlItem)
         PipeCad.StartTransaction("Create Team")
 
         try:
@@ -968,7 +967,6 @@ class UserDialog(QDialog):
         aName = self.textName.text
         aPassword = self.textPassword.text
 
-        PipeCad.SetCurrentItem(self.uswlItem)
         PipeCad.StartTransaction("Create User")
 
         try:
@@ -1579,9 +1577,7 @@ class MdbDialog(QDialog):
     # delDatabase
 
     def createMdb(self):
-        aName = self.textName.text
-        
-        PipeCad.SetCurrentItem(self.mdbwItem)
+        aName = self.textName.text        
 
         PipeCad.StartTransaction("Create MDB")
         PipeCad.CreateMdb(aName, self.textDescription.text)
