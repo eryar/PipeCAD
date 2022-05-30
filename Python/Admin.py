@@ -581,7 +581,6 @@ class TeamDialog(QDialog):
         # try
 
         aTeamItem = PipeCad.CurrentItem()
-        PipeCad.CreateItem("DBLI")
 
         # Add team to user team list.
         for r in range (self.tableTeamUsers.rowCount):

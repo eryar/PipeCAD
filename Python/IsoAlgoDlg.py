@@ -29,6 +29,8 @@ from pipecad import PcfExporter
 class IsoAlgoDialog(QDialog):
     def __init__(self, parent = None):
         QDialog.__init__(self, parent)
+
+        self.filePath = os.getenv(PipeCad.CurrentProject.Code + "ISO")
         
         self.setupUi()
     # __init__
@@ -45,10 +47,6 @@ class IsoAlgoDialog(QDialog):
         # Action buttons.
         self.horizontalLayout = QHBoxLayout(self)
 
-        self.buttonPCF = QPushButton("PCF")
-        self.buttonPCF.setToolTip(QT_TRANSLATE_NOOP("IsoAlgo", "Preview the selected PCF"))
-        self.buttonPCF.clicked.connect(self.previewPcf)
-
         self.buttonPreview = QPushButton(QT_TRANSLATE_NOOP("IsoAlgo", "Preview"))
         self.buttonPreview.setToolTip(QT_TRANSLATE_NOOP("IsoAlgo", "Preview Pipe Isometrics"))
         self.buttonPreview.clicked.connect(self.previewIso)
@@ -56,6 +54,10 @@ class IsoAlgoDialog(QDialog):
         self.buttonExport = QPushButton(QT_TRANSLATE_NOOP("IsoAlgo", "Export"))
         self.buttonExport.setToolTip(QT_TRANSLATE_NOOP("IsoAlgo", "Export Pipe Isometrics to DXF"))
         self.buttonExport.clicked.connect(self.exportIso)
+
+        self.buttonPCF = QPushButton("IDF/PCF")
+        self.buttonPCF.setToolTip(QT_TRANSLATE_NOOP("IsoAlgo", "Preview the selected IDF/PCF"))
+        self.buttonPCF.clicked.connect(self.previewPcf)
 
         self.buttonBox = QDialogButtonBox()
         self.buttonBox.setStandardButtons(QDialogButtonBox.Cancel)
@@ -85,9 +87,9 @@ class IsoAlgoDialog(QDialog):
     # previewIso
 
     def previewPcf(self):
-        aIsoEnv = os.getenv(PipeCad.CurrentProject.Code + "ISO")
-        aFileName = QFileDialog.getOpenFileName(self, "Select PCF File", aIsoEnv)
+        aFileName = QFileDialog.getOpenFileName(self, "Select PCF File", self.filePath, "Piping Files (*.idf *.pcf)")
         if len(aFileName) > 0:
+            self.filePath = aFileName
             self.isoGraphicsView.PreviewIso(aFileName)
         # if
     # previewPcf
