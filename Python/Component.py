@@ -371,7 +371,7 @@ class ComponentDialog():
         PipeCad.AddAidText(aPosition, self.currentItem.Type, self.tagId)
         PipeCad.AddAidArrow(aPosition, aTagDirection, aOffset, 2, 0.4, self.tagId)
         PipeCad.AddAidCylinder(aPosition, aOrthDir.Reversed(), aOffset * 2, 2, self.tagId)
-        PipeCad.Redraw()
+        PipeCad.UpdateViewer()
     # currentItemChanged
 
     def setBranch(self):
@@ -413,7 +413,7 @@ class ComponentDialog():
         PipeCad.RemoveAid(self.branchTagId)
         PipeCad.AddAidText(self.branItem.Hposition, "Head", self.branchTagId)
         PipeCad.AddAidText(self.branItem.Tposition, "Tail", self.branchTagId)
-        PipeCad.Redraw()
+        PipeCad.UpdateViewer()
 
         self.currentItemChanged()
 

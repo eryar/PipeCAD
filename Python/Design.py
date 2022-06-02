@@ -33,7 +33,7 @@ class SiteDialog(QDialog):
 
     def setupUi(self):
         self.resize(280, 100)
-        self.setWindowTitle(self.tr("Create Site"))
+        self.setWindowTitle(QT_TRANSLATE_NOOP("Design", "Create Site"))
 
         self.verticalLayout = QVBoxLayout(self)
         self.formLayout = QFormLayout()
@@ -104,7 +104,7 @@ class ZoneDialog(QDialog):
 
     def setupUi(self):
         self.resize(280, 100)
-        self.setWindowTitle(self.tr("Create Zone"))
+        self.setWindowTitle(QT_TRANSLATE_NOOP("Design", "Create Zone"))
 
         self.verticalLayout = QVBoxLayout(self)
         self.formLayout = QFormLayout()
@@ -166,8 +166,146 @@ def CreateZone():
     aZoneDlg.show()
 # CreateZone
 
+
+class SearchDialog(QDialog):
+    def __init__(self, parent = None):
+        QDialog.__init__(self, parent)
+
+        self.ownerItem = None
+
+        self.setupUi()
+    # __init__
+
+    def setupUi(self):
+        self.setWindowTitle(QT_TRANSLATE_NOOP("Design", "Search"))
+
+        self.verticalLayout = QVBoxLayout(self)
+        self.formLayout = QFormLayout()
+
+        # Name
+        self.labelName = QLabel(QT_TRANSLATE_NOOP("Design", "Name"))
+        self.textName = QLineEdit()
+
+        self.formLayout.setWidget(0, QFormLayout.LabelRole, self.labelName)
+        self.formLayout.setWidget(0, QFormLayout.FieldRole, self.textName)
+
+        # Type
+        self.labelType = QLabel(QT_TRANSLATE_NOOP("Design", "Type"))
+        self.textType = QLineEdit()
+
+        self.formLayout.setWidget(1, QFormLayout.LabelRole, self.labelType)
+        self.formLayout.setWidget(1, QFormLayout.FieldRole, self.textType)
+
+        # Search beneath item.
+        self.labelOwner = QLabel(QT_TRANSLATE_NOOP("Design", "Owner"))
+        self.buttonOwner = QPushButton(QT_TRANSLATE_NOOP("Design", "CE"))
+        self.buttonOwner.clicked.connect(self.setOwner)
+
+        self.formLayout.setWidget(2, QFormLayout.LabelRole, self.labelOwner)
+        self.formLayout.setWidget(2, QFormLayout.FieldRole, self.buttonOwner)
+
+        self.verticalLayout.addLayout(self.formLayout)
+
+        # Result table.
+        self.tableWidget = QTableWidget()
+        self.tableWidget.setColumnCount(2)
+        self.tableWidget.setAlternatingRowColors(True)
+        self.tableWidget.setEditTriggers(QAbstractItemView.NoEditTriggers)
+        self.tableWidget.setSelectionMode(QAbstractItemView.SingleSelection)
+        self.tableWidget.setSelectionBehavior(QAbstractItemView.SelectRows)
+        self.tableWidget.horizontalHeader().setStretchLastSection(True)
+        self.tableWidget.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeToContents)
+        self.tableWidget.verticalHeader().setMinimumSectionSize(16)
+        self.tableWidget.verticalHeader().setDefaultSectionSize(18)
+        self.tableWidget.setHorizontalHeaderLabels(["Type", "Name"])
+
+        self.tableWidget.cellDoubleClicked.connect(self.locateItem)
+
+        self.verticalLayout.addWidget(self.tableWidget)
+
+        # Action buttons.
+        self.horizontalLayout = QHBoxLayout()
+
+        self.buttonSearch = QPushButton(QT_TRANSLATE_NOOP("Design", "Search"))
+        self.buttonSearch.setDefault(True)
+        self.buttonSearch.clicked.connect(self.search)
+
+        self.buttonBox = QDialogButtonBox(QDialogButtonBox.Ok|QDialogButtonBox.Cancel, self)
+
+        self.buttonBox.accepted.connect(self.accept)
+        self.buttonBox.rejected.connect(self.reject)
+
+        self.horizontalLayout.addWidget(self.buttonSearch)
+        self.horizontalLayout.addWidget(self.buttonBox)
+
+        self.verticalLayout.addLayout(self.horizontalLayout)
+
+    # setupUi
+
+    def setOwner(self):
+        self.ownerItem = PipeCad.CurrentItem()
+        if len(self.ownerItem.Name) < 1:
+            self.buttonOwner.setText("CE: " + self.ownerItem.RefNo)
+        else:
+            self.buttonOwner.setText("CE: " + self.ownerItem.Name)
+        # if
+    # setOwner
+
+    def search(self):
+        aName = self.textName.text
+        aType = self.textType.text
+        if len(aName) < 1:
+            QMessageBox.warning(self, "", QT_TRANSLATE_NOOP("Design", "Please input key word in item name!"))
+            return
+        # if
+
+        aItemList = PipeCad.SearchItem(aName, aType, self.ownerItem)
+        self.tableWidget.setRowCount(len(aItemList))
+
+        for r in range(self.tableWidget.rowCount):
+            aTreeItem = aItemList[r]
+
+            self.tableWidget.setItem(r, 0, QTableWidgetItem(aTreeItem.Type))
+
+            if len(aTreeItem.Name) > 0:
+                self.tableWidget.setItem(r, 1, QTableWidgetItem(aTreeItem.Name))
+            else:
+                self.tableWidget.setItem(r, 1, QTableWidgetItem(aTreeItem.RefNo))
+            # if
+
+            self.tableWidget.item(r, 0).setData(Qt.UserRole, aTreeItem)
+        # for
+
+    # search
+
+    def locateItem(self, theRow):
+        if theRow < 0:
+            return
+        # if
+
+        aTreeItem = self.tableWidget.item(theRow, 0).data(Qt.UserRole)
+        if aTreeItem is None:
+            return
+        # if
+
+        PipeCad.SetCurrentItem(aTreeItem)
+        PipeCad.LookAt(aTreeItem)
+        
+    # locateItem
+
+    def accept(self):
+        aRow = self.tableWidget.currentRow()
+
+        self.locateItem(aRow)
+
+    # accept
+# SearchDialog
+
+# Singleton Instance.
+aSearchDlg = SearchDialog(PipeCad)
+
 def Search():
-    QMessageBox.warning(PipeCad, "", "Not implement yet!")
+    aSearchDlg.show()
 # Search
 
 
