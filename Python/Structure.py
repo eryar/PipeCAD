@@ -241,7 +241,7 @@ class RegularDialog(QDialog):
                     aPe.z += e
                     PipeCad.AddAidLine(aPs, aPe, 1)
         
-        PipeCad.Update()
+        PipeCad.UpdateViewer()
     # preview
         
     def build(self):

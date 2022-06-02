@@ -1009,7 +1009,7 @@ class ExplicitDialog(QDialog):
 
         PipeCad.RemoveAid(self.fromTag)
         PipeCad.AddAidAxis(aPoint, self.fromTag)
-        PipeCad.Redraw()
+        PipeCad.UpdateViewer()
     # point1Changed
 
     def point2Changed(self):
@@ -1020,13 +1020,13 @@ class ExplicitDialog(QDialog):
 
         PipeCad.RemoveAid(self.toTag)
         PipeCad.AddAidAxis(aPoint, self.toTag)
-        PipeCad.Redraw()
+        PipeCad.UpdateViewer()
     # point2Changed
 
     def reject(self):
         PipeCad.RemoveAid(self.fromTag)
         PipeCad.RemoveAid(self.toTag)
-        PipeCad.Redraw()
+        PipeCad.UpdateViewer()
 
         QDialog.reject(self)
     # reject
@@ -1053,7 +1053,7 @@ class ExplicitDialog(QDialog):
 
         PipeCad.RemoveAid(self.fromTag)
         PipeCad.RemoveAid(self.toTag)
-        PipeCad.Redraw()
+        PipeCad.UpdateViewer()
 
         QDialog.accept(self)
     # accept
