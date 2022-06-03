@@ -143,7 +143,7 @@ PipeCad will create Database in proper Team hierarchy.
     PipeCad.CreateDb("PIPE/DESI-1-XYZ-001", "DESI", 2000, "Database for module 1-XYZ-001 - Piping Discipline" )
 ```
 
-## PipeCad.CreateTeam()
+## PipeCad.CreateTeam( Name, Description )
 ### Input
 |Name|Type|Purpose|
 |----|----|-------|
