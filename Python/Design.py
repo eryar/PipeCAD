@@ -387,3 +387,69 @@ aTextDlg = TextDialog(PipeCad)
 def CreateText():
     aTextDlg.show()
 # CreateText
+
+
+def ShowFlow():
+    # Show pipe flow aid arrow on PIPE/BRANCH.
+    aTreeItem = PipeCad.CurrentItem()
+
+    if aTreeItem.Type not in {"PIPE", "BRAN"}:
+        QMessageBox.critical(PipeCad, "", QT_TRANSLATE_NOOP("Design", "Please select PIPE/BRAN to display flow arrow!"))
+        return
+    # if
+
+    aAidNumber = PipeCad.NextAidNumber()
+
+    aBranches = list()
+    if aTreeItem.Type == "BRAN":
+        aBranches.append(aTreeItem)
+    else:
+        aBranches = PipeCad.CollectItem("BRAN", aTreeItem)
+    # if
+
+    for aBranItem in aBranches:
+        aPos = aBranItem.Hposition
+        aDir = aBranItem.Hdirection
+        aLength = float(aBranItem.Hbore) * 1.5
+
+        # Show aid arrow at branch head.
+        PipeCad.AddAidArrow(aPos, aDir, aLength, 2, 0.4, aAidNumber)
+
+        aPos = aBranItem.Tposition
+        aDir = aBranItem.Tdirection.Reversed()
+        aLength = float(aBranItem.Tbore) * 1.5
+
+        # Show aid arrow at branch tail.
+        PipeCad.AddAidArrow(aPos, aDir, aLength, 2, 0.4, aAidNumber)
+
+        for aCompItem in aBranItem.Member:
+            if aCompItem.Type != "ELBO":
+                continue
+            # if
+
+            aArrivePoint = aCompItem.ArrivePoint
+            if aArrivePoint is not None:
+                aPos = aArrivePoint.Position
+                aDir = aArrivePoint.Direction.Reversed()
+                aLength = float(aArrivePoint.Bore) * 1.5
+
+                # Show aid arrow at elbow point.
+                PipeCad.AddAidArrow(aPos, aDir, aLength, 2, 0.4, aAidNumber)
+            # if
+
+            aLeavePoint = aCompItem.LeavePoint
+            if aLeavePoint is not None:
+                aPos = aLeavePoint.Position
+                aDir = aLeavePoint.Direction
+                aLength = float(aLeavePoint.Bore) * 1.5
+
+                # Show aid arrow at elbow point.
+                PipeCad.AddAidArrow(aPos, aDir, aLength, 2, 0.4, aAidNumber)
+            # if
+        # for
+
+    # for
+
+    PipeCad.UpdateViewer()
+
+# ShowFlow
