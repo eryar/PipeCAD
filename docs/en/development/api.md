@@ -136,7 +136,7 @@ Syntax:
 |Description|STRING|The database description, up to ??? characters|
 
 ### Output
-PipeCad will create Database in /*D world hierarchy.
+PipeCad will create Database in proper Team hierarchy.
 
 Syntax examples:
 ```python
