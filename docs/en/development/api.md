@@ -124,3 +124,36 @@ Syntax:
 ```python
     PipeCad.Update()
 ```
+
+## PipeCad.CreateDb( Team/Name, Type, Number, Description )
+### Input
+|Name|Type|Purpose|
+|----|----|-------|
+|Team|STRING|Owning Team|
+|Name|STRING|The name of the database, up to ??? symbols|
+|Type|STRING|Database type from the list: DESI, PADD, CATA|
+|Number|INT|Database nubmber ( in range from 1 to ???? )|
+|Description|STRING|The database description, up to ??? characters|
+
+### Output
+PipeCad will create Database in /*D world hierarchy.
+
+Syntax examples:
+```python
+    PipeCad.CreateDb("PIPE/DESI-1-XYZ-001", "DESI", 2000, "Database for module 1-XYZ-001 - Piping Discipline" )
+```
+
+## PipeCad.CreateTeam()
+### Input
+|Name|Type|Purpose|
+|----|----|-------|
+|Name|STRING|The name of the team, up to ??? symbols|
+|Description|STRING|The database description, up to ??? characters|
+
+### Output
+PipeCad will create Team in /*T world hierarchy.
+
+Syntax:
+```python
+    PipeCad.CreateTeam("PIPE", "Team for Piping Discipline" )
+```
