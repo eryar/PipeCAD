@@ -16,7 +16,7 @@ Updates will be downloaded into folder **%PIPECAD_EXE%\Scripts**.
 
 
 ## Loading of Python script
-For loading Python script (for ex. C:\Data\Script.py) there will use next command:
+For loading Python script (for ex. C:\Data\PythonLoad.py) there will use next command:
 ```python
     exec(open("C:\Data\PythonLoad.py",encoding='utf8').read())
 ```
