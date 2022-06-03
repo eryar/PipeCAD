@@ -138,7 +138,7 @@ Syntax:
 ### Output
 PipeCad will create Database in proper Team hierarchy.
 
-Syntax examples:
+Example:
 ```python
     PipeCad.CreateDb("PIPE/DESI-1-XYZ-001", "DESI", 2000, "Database for module 1-XYZ-001 - Piping Discipline" )
 ```
@@ -153,7 +153,7 @@ Syntax examples:
 ### Output
 PipeCad will create Team in /*T world hierarchy.
 
-Syntax:
+Example:
 ```python
     PipeCad.CreateTeam("PIPE", "Team for Piping Discipline" )
 ```
