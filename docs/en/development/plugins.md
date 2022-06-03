@@ -1,15 +1,19 @@
 # Python Libraries in PipeCAD
 Using PIP module can be easily installed third-party modules of Python, such as Excel read-write module Pandas, which is convenient to generate material tables; computer vision module OpenCV; artificial intelligence AI module Caffe, TensorFlow and other machine learning frameworks.
-## Installing PIP application
-Run cmd.exe
 
+## Update PIP application
+Before installation of any new python packages there is need to upgrade PIP utility to the latest version. 
+In command line window there is need to go to root folder of PipeCad (e.g. C:\PipeCAD) and type command: 
 ```batch
 python -m pip install --upgrade pip 
 ```
+![001](./plugins/001.png)
 
 
-To install PIP you need to start batch  file **%PIPECAD_EXE%\get_pip.bat**. During installation process it will be downloaded required modules into folder **%PIPECAD_EXE%\Scripts**. 
+Updates will be downloaded into folder **%PIPECAD_EXE%\Scripts**. 
+
 ## Installing Python libraries
+
 
 ## Loading of Python script
 For loading Python script (for ex. C:\Data\Script.py) there will use next command:
