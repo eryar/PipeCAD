@@ -2,8 +2,10 @@
 Using PIP module can be easily installed third-party modules of Python, such as Excel read-write module Pandas, which is convenient to generate material tables; computer vision module OpenCV; artificial intelligence AI module Caffe, TensorFlow and other machine learning frameworks.
 
 ## Update PIP application
-Before installation of any new python packages there is need to add folders **%PIPECAD_EXE%** and **%PIPECAD_EXE%\Scripts** to system variable **%PATH%**. 
+Before installation of any new python packages there is need to add folders **%PIPECAD_EXE%** and **%PIPECAD_EXE%\Scripts** to system variable **%PATH%**.
+
 ![001](./plugins/001.png)
+
 After restart of Windows there is need to upgrade PIP utility to the latest version. In command line type command: 
 ```batch
 python -m pip install --upgrade pip 
