@@ -29,7 +29,8 @@ There is a Sample project in PipeCAD, You can use the user <code>SYSTEM</code> a
 There are some videos to illustrate how to use PipeCAD: https://space.bilibili.com/1548012589
 
 # Documentation
-[:uk:](./docs/en/index.md)
+[:uk:](./docs/en/index.html)
+[:cn:](./docs/zh/index.md)
 
 # Feedback
 * Report bug or other issues of PipeCAD here: https://github.com/eryar/PipeCAD/issues
