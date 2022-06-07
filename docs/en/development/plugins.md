@@ -10,7 +10,7 @@ After restart of Windows there is need to upgrade PIP utility to the latest vers
 ```batch
 python -m pip install --upgrade pip 
 ```
-![002](../../screenshots/development/002.png)
+![002](../../screenshots/development/plugins/002.png)
 
 Updates will be downloaded into folder **%PIPECAD_EXE%\Scripts**. 
 
@@ -19,7 +19,7 @@ To install python library using PIP utility there is need to type command (e.g.,
 ```batch
 pip install pandas
 ```
-![003](../../screenshots/development/003.png)
+![003](../../screenshots/development/plugins/003.png)
 
 New package will be downloaded to folder **%PIPECAD_EXE%\Lib\site-packages**. List of availible Python packages for installation can be found on site of PIP utility - https://pypi.org/
 
