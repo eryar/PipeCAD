@@ -2022,7 +2022,7 @@ LATEX_TIMESTAMP        = NO
 # LATEX_OUTPUT directory will be used.
 # This tag requires that the tag GENERATE_LATEX is set to YES.
 
-LATEX_EMOJI_DIRECTORY  =
+LATEX_EMOJI_DIRECTORY  = emojis
 
 #---------------------------------------------------------------------------
 # Configuration options related to the RTF output
