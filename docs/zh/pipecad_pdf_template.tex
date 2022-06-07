@@ -36,6 +36,14 @@
 }
 \newcommand{\+}{\discretionary{\mbox{\scriptsize$\hookleftarrow$}}{}{}}
 
+   % Arguments of doxygenemoji:
+   % 1) ':<text>:' form of the emoji, already LaTeX-escaped
+   % 2) file with the name of the emoji without the .png extension
+   % in case image exist use this otherwise use the ':<text>:' form
+   \newcommand{\doxygenemoji}[2]{%
+     \IfFileExists{emojis/#2.png}{\raisebox{-0.1em}{\includegraphics[height=0.9em]{emojis/#2.png}}}{#1}%
+   }
+
 % Page & text layout
 \usepackage{geometry}
 \geometry{%
@@ -75,8 +83,8 @@
 \fancyhead[RO]{\fancyplain{}{\bfseries\thepage}}
 \fancyfoot[LE]{\fancyplain{}{}}
 \fancyfoot[CE]{\fancyplain{}{}}
-\fancyfoot[RE]{\fancyplain{}{\bfseries\scriptsize (c) 2022 Wuhan OCADE IT. Co., Ltd.}}
-\fancyfoot[LO]{\fancyplain{}{\bfseries\scriptsize (c) 2022 Wuhan OCADE IT. Co., Ltd.}}
+\fancyfoot[RE]{\fancyplain{}{\bfseries\scriptsize (c) Wuhan OCADE IT. Co., Ltd. 2022}}
+\fancyfoot[LO]{\fancyplain{}{\bfseries\scriptsize (c) Wuhan OCADE IT. Co., Ltd. 2022}}
 \fancyfoot[CO]{\fancyplain{}{}}
 \fancyfoot[RO]{\fancyplain{}{}}
 \renewcommand{\footrulewidth}{0.4pt}
