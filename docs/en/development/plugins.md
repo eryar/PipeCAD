@@ -4,13 +4,13 @@ Using PIP module can be easily installed third-party modules of Python, such as 
 ## Update PIP application
 Before installation of any new python packages there is need to add folders **%PIPECAD_EXE%** and **%PIPECAD_EXE%\Scripts** to system variable **%PATH%**.
 
-![001](./plugins/001.png)
+![001](../../screenshots/development/plugins/001.png)
 
 After restart of Windows there is need to upgrade PIP utility to the latest version. In command line type command: 
 ```batch
 python -m pip install --upgrade pip 
 ```
-![002](./plugins/002.png)
+![002](../../screenshots/development/plugins/002.png)
 
 Updates will be downloaded into folder **%PIPECAD_EXE%\Scripts**. 
 
@@ -19,7 +19,7 @@ To install python library using PIP utility there is need to type command (e.g.,
 ```batch
 pip install pandas
 ```
-![003](./plugins/003.png)
+![003](../../screenshots/development/plugins/003.png)
 
 New package will be downloaded to folder **%PIPECAD_EXE%\Lib\site-packages**. List of availible Python packages for installation can be found on site of PIP utility - https://pypi.org/
 
