@@ -2,6 +2,7 @@
 
 ## Functional Overview
 The three-dimensional pipeline design software PipeCAD is the pipeline layout design system, which is suitable for factories, construction, petrochemicals, environmental protection medicine and other industries. In the pipeline design, according to the pipeline instrument flow chart (P&ID), equipment layout plan and related drawings and materials of civil engineering, instrumentation, electrical, pump and other aspects, the pipeline is reasonably arranged and designed. The pipeline layout design should first meet the process requirements, facilitate installation, operation and maintenance, and be reasonable, neat and beautiful. 3D modeling of piping enables collision-free design and rapid production of deliverables, reducing rework and increasing design efficiency. 
+[](../screenshots/pipecad_design.png)
 
 # Contents
 ## Installation
