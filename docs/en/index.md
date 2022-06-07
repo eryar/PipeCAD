@@ -45,10 +45,21 @@ PipeCAD also combines Python to provide flexible secondary development functions
 
 [Installation on Windows](./installation/windows.md)
 
+[Installation on Linux](./installation/linux.md)
+
 ## Project Setup
 [New Project Creation](./installation/new_project.md)
 
 [Existing Project Connection](./installation/existing_project.md)
+
+## User Guides
+[Login to Project](./common/login_to_project.md)
+
+[Module Design](./design/user_guide.md)
+
+[Module Paragon](./paragon/user_guide.md)
+
+[Module Admin](./admin/user_guide.md)
 
 ## Development
 [PipeCAD API](./development/api.md)
