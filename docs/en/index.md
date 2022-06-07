@@ -52,9 +52,9 @@ PipeCAD also combines Python to provide flexible secondary development functions
 
 [Existing Project Connection](./installation/existing_project.md)
 
-## User Guides
-[Login to Project](./common/login_to_project.md)
+[Login to Project](./installation/login_to_project.md)
 
+## User Guides
 [Module Design](./design/user_guide.md)
 
 [Module Paragon](./paragon/user_guide.md)
