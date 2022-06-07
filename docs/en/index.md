@@ -16,8 +16,6 @@
 
 ## Video Training Examples
 
-Record the process of using PipeCAD into a video and put it on the B station.
-
 It is recommended that you take a look at the video tutorial before using PipeCAD.
 
 1. [Download and install PipeCAD](https://www.bilibili.com/video/BV1u3411e7hD)
