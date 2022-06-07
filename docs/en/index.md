@@ -7,7 +7,7 @@ The three-dimensional pipeline design software PipeCAD is the pipeline layout de
 
 The software adopts an independent 3D graphics platform and does not depend on other third-party CAD platforms (such as AutoCAD, etc.). Through parametric design, the design data is saved to the database to form a product database with the project database as the core. The product database provides the data basis for generating drawings and material reports, and also provides the data source for the digital delivery of the factory. 
 
-![Database](../screenshots/pipecad_database.png)
+![Database](../screenshots/pipecad_database_en.png)
 
 As shown in the figure above, the parametric component library and design modeling data are saved in the database. When generating the deliverables, the required data is extracted from the database, and piping drawings and material reports are generated.
 
