@@ -1,5 +1,6 @@
 # Login to Project
 Double-click the PipeCAD shortcut icon or directly run PipeCAD.bat in the installation directory to start the software. After PipeCAD starts, the login interface is displayed: 
+
 ![Login form](../../images/installation_login_form.png)
 
 * Project: Select the project name to be logged in;
