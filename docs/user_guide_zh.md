@@ -289,7 +289,7 @@ PipeCAD要求数据库中的每一个元素有唯一的名字，即数据库中�
 
 ![Create Text](images/paragon/paragon_text_text_zh.png "创建参数描述文字")
 
-- ![Detail Text](images/icons/paragon_sdte.png) ：Detail Text 是管件描述信息，这些信息将会出现在管道建模及ISO图中，一般在CATE节点中创建；
+- ![Detail Text](images/icons/paragon_sdte.png) ：Detail Text 是管件描述信息，这些信息将会出现在管道建模及ISO图中，一般在CATE节点中创建，需要正确选择管件的Symbol Key(SKEY)；
 
 ![Detail Text](images/paragon/paragon_text_sdte_zh.png "管件描述文字")
 
@@ -298,11 +298,65 @@ PipeCAD要求数据库中的每一个元素有唯一的名字，即数据库中�
 ![Material Text](images/paragon/paragon_text_smte_zh.png "管件材料说明")
 
 ## 连接匹配
+连接匹配表用于检查相连两个管件的连接类型是否匹配，开放给用户自定义。在PARAGON面板上的Create COCO和Modify COCO来创建和修改COCO匹配表：
+
+![COCO Table](images/paragon/paragon_coco_zh.png "连接匹配表")
+
+在修改COCO表上点击COCO Description来定义COCO连接类型。每个COCO一般由三个字符组成，下表中列出一些常用的连接类型：
+| COCO | Description | COCO | Description |
+| --- | --- | --- | --- |
+| **ALL** | Compatible with all items | **SCF** | Screwed Female 内螺纹 |
+| **ATT** | Attachment items | **SCM** | Screwed Male 外螺纹 |
+| **BWD** | Buttweld 对焊 | **CLOS** | Closed End 堵头 |
+| **SWF** | Female Socketwelding 内承插焊 | **SWM** | Male Socketwelding 外承插焊 |
+| **TUB** | Pipe or Tubing 管子 | **OPEN** | Open End 开口端 |
+| **VENT** | Open to vent 放空 | **DRAN** | Drain connection 排凝 |
+
+为了正确计算螺栓长度，还有一些约定的编码规则。对于法兰连接部件的连接类型有如下约定：
+| Component Type 类型码 | Facing 连接面 | Rating 压力 |
+| --- | --- | --- |
+| **F** Flange faceing(for Flanges, Valves etc.) | **A** FF | **A** PN 125# |
+| **G** Gakset facing(To connecto to flanges) | **B** RF | **B** PN 150# |
+| **W** Wafer type connection | **C** FM | **C** PN 250# |
+| | **D** RJ | **D** PN 300# |
+| | **E**  | **E** PN 400# |
+| | **F**  | **F** PN 600# |
+| | **G**  | **G** PN 900# |
+| | **H**  | **H** PN 1500# |
+| | **I**  | **I** PN 2500# |
+| | **J**  | **J** PN 5000# |
+| | **K**  | **K** PN 2.5 |
+| | **L**  | **M** PN 6 |
+| | **M**  | **M** PN 10 |
+| | **N**  | **N** PN 16 |
+| | **P**  | **P** PN 25 |
+| | **Q**  | **Q** PN 40 |
+| | **R**  | **R** PN 63 |
+| | **S**  | **S** PN 100 |
+| | **T**  | **T** PN 160 |
+| | **U**  | **U** PN 250 |
+| | **V**  | **V** PN 320 |
+| | **W**  | **W** PN 400 |
+| | **X**  | **X** PN 500 |
+| | **Y**  | **Y** PN 75# |
+| | **Z**  | **Z** PN 10000# |
 
 ## 螺栓螺母
+因为螺栓螺母不在三维视图中显示，为了计算法兰连接的螺栓螺母信息，需要定义螺栓螺母的数据。通过PARAGON面板上的Create Bolt和Modify Bolt来创建和修改螺栓螺母信息。
+
+![Bolt Table](images/paragon/paragon_bolt_zh.png "螺栓螺母数据")
+
+TODO
+
+## 管件壁厚
+有的管件描述中有壁厚的参数化描述，为了实现一个管件描述文件中表示不同壁厚，可以定义壁厚表。通过PARAGON面板上的Table World和Pipe Table来创建和修改管道数据表。
+
+![Pipe Data Table](images/paragon/paragon_data_zh.png "管件数据表格")
+
+TODO
 
 ## 管道部件
-对于管件模型，不同类型的管件外形基本是固定的，只是参数有所不同导致的管件大小有所不同。如一个异径接头的外形就是一个圆锥体；一个带颈对焊法兰的外形就是一个圆柱体和一个圆锥体，等等。所以可以根据管件的类型分类，将标准管件的建库固化成表格数据输入的形式，来简化标准管件建库工作，而不需要对每个管件都从参数集、点集和形集来建库。
+对于管件模型，不同类型的管件外形基本是固定的，只是参数有所不同导致的管件大小有所不同。如一个异径接头的外形就是一个圆锥体；一个带颈对焊法兰的外形就是一个圆柱体和一个圆锥体，等等。所以可以根据管件的类型分类，将标准管件的建库固化成表格数据输入的形式，来简化标准管件建库工作，而不需要对每个管件都从参数集、点集和形集来建库。对于标准部件的定义，可以使用 Standard Component ![Standard Component](images/icons/create_std.png) 功能来实现。
 
 在生成管道轴测图ISO时，对于不同的管件需要指定其图例SKEY。其实这个图例SKEY已经对管件进行分类。使用SKEY来对标准管件库进行分类，可以涵盖常见的管件类型。如下图所示为VTFL阀门的参数化数据输入表格。阀门标准件的创建只需要对照相应的标准文件，找到其中的尺寸参数，输入到表格对应的尺寸中即可。
 
@@ -318,6 +372,14 @@ PipeCAD要求数据库中的每一个元素有唯一的名字，即数据库中�
 管道等级在设计软件中的体现就是帮助设计人员快速选择所需要的管件，避免错误。即设计模型中选择的管件，是通过等级来筛选的。设计模型通过属性SPREF来关联元件库的模型。每个等级部件Spec Component包含管件的模型引用CATREF，及材料描述引用DETREF。CATREF指向管件的三维模型。DETREF为材料的参数化描述，及与ISO图相关的SKEY定义。管道等级中还关联其他信息，如螺栓等级，材料壁厚等等。其引用关系如下：
 
 ![SPREF](images/paragon/paragon_spref_zh.png "Design与Paragon关系") 
+
+通过PARAGON面板上的Create Spec和Modify Sepc来创建修改管道等级。
+
+![Pipe Spec](images/paragon/paragon_spec_zh.png "管道等级修改")
+
+通过按钮SPEC来选择当前要修改的管道等级，在Headings里面选择要管理的管件类型。对于等级中不需要的，可以在列表中选择并在右键菜单中点击删除。如果要添加管件，可以通过如下方式。首先，在导航树上选择要添加元件的CATE后点击CATE按钮，会在列表中显示出当前CATE中的部件，在列表中选择要添加的部件；然后，依次设置管件描述SDTE，材料描述SMTE，若是法兰连接管件还应设置螺栓SBOL。最后，点击Add按钮添加选择的部件到等级中。
+
+![Add component to spec](images/paragon/paragon_spec_add_zh.png "添加部件到等级中")
 
 ## 设备管嘴
 设备管嘴Nozzle是设备与管道连接的接口，通过把管嘴Nozzle建模，可以为管道建模时首尾点定位提供便利。
@@ -367,6 +429,11 @@ PipeCAD要求数据库中的每一个元素有唯一的名字，即数据库中�
 
 
 ## 结构等级
+结构等级的创建也只有一个分类，即按型材的类型分类。创建等级SPEC时，选择用途为STL，程序会自动创建出这些分类SELE。
+
+![Steel Spec](images/paragon/paragon_stru_spec_zh.png "型材等级")
+
+型材等级的修改方法和管道等级等级的修改方法相同。只是点击CATE按钮需要在导航树上选择STCA类型节点。
 
 # 轴网建模
 ## 创建轴网
@@ -377,61 +444,162 @@ PipeCAD要求数据库中的每一个元素有唯一的名字，即数据库中�
 
 在软件PipeCAD中提供创建及显示轴网的用户界面如下图所示：
 
-![Create Grid](images/pipecad_grid_create.png "创建轴网")
+![Create Grid](images/design/design_grid_create_zh.png "创建轴网")
 
 通过设置X，Y和Z三个方向上的坐标，来快速生成轴网。生成之前可以使用预览功能Preview。预览生成的是辅助线和文字，不是实际模型。预览结果符合预期，可以点击生成Build来生成轴网模型。
 
-![Preview Grid](images/pipecad_grid_preview.png "预览轴网")
+![Preview Grid](images/design/design_grid_preview_zh.png "预览轴网")
 
 ## 显示轴号
 在管道设计过程中，可以通过显示轴网编号功能显示出轴网的编号，方便设计人员对模型进行定位。通过结构面板STRUCTURE上的显示轴网功能来实现：
 
-![Display Grid Key](images/pipecad_grid_tag.png "显示轴网编号")
+![Display Grid Key](images/design/design_grid_tag_zh.png "显示轴网编号")
 
 选择要显示轴网编号的STRU节点，可以显示轴网的编号Key。还可以显示轴网的名称：
 
-![Display Grid Name](images/pipecad_grid_name.png "显示轴网名称")
+![Display Grid Name](images/design/design_grid_name_zh.png "显示轴网名称")
 
 # 设备建模
 工厂设计中会涉及到大量的设备模型，如换热器、反应塔、泵、罐等。设备通过管嘴与管道相连。因为工厂设计中设备只是用于占位，不是用于制造，所以设备的模型不需要精确建模。只需要用一些简单图元搭出大概模型，用于碰撞检测。但是管嘴的位置需要准确建模，因为管嘴位置不正确，会导致管道模型不准确。通过使用基本体素图元来搭积木的方式，可以建立常用的设备模型。设备的树形层次结构如下图所示：
 
-![Equipment Hierarchy](images/equi_tree.png "设备结构层次")
+![Equipment Hierarchy](images/design/design_equi_tree_zh.png "设备结构层次")
 
-由设备的层次结构图可知，设备EQUI可以包含子设备SUBE或者基本图元，如长方体BOX，圆柱体CYLI等基本图元以及管嘴NOZZ等。
+由设备的层次结构图可知，设备EQUI可以包含子设备SUBE或者基本图元，如长方体BOX，圆柱体CYLI等基本图元以及管嘴NOZZ等。设备相关功能都在EQUIPMENT面板上：
+
+![Equipment Panel](images/design/design_equi_panel_zh.png "设备功能面板")
 
 ## 标准设备
 PipeCAD的EQUIPMENT面板上提供常用设备的标准模板，如泵、储罐、换热器等，用户只需要输入设备的相关参数即可完成设备的建模。
 
-- 泵设备：通过EQUIPMENT->Standards->Pump ![Standard Pump](images/equi_std_pump.png) 创建泵设备模型。
+- 泵设备：通过EQUIPMENT->Standards->Pump ![Standard Pump](images/icons/equi_std_pump.png) 创建泵设备模型。
 
-![Standard Pump](images/equi_pump.png "泵设备参数")
+![Standard Pump](images/design/design_equi_pump_zh.png "泵设备参数")
 
 输入泵的名称，选择泵的类型，并输入相关参数，点击OK即可以创建出泵的设备模型。
 
-![Pump Model](images/equi_pump_model.png "泵设备模型")
+![Pump Model](images/design/design_equi_pump_model_zh.png "泵设备模型")
 
-- 罐设备：通过EQUIPMENT->Standards->Vessel ![Standard Vessel](images/equi_std_vessel.png) 创建罐设备模型。
+- 罐设备：通过EQUIPMENT->Standards->Vessel ![Standard Vessel](images/icons/equi_std_vessel.png) 创建罐设备模型。
 
-![Standard Vessel](images/equi_vessel.png "罐设备参数")
+![Standard Vessel](images/design/design_equi_vessel_zh.png "罐设备参数")
 
 输入罐的名称，选择罐的类型，并输入相关参数，点击OK即可以创建出罐的设备模型。
 
-![Vessel Model](images/equi_vessel_model.png "罐设备模型")
+![Vessel Model](images/design/design_equi_vessel_model_zh.png "罐设备模型")
 
-- 换热器：通过EQUIPMENT->Standards->Exchanger ![Standard Exchanger](images/equi_std_exchanger.png) 创建换热器设备模型。
+- 换热器：通过EQUIPMENT->Standards->Exchanger ![Standard Exchanger](images/icons/equi_std_exchanger.png) 创建换热器设备模型。
 
-![Standard Exchanger](images/equi_exchanger.png "换热器参数")
+![Standard Exchanger](images/design/design_equi_exchanger_zh.png "换热器参数")
 
 输入换热器的名称，选择换热器的类型，并输入相关参数，点击OK即可以创建出换热器的设备模型。
 
-![Exchanger Model](images/equi_exchanger_model.png "换热器模型")
+![Exchanger Model](images/design/design_equi_exchanger_model_zh.png "换热器模型")
+
+## 设备位置
+对于设备EQUI节点，通过显示属性有Position和Orientation两个属性来设置设备模型的位置。
+
+![Equipment Position](images/design/design_equi_position_zh.png "设置位置属性")
 
 ## 设备图元
 对于工厂设计中的设备模型不需要精确建模，所以使用构造实体造型几何（Constructive Solid Geometry，CSG）造型方法进行建模。构造实体几何造型方法是通过对基本体素定义运算而得到新的形体的一种造型方法。基本体素可以是长方体、圆柱体、圆锥体、拉伸体和旋转体等，其运算为几何变换或正则集合运算并、交、差。在设备建模过程中，对于不常用的设备或者复杂设备，通过使用基本体素搭积木的方式创建设备模型。
 
+- 长方体 Box：在长方体参数界面上输入长、宽、高及坐标，在设计导航树上选择EQUI/SUBE节点可以创建长方体。
+
+![Box](images/design/design_equi_box_zh.png "长方体参数界面")
+
+- 圆柱体 Cylinder：在圆柱体参数界面上输入直径、高度和坐标，在设计导航树上选择EQUI/SUBE节点可以创建圆柱体。
+
+![Cylinder](images/design/design_equi_cylinder_zh.png "圆柱体参数界面")
+
+- 圆锥体 Cone：在圆锥体参数界面上输入顶部直径、底部直径和高度及坐标，在设计导航树上选择EQUI/SUBE节点可以创建圆锥体。
+
+![Cone](images/design/design_equi_cone_zh.png "圆锥体参数界面")
+
+- 球头体 Dish：在球头体参数界面上输入直径和高度及坐标，在设计导航树上选择EQUI/SUBE节点可以创建球头体。当输入Radius时，可以创建出封头模型。
+
+![Dish](images/design/design_equi_dish_zh.png "球头体参数界面")
+
+- 圆环体 Circular Torus：在圆环体参数界面上输入内半径、外半径、角度及坐标，在设计导航树上选择EQUI/SUBE节点可以创建圆环体。
+
+![Dish](images/design/design_equi_ctorus_zh.png "圆环体参数界面")
+
+- 方环体 Rectangular Torus：在方环体参数界面上输入内半径、外半径、角度、厚度及坐标，在设计导航树上选择EQUI/SUBE节点可以创建方环体。
+
+![Dish](images/design/design_equi_rtorus_zh.png "方环体参数界面")
+
+
+## 设备管嘴
+管嘴Nozzle是设备与管道连接的接口，通过把管嘴Nozzle建模，可以为管道建模时首尾点定位提供便利。在PipeCAD使用如下界面来创建设备管嘴，通过选择管嘴等级关联上部件库中的管嘴模型。
+
+![Equipment Nozzle](images/design/design_equi_nozzle_zh.png "创建设备管嘴")
+
+输入管嘴名称，选择管嘴等级中的相关信息，输入管嘴的长度及位置等信息，可以创建出管嘴模型。选择要修改的管嘴，通过点击修改管嘴按钮来修改管嘴参数。选择设备EQUI节点，点击管嘴方位按钮可以查看管嘴方位列表及生成管口方位图。管口方位图生成可参考 [设备管口方位图](#nozzle_orientation_drawing) 。
+
+## 连接图元
+对于每个设备基本体都有特征点，通过设备基本体特征点的连接，可以对基本体快速定位，使设备建模更高效。这个连接功能与管道的管件连接类似。目前增加的功能是通过指定点来连接基本体。使用方法为在设备面板EQUIPMENT中的Connect->Explicit:
+
+![Connect Point](images/design/design_equi_connect_zh.png "连接特征点")
+
+使用导航树上当前元素为一个设备基本图元，点周连接特征点按钮，这时提示在三维视图中选择另一个需要连接的基本图元。在出现的特征点连接对话框中选择要连接的特征点，点击OK可以将所选图元连接在一起。
+
+## 导出PML
+通过EQUIPMENT面板上的导出Export->PML功能可以将PipeCAD中的设备模型导出成PML宏文件，从而将设备模型导入到PDMS中。
+
 # 结构建模
+结构建模是将梁、柱子等构筑物的模型建立出来，供管道等专业作为参考，避免碰撞。结构模型包括定位用的轴网，设备的平台梯子，栏杆扶手等。结构节点的层次结构图如下所示：
+
+![Structure Hierarchy](images/design/design_stru_tree_zh.png "结构层次关系")
+
+## 框架结构
+通过STRUCTURE面板上的Regular按钮来创建框架结构：
+
+![Regular Structure](images/design/design_stru_frmw_zh.png "框架结构建模")
+
+选择型材的等级，输入三个方向的坐标来创建结构模型。
+
+## 方形平台
+TODO
+
+## 圆形平台
+通过STRUCTURE面板上的Circular Platform按钮来创建圆形平台：
+
+![Circular Platform](images/design/design_stru_platform_circular_zh.png "创建圆形平台")
+
+## 梯子建模
+通过STRUCTURE面板上的Ladder按钮来创建梯子模型：
+
+![Ladder](images/design/design_stru_ladder_zh.png "创建圆形平台")
+
+## 旋梯建模
+通过STRUCTURE面板上的Stair->Spiral按钮来创建旋梯模型，输入旋梯的名称，位置及高度，角度等参数，即可对旋梯进行建模：
+
+![Ladder](images/design/design_stru_spiral_zh.png "创建旋梯模型")
 
 # 管道建模
+管道建模的数据也是树形层次结构，如下图所示：
+
+![Pipe Hierarchy](images/design/design_pipe_tree_zh.png "管道数据层次")
+
+## 创建管道
+通过PIPING面板上按钮Pipline->Create来创建管道Pipe。输入管道名称Name，选择管道等级Spec，以及管径Bore和设计参数即可。
+
+![Create Pipe](images/design/design_pipe_create_zh.png "创建管道")
+
+通过PIPING面板上按钮Pipeline->Modify来修改管道。管道修改数据包括分支Branch的创建和修改。分支Branch数据主要是指定其首尾（Head/Tail）的位置和连接关系。
+
+![Modify Pipe](images/design/design_pipe_modify_zh.png "修改管道")
+
+## 创建分支
+分支Branch的详细数据包括首尾位置Position，方向Direction及管径Bore和连接方式。一种方式是直接修改这些数据。当首尾位置在一条直线且于方向平行，及首尾方向相反的情况下会生成管道模型。其他情况只显示一个虚线。
+分支Branch的首尾（Head/Tail）也进行标记，且用不同的形状来区分。其中首Head是用一个带柄的箭头来表示，尾Tail是不带柄的箭头来表示。修改分支Branch还有一种方式是指定连接的模型，连接模型可以是其他管道、管件或设备和设备管嘴Nozzle。这种方式可以直接在模型中交互选择，比较方便。
+
+## 创建管件
+创建管道PIPE和分支BRANCH后，管道设计的主要功能是布置其中的管件，如法兰、阀门等。因为管件都是通过参数化的方式实现，所以管件的创建需要通过管道等级SPEC连通设计数据和部件库数据。管件的创建还需要处理模型定位的问题：在部件库中，管件都是在一个局部坐标系中建模，需要转换到设计模型实际的位置上。通过PIPING面板上的Create Component来创建管件。
+
+![Create Component](images/design/design_component_create_zh.png "创建管件")
+
+根据分支BRANCH的等级SPEC提供等级过滤，首先根据大类类型如弯头Elbow，法兰Flange, 阀门Valve等；再根据Skey过滤。通过Skey过滤，让用户对ISO图上的管件符号有个认识，其实Skey已经对管件进行了分类，避免过滤类型杂乱无章。
+通过旋转和移动调整管件在管道上的位置和方向，最终建立完整的管道模型。
 
 # 图纸生成
 当前数字化交付已经流行起来，WebGL技术使得直接在网页上浏览三维模型成为可能，但是图纸依然是工程设计的一个重要参考依据。在完成管道建模设计后，PipeCAD自动生成设计交付成果图纸。管道设计需要提交的图纸主要是用于制造的管道轴测ISO图和用于安装的管道平面布置图。设备专业的有管口方位图，还有与其他各专业之间的委托图纸等。
@@ -480,7 +648,7 @@ TODO
 
 TODO
 
-## 设备管口方位图
+## 设备管口方位图 {#nozzle_orientation_drawing}
 管口方位图是制造设备时确定各管口方位、支座及地脚螺栓等相对位置的图样，也是安装设备时确定安装方向的依据。表示设备上各管口的方位情况。（2）尺寸和标注。标明各管口以及管口的方位情况。（3）方向标。（4）管口符号及管口表。（5） 必要的说明。（6） 标题栏。在标准HG 20519.26-92中有设备管口方位图的详细规定。通过点击 EQUIPMENT->Nozzle->Orient 来调整管口方位及生成管口方位图：
 
 ![Nozzle Orientation](images/design/design_nozzle_orient_zh.png "设备管口方位")
@@ -490,12 +658,84 @@ TODO
 ![Nozzle Orientation Drawing](images/design/design_nozzle_dwg_zh.png "设备管口方位图")
 
 # 材料报表
+
+## 管道材料
 管道安装材料表主要用于安装施工，是现场配发材料和安装的依据之一。材料表中的内容是按照每条管号列出每条管道上的管子、管件、阀门、法兰、螺栓和螺母、垫片等材料的规格、型号或图号、标准号、数量等。
 PipeCAD根据项目数据库，提取出管道数据，自动生成管件材料表。
 
 TODO
 
 # 定制开发
+PipeCAD集成Python开发语言，为程序提供二次开发功能。Python是动态解释型语言，1989年由Guido van Rossum开发，与1991年初发布。Python功能强大，简单易学，支持面向对象编程技术，并且能跨平台。Python有大量第三方模块，可以大扩展程序的能力。
+
+## 基本语法
+变量：Python可以根据变量值自动设置变量类型，编程人员无需关心变量的类型，在该变量的生命周期内由Python负责管理。变量名需要遵循下列原则：
+- 变量量名的首字符必须是英文字母或下划线；
+- 除首字符外，其他字符可以由字母、下划线或数字组成；
+- 变量名对大小写敏感。
+```python
+# 变量定义
+salary = 8000
+print(salary)
+```
+
+## 条件语句
+条件语句用来处理不同条件的不同反应，其语法如下：
+```python
+# 条件语句
+if (条件表达式):
+    pass
+elif (条件表达式):
+    pass
+else:
+    pass
+# if
+```
+
+## 循环语句
+循环语句指的是重复执行的代码块，由循环体和终止条件组成。由重复执行的代码块称为循环体，循环体执行的次数由循环终止条件决定。主要由while循环和for循环。
+```python
+# while 循环
+while (条件表达式):
+   # 循环体
+   pass
+else:
+   pass
+```
+在while循环中还可以包含else，如果条件表达式为True，while循环继续执行循环体代码；否则执行else块中的语句。
+
+```python
+# for 循环
+for variable in set:
+    # 代码块
+    pass
+else:
+    pass
+# for
+```
+
+for 循环一般用于集合的遍历（列表，元组，字典等集合），将依次访问集合中的每个元素。在循环体中可以根据条件使用break退出循环体，还可以用continue退出本次循环。
+
+## 类和对象
+
+```python
+# Class类
+class Dummy:
+    pass
+```
+
+## 窗口定义
+PipeCAD界面使用Qt，所以可以采用PySide/PyQt类似的语法来定制开发程序界面。在Python Console中输入如下代码可以显示一个窗口：
+```python
+from PythonQt.QtCore import *
+from PythonQt.QtGui import *
+
+aLabel = QLabel("Hello World!")
+aLabel.show()
+
+```
+
+![Python Hello](images/pipecad_python_zh.png "开发Python窗口程序")
 
 # 技术支持
 虽然PipeCAD是面向工程设计行业的一款小众产品，但本着一颗产品人的心，持续学习，专注于工程设计行业三维软件的开发，我们会不断让PipeCAD好用、更好用。遇到不爽，欢迎大家反馈意见。我们时刻关注每一个用户提出的意见和建议，会认真对待每一个问题，您提的每个需求我们都会用心考虑，但由于人力上的限制，优先级上会有所不同，有些需求不能第一时间完成，也请小伙伴们谅解，我们将不断改善，努力做到更好，感谢小伙伴们的支持与厚爱，比心 \emoji :heart: 。PipeCAD还在不断开发完善中，如果您有任意意见、建议都可以向我们反馈：
