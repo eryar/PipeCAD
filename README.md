@@ -18,7 +18,7 @@ PipeCAD can be used for Plant Piping Design, PipeCAD have the following function
 PipeCAD is <code>not open source</code>, but you can use PipeCAD Personal Edition for free.
 
 PipeCAD provide customization by Python. The python plugins locate in the 
-<code>PipeCAD/Lib/pipecad</code> foloder. <br>
+<code>PipeCAD/Lib/pipecad</code> folder. <br>
 The Python plugins are open source with <strong>MIT</strong> license.
 
 ## Download
