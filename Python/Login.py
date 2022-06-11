@@ -42,6 +42,8 @@ class LoginDialog(QDialog):
         self.resize(350, 300)
         self.setWindowTitle(QT_TRANSLATE_NOOP("Login", "PipeCAD Login"))
         
+        aCurrentPath = os.path.dirname(os.path.abspath(__file__))
+        
         self.hBoxLayoutProjects = QHBoxLayout()
         self.hBoxLayoutProjects.setSpacing(2)
         
@@ -63,7 +65,7 @@ class LoginDialog(QDialog):
             self.btnProject.setMinimumSize( 256 , 104 )
             self.btnProject.setMaximumSize( 256 , 104 )
             #Icon downloaded from <a href="https://www.flaticon.com/free-icons/factory" title="factory icons">Factory icons created by vectorsmarket15 - Flaticon</a>
-            self.btnProject.setIcon( QIcon('Lib/PipeCad/icons/login/128x128_select_project.png') )
+            self.btnProject.setIcon( QIcon(aCurrentPath + '/icons/login/128x128_select_project.png') )
             self.btnProject.setIconSize( QSize(96,96) )
             self.btnProject.setStyleSheet("QPushButton { text-align: left; }")
             self.btnProject.setText(QT_TRANSLATE_NOOP("Login", "Project: %s \nCode: %s \nNumber: %s \nDescription: \n%s") % (aProject.Name, aProject.Code, aProject.Number, aProject.Description))
@@ -120,13 +122,13 @@ class LoginDialog(QDialog):
         self.btnAdmin.setObjectName( "Admin" )
                 
         #<a href="https://www.flaticon.com/free-icons/worker" title="worker icons">Worker icons created by Freepik - Flaticon</a>
-        self.btnDesign.setIcon( QIcon('Lib/PipeCad/icons/login/128x128_select_design.png') )
+        self.btnDesign.setIcon( QIcon(aCurrentPath + '/icons/login/128x128_select_design.png') )
         
         #Icon downloaded from <a href="https://www.flaticon.com/free-icons/algorithm" title="algorithm icons">Algorithm icons created by Eucalyp - Flaticon</a>
-        self.btnParagon.setIcon( QIcon('Lib/PipeCad/icons/login/128x128_select_paragon.png') )
+        self.btnParagon.setIcon( QIcon(aCurrentPath + '/icons/login/128x128_select_paragon.png') )
         
         #Icon downloaded from <a href="https://www.flaticon.com/free-icons/data-processing" title="data processing icons">Data processing icons created by Eucalyp - Flaticon</a>
-        self.btnAdmin.setIcon( QIcon('Lib/PipeCad/icons/login/128x128_select_admin.png') )
+        self.btnAdmin.setIcon( QIcon(aCurrentPath + '/icons/login/128x128_select_admin.png') )
         
         self.btnDesign.setIconSize( QSize(96,96) )
         self.btnParagon.setIconSize( QSize(96,96) )
