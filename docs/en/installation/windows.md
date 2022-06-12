@@ -9,8 +9,15 @@ You need you to agreed with License Agreement and press button **Next** to conti
 On this step you need to select installation folder and to press button **Next**:
 ![003](../../images/installation/windows/003.png)
 
-After checking installation details you need to press button **Install**:
+On next step there needs to define where will be located Projects files and Python Libraries. Folder can be select by pressing button **Browse**:
 ![004](../../images/installation/windows/004.png)
 
-When utility will complete installation process you can check box to read README file or start application after closing installation utility.   
+In case if Python is not installed on PC, pressing checkbox will allow adding path to embedded Python. It will allow to use embedged Python for running sctipts:
+
 ![005](../../images/installation/windows/005.png)
+
+After checking installation details you need to press button **Install**:
+![006](../../images/installation/windows/006.png)
+
+When utility will complete installation process you can check box to read README file or start application after closing installation utility.   
+![007](../../images/installation/windows/007.png)
