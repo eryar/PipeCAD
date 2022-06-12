@@ -61,6 +61,8 @@ PipeCAD also combines Python to provide flexible secondary development functions
 
 [Module Admin](./admin/user_guide.md)
 
+[Keyboard shortcuts](./common/keybord_shortcuts.md)
+
 ## Development
 [PipeCAD API](./development/api.md)
 
