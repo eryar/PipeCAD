@@ -426,11 +426,16 @@ class NozzleDialog(QDialog):
     # genericTypeChanged
 
     def createNozzle(self):
+        aX = float(self.textX.text)
+        aY = float(self.textY.text)
+        aZ = float(self.textZ.text)
+
         try:
             PipeCad.StartTransaction("Create Nozzle")
 
             PipeCad.CreateItem("NOZZ", self.textName.text)
             aNozzItem = PipeCad.CurrentItem()
+            aNozzItem.Position = Position(aX, aY, aZ)
             aNozzItem.Catref = self.comboBore.currentData
         
             PipeCad.CommitTransaction()

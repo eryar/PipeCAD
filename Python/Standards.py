@@ -246,6 +246,11 @@ class StandardDialog(QDialog):
         if aIndex.isValid() or aRowCount == 0:
             self.tableModel.insertRow(aRowCount)
             self.tableModel.setData(self.tableModel.index(aRowCount, 1), self.treeWidget.currentItem().data(0, Qt.UserRole))
+
+            for i in range(2, self.tableView.model().columnCount()):
+                self.tableModel.setData(self.tableModel.index(aRowCount, i), 0)
+            # for
+        # if
     # insertRecord
 
     def deleteRecord(self):
