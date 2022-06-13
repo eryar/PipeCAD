@@ -99,11 +99,11 @@ PipeCAD在Windows系统中安装很简单，直接运行下载的安装包，将
 
 设置项目路径和Python库目录：
 
-![Ready to Install](images/installation/windows/004.png "项目路径设置")
+![Set Projects and Python Lib Path](images/installation/windows/004.png "项目路径设置")
 
 为了方便使用Python，可以勾选将安装目录添加到系统环境变量PATH中：
 
-![Ready to Install](images/installation/windows/005.png "环境变量设置")
+![Add to PATH](images/installation/windows/005.png "环境变量设置")
 
 检查一下安装信息准确无误后可以点击安装Install进行安装：
 
