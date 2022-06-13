@@ -87,23 +87,31 @@ https://space.bilibili.com/1548012589
 ### Windows
 PipeCAD在Windows系统中安装很简单，直接运行下载的安装包，将会看到欢迎界面并点击下一步Next：
 
-![Setup Welcome](images/installation/windows/setup_001.png "安装程序欢迎界面")
+![Setup Welcome](images/installation/windows/001.png "安装程序欢迎界面")
 
 在使用许可协议界面需要点同意并点击下一步Next：
 
-![License Agreement](images/installation/windows/setup_002.png "使用许可协议")
+![License Agreement](images/installation/windows/002.png "使用许可协议")
 
 在安装目录界面上设置安装目录并点击下一步Next：
 
-![Setup Destination](images/installation/windows/setup_003.png "安装目录")
+![Setup Destination](images/installation/windows/003.png "安装目录")
+
+设置项目路径和Python库目录：
+
+![Ready to Install](images/installation/windows/004.png "项目路径设置")
+
+为了方便使用Python，可以勾选将安装目录添加到系统环境变量PATH中：
+
+![Ready to Install](images/installation/windows/005.png "环境变量设置")
 
 检查一下安装信息准确无误后可以点击安装Install进行安装：
 
-![Ready to Install](images/installation/windows/setup_004.png "准备安装")
+![Ready to Install](images/installation/windows/006.png "准备安装")
 
 安装完成后，可以勾选README查看说明文档，及勾选运行程序选项启动PipeCAD：
 
-![Setup Finish](images/installation/windows/setup_005.png "安装完成")
+![Setup Finish](images/installation/windows/007.png "安装完成")
 
 ### Linux
 TODO
@@ -183,6 +191,15 @@ PipeCAD中数据都是以树形层次组织的，所以在各个模块中都提�
 - 视图方块：视图的一些操作还可以通过视图右上角的方块来实现。当鼠标移动到视图方块上时，点击高亮的部分，可以切换视图方向。若选择了模型，则会将选择的模型置于视图中心。若没有选择模型，则会缩放全部模型。
 
 ![View Cube](images/common/common_view_cube_zh.png "视图方块") 
+
+- 视图快捷键：为了方便视图操作，增加快捷键。
+| 快捷键 | 功能描述 |
+| --- | --- |
+| F8 | 线框模式和着色模式切换 |
+| F2 | 鼠标中键拖拽时缩放视图 |
+| F3 | 鼠标中键拖拽时移动视图 |
+| F5 | 鼠标中键拖拽时旋转视图 |
+
 
 # 项目管理
 工程设计一般都是按项目进行，所以PipeCAD也是按项目进行数据的管理。当创建项目后，会自动生成项目所需要的文件夹及系统数据库。为了进行项目设计，还需要在管理模块Admin中对项目进行配置，如增加元件数据库、设计数据库等；规划工作组Team，创建用户及分配权限。
