@@ -10,9 +10,10 @@ PipeCAD does not have high hardware requirements. Because it is a 3D software, i
 
 ## Software Requirement
 
-Windows 7, 10
+### OS Windows 
+For Windows operating system PipeCAD is developed using Visual Studio 2015, so Visual C++ Redistributable Packages for Visual Studio 2015 is required, and the dynamic library program lacking Visual C++ will report an error. The Visual C++ Redistributable for Visual Studio 2015 download address is:
 
-Ubuntu 20.04 using Wine 
+https://www.microsoft.com/zh-CN/download/details.aspx?id=48145
 
-PipeCAD is developed using Visual Studio 2015, so Visual C++ Redistributable Packages for Visual Studio 2015 are required, and the library program lacking VC will report an error. The Visual C++ Redistributable for Visual Studio 2015 download address is: https://www.microsoft.com/en-us/download/details.aspx?id=48145 
-
+### OS Linux
+For the Linux operating system, Qt Creator will be used for development later, and Linux support is also provided. Currently, PipeCAD can be installed on Linux using Wine. 
