@@ -30,7 +30,7 @@ There are some videos to illustrate how to use PipeCAD: https://space.bilibili.c
 
 # Documentation
 [:uk:](./docs/en/index.md)
-[:cn:](./docs/zh/index.md)
+[:cn:](./docs/user_guide_zh.md)
 
 # Feedback
 * Report bug or other issues of PipeCAD here: https://github.com/eryar/PipeCAD/issues
