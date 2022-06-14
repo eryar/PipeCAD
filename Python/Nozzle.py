@@ -430,13 +430,29 @@ class NozzleDialog(QDialog):
         aY = float(self.textY.text)
         aZ = float(self.textZ.text)
 
+        aTreeItem = PipeCad.CurrentItem()
+        if aTreeItem.Type == "EQUI":
+            pass
+        if aTreeItem.Owner.Type == "EQUI":
+            aTreeItem = aTreeItem.Owner
+        else:
+            QMessageBox.warning(self, "", QT_TRANSLATE_NOOP("Equipment", "Please select EQUI to create nozzle!"))
+            return
+        # if
+
+        aDir = Direction(self.textP1.text, aTreeItem)
+
         try:
             PipeCad.StartTransaction("Create Nozzle")
 
             PipeCad.CreateItem("NOZZ", self.textName.text)
             aNozzItem = PipeCad.CurrentItem()
-            aNozzItem.Position = Position(aX, aY, aZ)
+            aNozzItem.Height = float(self.textHeight.text)
+            aNozzItem.Purpose = self.textPurpose.text
+            aNozzItem.Description = self.textDescription.text
+            aNozzItem.Position = Position(aX, aY, aZ, aTreeItem)
             aNozzItem.Catref = self.comboBore.currentData
+            aNozzItem.Orientate("P1", aDir)
         
             PipeCad.CommitTransaction()
         except Exception as e:
