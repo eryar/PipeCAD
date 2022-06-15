@@ -12,6 +12,6 @@ Double-click the PipeCAD shortcut icon or directly run PipeCAD.bat in the instal
 
 |Argument|Description|
 |:---|:---|
-|--show_console|During running PipeCAD, Python console will be shown. Usefull for defining errors during of PipeCAD starting|
+|--show_console|During running PipeCAD, Python console will be shown. Usefull for defining errors during of PipeCAD session|
 |--create project|Argument will allow to start PipeCAD in project creation mode|
  
