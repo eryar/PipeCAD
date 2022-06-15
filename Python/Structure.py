@@ -24,6 +24,222 @@ from PythonQt.pipecad import *
 from pipecad import *
 
 
+class StruDialog(QDialog):
+    def __init__(self, theParent = None):
+        QDialog.__init__(self, theParent)
+        
+        self.setupUi()
+    # __init__
+
+    def setupUi(self):
+        self.resize(280, 100)
+        self.setWindowTitle(QT_TRANSLATE_NOOP("Structure", "Create Structure"))
+
+        self.verticalLayout = QVBoxLayout(self)
+        self.formLayout = QFormLayout()
+
+        # Name
+        self.labelName = QLabel(QT_TRANSLATE_NOOP("Structure", "Name"))
+        self.textName = QLineEdit()
+
+        self.formLayout.setWidget(0, QFormLayout.LabelRole, self.labelName)
+        self.formLayout.setWidget(0, QFormLayout.FieldRole, self.textName)
+
+        # Purpose
+        self.labelPurpose = QLabel(QT_TRANSLATE_NOOP("Structure", "Purpose"))
+        self.comboPurpose = QComboBox()
+        #self.comboPurpose.setEditable(True)
+        self.comboPurpose.addItem("STL")
+        self.comboPurpose.addItem("H&S")
+        self.comboPurpose.addItem("GRID")
+
+        self.formLayout.setWidget(1, QFormLayout.LabelRole, self.labelPurpose)
+        self.formLayout.setWidget(1, QFormLayout.FieldRole, self.comboPurpose)
+
+        self.verticalLayout.addLayout(self.formLayout)
+
+        self.buttonBox = QDialogButtonBox(QDialogButtonBox.Cancel|QDialogButtonBox.Ok, self)
+
+        self.buttonBox.accepted.connect(self.accept)
+        self.buttonBox.rejected.connect(self.reject)
+
+        self.verticalLayout.addWidget(self.buttonBox)
+    # setupUi
+
+    def accept(self):
+        aName = self.textName.text
+        aPurpose = self.comboPurpose.currentText
+
+        try:
+            PipeCad.StartTransaction("Create STRU")
+            PipeCad.CreateItem("STRU", aName)
+            aStruItem = PipeCad.CurrentItem()
+            aStruItem.Purpose = aPurpose
+            PipeCad.CommitTransaction()
+        except Exception as e:
+            QMessageBox.critical(self, "", e)
+            raise e
+        # try
+
+        QDialog.accept(self)
+    # accept
+# StruDialog
+
+# Singleton Instance.
+aStruDlg = StruDialog(PipeCad)
+
+def CreateStru():
+    aStruDlg.show()
+# CreateStru
+
+
+class FrmwDialog(QDialog):
+    def __init__(self, theParent = None):
+        QDialog.__init__(self, theParent)
+        
+        self.setupUi()
+    # __init__
+
+    def setupUi(self):
+        self.resize(280, 100)
+        self.setWindowTitle(QT_TRANSLATE_NOOP("Structure", "Create Framework"))
+
+        self.verticalLayout = QVBoxLayout(self)
+        self.formLayout = QFormLayout()
+
+        # Name
+        self.labelName = QLabel(QT_TRANSLATE_NOOP("Structure", "Name"))
+        self.textName = QLineEdit()
+
+        self.formLayout.setWidget(0, QFormLayout.LabelRole, self.labelName)
+        self.formLayout.setWidget(0, QFormLayout.FieldRole, self.textName)
+
+        # Purpose
+        self.labelPurpose = QLabel(QT_TRANSLATE_NOOP("Structure", "Purpose"))
+        self.comboPurpose = QComboBox()
+        #self.comboPurpose.setEditable(True)
+        self.comboPurpose.addItem("SUPP")
+        self.comboPurpose.addItem("H&S")
+        self.comboPurpose.addItem("LADD")
+        self.comboPurpose.addItem("GRID")
+        self.comboPurpose.addItem("FLOO")
+        self.comboPurpose.addItem("STAI")
+        self.comboPurpose.addItem("WALL")
+        self.comboPurpose.addItem("WALK")
+
+        self.formLayout.setWidget(1, QFormLayout.LabelRole, self.labelPurpose)
+        self.formLayout.setWidget(1, QFormLayout.FieldRole, self.comboPurpose)
+
+        self.verticalLayout.addLayout(self.formLayout)
+
+        self.buttonBox = QDialogButtonBox(QDialogButtonBox.Cancel|QDialogButtonBox.Ok, self)
+
+        self.buttonBox.accepted.connect(self.accept)
+        self.buttonBox.rejected.connect(self.reject)
+
+        self.verticalLayout.addWidget(self.buttonBox)
+    # setupUi
+
+    def accept(self):
+        aName = self.textName.text
+        aPurpose = self.comboPurpose.currentText
+
+        try:
+            PipeCad.StartTransaction("Create FRMW")
+            PipeCad.CreateItem("FRMW", aName)
+            aFrmwItem = PipeCad.CurrentItem()
+            aFrmwItem.Purpose = aPurpose
+            PipeCad.CommitTransaction()
+        except Exception as e:
+            QMessageBox.critical(self, "", e)
+            raise e
+        # try
+
+        QDialog.accept(self)
+    # accept
+# FrmwDialog
+
+# Singleton Instance.
+aFrmwDlg = FrmwDialog(PipeCad)
+
+def CreateFrmw():
+    aFrmwDlg.show()
+# CreateFrmw
+
+
+class SbfrDialog(QDialog):
+    def __init__(self, theParent = None):
+        QDialog.__init__(self, theParent)
+        
+        self.setupUi()
+    # __init__
+
+    def setupUi(self):
+        self.resize(280, 100)
+        self.setWindowTitle(QT_TRANSLATE_NOOP("Structure", "Create Sub-Framework"))
+
+        self.verticalLayout = QVBoxLayout(self)
+        self.formLayout = QFormLayout()
+
+        # Name
+        self.labelName = QLabel(QT_TRANSLATE_NOOP("Structure", "Name"))
+        self.textName = QLineEdit()
+
+        self.formLayout.setWidget(0, QFormLayout.LabelRole, self.labelName)
+        self.formLayout.setWidget(0, QFormLayout.FieldRole, self.textName)
+
+        # Purpose
+        self.labelPurpose = QLabel(QT_TRANSLATE_NOOP("Structure", "Purpose"))
+        self.comboPurpose = QComboBox()
+        #self.comboPurpose.setEditable(True)
+        self.comboPurpose.addItem("SUPP")
+        self.comboPurpose.addItem("H&S")
+        self.comboPurpose.addItem("LADD")
+        self.comboPurpose.addItem("GRID")
+        self.comboPurpose.addItem("FLOO")
+        self.comboPurpose.addItem("STAI")
+        self.comboPurpose.addItem("WALL")
+        self.comboPurpose.addItem("WALK")
+
+        self.formLayout.setWidget(1, QFormLayout.LabelRole, self.labelPurpose)
+        self.formLayout.setWidget(1, QFormLayout.FieldRole, self.comboPurpose)
+
+        self.verticalLayout.addLayout(self.formLayout)
+
+        self.buttonBox = QDialogButtonBox(QDialogButtonBox.Cancel|QDialogButtonBox.Ok, self)
+
+        self.buttonBox.accepted.connect(self.accept)
+        self.buttonBox.rejected.connect(self.reject)
+
+        self.verticalLayout.addWidget(self.buttonBox)
+    # setupUi
+
+    def accept(self):
+        aName = self.textName.text
+        aPurpose = self.comboPurpose.currentText
+
+        try:
+            PipeCad.StartTransaction("Create SBFR")
+            PipeCad.CreateItem("SBFR", aName)
+            aFrmwItem = PipeCad.CurrentItem()
+            aFrmwItem.Purpose = aPurpose
+            PipeCad.CommitTransaction()
+        except Exception as e:
+            QMessageBox.critical(self, "", e)
+            raise e
+        # try
+
+        QDialog.accept(self)
+    # accept
+# SbfrDialog
+
+# Singleton Instance.
+aSbfrDlg = SbfrDialog(PipeCad)
+
+def CreateSbfr():
+    aSbfrDlg.show()
+# CreateSbfr
+
 class RegularDialog(QDialog):
     def __init__(self, parent = None):
         QDialog.__init__(self, parent)
@@ -376,6 +592,6 @@ class RegularDialog(QDialog):
 # Singleton Instance.
 aStruDialog = RegularDialog(PipeCad)
 
-def Create():
+def CreateRegular():
     aStruDialog.show()
 # Create
