@@ -675,6 +675,8 @@ class ModifyDialog(QDialog):
 
             aSeleItem = PipeCad.CurrentItem()
             aSeleItem.Purpose = aSkey
+        elif aSpecItem.Purpose == "STL":
+            aSkey = aType
         # if
 
         aSpcoItem = aSeleItem
