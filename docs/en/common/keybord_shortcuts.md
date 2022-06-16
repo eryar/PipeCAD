@@ -2,7 +2,7 @@
 
 ## Module Design
 
-### View Manipulation
+### View Control
 | Keys | Description      |
 |:----:|------------------|
 | F2   | Zoom             |
