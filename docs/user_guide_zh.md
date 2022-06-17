@@ -87,31 +87,31 @@ https://space.bilibili.com/1548012589
 ### Windows
 PipeCAD在Windows系统中安装很简单，直接运行下载的安装包，将会看到欢迎界面并点击下一步Next：
 
-![Setup Welcome](images/installation/windows/001.png "安装程序欢迎界面")
+![安装程序欢迎界面](images/installation/windows/welcome_screen_en.png "安装程序欢迎界面")
 
 在使用许可协议界面需要点同意并点击下一步Next：
 
-![License Agreement](images/installation/windows/002.png "使用许可协议")
+![使用许可协议](images/installation/windows/license_agreement_en.png "使用许可协议")
 
 在安装目录界面上设置安装目录并点击下一步Next：
 
-![Setup Destination](images/installation/windows/003.png "安装目录")
+![Setup Destination](images/installation/windows/pipecad_path_en.png "安装目录")
 
 设置项目路径和Python库目录：
 
-![Set Projects and Python Lib Path](images/installation/windows/004.png "项目路径设置")
+![项目路径设置](images/installation/windows/project_libraries_paths_en.png "项目路径设置")
 
 为了方便使用Python，可以勾选将安装目录添加到系统环境变量PATH中：
 
-![Add to PATH](images/installation/windows/005.png "环境变量设置")
+![环境变量设置](images/installation/windows/environment_variables_en.png "环境变量设置")
 
 检查一下安装信息准确无误后可以点击安装Install进行安装：
 
-![Ready to Install](images/installation/windows/006.png "准备安装")
+![准备安装](images/installation/windows/installation_info.png "准备安装")
 
 安装完成后，可以勾选README查看说明文档，及勾选运行程序选项启动PipeCAD：
 
-![Setup Finish](images/installation/windows/007.png "安装完成")
+![安装完成](images/installation/windows/installation_complete_en.png "安装完成")
 
 ### Linux
 TODO
