@@ -453,3 +453,53 @@ def ShowFlow():
     PipeCad.UpdateViewer()
 
 # ShowFlow
+
+def AddConnected():
+    aTreeItem = PipeCad.CurrentItem()
+
+    PipeCad.Display(aTreeItem)
+
+    if aTreeItem.Type == "BRAN":
+        aHref = aTreeItem.Href
+        if aHref is not None:
+            if aHref.Type == "NOZZ":
+                PipeCad.Display(aHref.Owner)
+            else:
+                PipeCad.Display(aHref)
+            # if
+        # if
+
+        aTref = aTreeItem.Tref
+        if aTref is not None:
+            if aTref.Type == "NOZZ":
+                PipeCad.Display(aTref.Owner)
+            else:
+                PipeCad.Display(aTref)
+            # if
+        # if
+
+    elif aTreeItem.Type == "PIPE":
+        for aBranItem in aTreeItem.Member:
+            aHref = aBranItem.Href
+            if aHref is not None:
+                if aHref.Type == "NOZZ":
+                    PipeCad.Display(aHref.Owner)
+                else:
+                    PipeCad.Display(aHref)
+                # if
+            # if
+
+            aTref = aBranItem.Tref
+            if aTref is not None:
+                if aTref.Type == "NOZZ":
+                    PipeCad.Display(aTref.Owner)
+                else:
+                    PipeCad.Display(aTref)
+                # if
+            # if
+        # for
+    elif aTreeItem.Type == "EQUI":
+        pass
+    # if
+
+# AddConnected
