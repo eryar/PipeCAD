@@ -698,7 +698,8 @@ class RegularDialog(QDialog):
     # __init__
 
     def setupUi(self):
-        self.setWindowTitle(self.tr("Regular Structure"))
+        self.resize(390, 580)
+        self.setWindowTitle(QT_TRANSLATE_NOOP("Structure", "Regular Structure"))
 
         self.verticalLayout = QVBoxLayout(self)
 
@@ -707,14 +708,24 @@ class RegularDialog(QDialog):
 
         self.formLayout = QFormLayout(self.groupColumn)
 
-        self.labelColumnArea = QLabel("Storage Area")
-        self.textColumnArea = QLineEdit()
+        self.buttonColumnArea = QPushButton("Storage Area")
+        self.buttonColumnArea.clicked.connect(self.setColumnArea)
 
-        self.formLayout.setWidget(0, QFormLayout.LabelRole, self.labelColumnArea)
+        self.textColumnArea = QLineEdit()
+        self.textColumnArea.readOnly = True
+
+        self.columnArea = None
+
+        self.formLayout.setWidget(0, QFormLayout.LabelRole, self.buttonColumnArea)
         self.formLayout.setWidget(0, QFormLayout.FieldRole, self.textColumnArea)
 
-        self.buttonColumn = QPushButton("Profile...")
+        self.buttonColumn = QPushButton("Set Profile ")
+        self.buttonColumn.clicked.connect(self.selectColumnSpec)
+
         self.textColumn = QLineEdit()
+        self.textColumn.readOnly = True
+
+        self.columnSpec = None
         
         self.formLayout.setWidget(1, QFormLayout.LabelRole, self.buttonColumn)
         self.formLayout.setWidget(1, QFormLayout.FieldRole, self.textColumn)
@@ -744,14 +755,23 @@ class RegularDialog(QDialog):
 
         self.formLayout = QFormLayout(self.groupBeam)
 
-        self.labelBeamArea = QLabel("Storage Area")
+        self.buttonBeamArea = QPushButton("Storage Area")
+        self.buttonBeamArea.clicked.connect(self.setBeamArea)
+
         self.textBeamArea = QLineEdit()
 
-        self.formLayout.setWidget(0, QFormLayout.LabelRole, self.labelBeamArea)
+        self.beamArea = None
+
+        self.formLayout.setWidget(0, QFormLayout.LabelRole, self.buttonBeamArea)
         self.formLayout.setWidget(0, QFormLayout.FieldRole, self.textBeamArea)
 
-        self.buttonBeam = QPushButton("Profile...")
+        self.buttonBeam = QPushButton("Set Profile ")
+        self.buttonBeam.clicked.connect(self.selectBeamSpec)
+
         self.textBeam = QLineEdit()
+        self.textBeam.readOnly = True
+
+        self.beamSpec = None
         
         self.formLayout.setWidget(1, QFormLayout.LabelRole, self.buttonBeam)
         self.formLayout.setWidget(1, QFormLayout.FieldRole, self.textBeam)
@@ -801,31 +821,124 @@ class RegularDialog(QDialog):
         self.horizontalLayout.addItem(self.horizontalSpacer)
 
         self.buttonPreview = QPushButton()
-        self.buttonPreview.setText(u"Preview")
+        self.buttonPreview.setText(QT_TRANSLATE_NOOP("Structure", "Preview"))
         self.buttonPreview.setDefault(True)
         self.buttonPreview.clicked.connect(self.preview)
 
         self.horizontalLayout.addWidget(self.buttonPreview)
 
         self.buttonBuild = QPushButton()
-        self.buttonBuild.setText(u"Build")
+        self.buttonBuild.setText(QT_TRANSLATE_NOOP("Structure", "Build"))
         self.buttonBuild.clicked.connect(self.build)
 
         self.horizontalLayout.addWidget(self.buttonBuild)
 
         self.buttonCancel = QPushButton()
-        self.buttonCancel.setText(u"Cancel")
+        self.buttonCancel.setText(QT_TRANSLATE_NOOP("Structure", "Cancel"))
         self.buttonCancel.clicked.connect(self.reject)
 
         self.horizontalLayout.addWidget(self.buttonCancel)
         self.verticalLayout.addLayout(self.horizontalLayout)
+
+        self.aidNumber = PipeCad.NextAidNumber()
         
-        self.resize(390, 580)
     # setupUi
+
+    def setColumnArea(self):
+        aTreeItem = PipeCad.CurrentItem()
+        if aTreeItem.Type in ["FRMW", "SBFR"]:
+            aName = aTreeItem.Name
+            if len(aName) < 1:
+                aName = aTreeItem.RefNo
+            # if
+
+            self.textColumnArea.setText(aName)
+
+            self.columnArea = aTreeItem
+        else:
+            QMessageBox.warning(self, "", QT_TRANSLATE_NOOP("Structure", "Please select FRMW/SBFR to store column!"))
+        # if
+    # setColumnArea
+
+    def selectColumnSpec(self):
+        aSpecDlg = SectionSpecDialog(self)
+        if aSpecDlg.exec() != QDialog.Accepted:
+            return
+        # if
+
+        aRow = aSpecDlg.tableWidget.currentRow()
+        if aRow < 0:
+            return
+        # if
+
+        aTableItem = aSpecDlg.tableWidget.item(aRow, 0)
+        if aTableItem is None:
+            return
+        # if
+
+        aSpcoItem = aTableItem.data(Qt.UserRole)
+        if aSpcoItem is None:
+            return
+        # if
+
+        self.columnSpec = aSpcoItem
+
+        self.textColumn.setText(aSpcoItem.Catref.Name)
+
+        self.textColumnJustification.setText(aSpecDlg.comboJust.currentText)
+        self.textColumnMemberLine.setText(aSpecDlg.comboMline.currentText)
+        self.textColumnJointLine.setText(aSpecDlg.comboJline.currentText)
+    # selectColumnSpec
+
+    def setBeamArea(self):
+        aTreeItem = PipeCad.CurrentItem()
+        if aTreeItem.Type in ["FRMW", "SBFR"]:
+            aName = aTreeItem.Name
+            if len(aName) < 1:
+                aName = aTreeItem.RefNo
+            # if
+
+            self.textBeamArea.setText(aName)
+
+            self.beamArea = aTreeItem
+        else:
+            QMessageBox.warning(self, "", QT_TRANSLATE_NOOP("Structure", "Please select FRMW/SBFR to store beam!"))
+        # if
+    # setBeamArea
+
+    def selectBeamSpec(self):
+        aSpecDlg = SectionSpecDialog(self)
+        if aSpecDlg.exec() != QDialog.Accepted:
+            return
+        # if
+
+        aRow = aSpecDlg.tableWidget.currentRow()
+        if aRow < 0:
+            return
+        # if
+
+        aTableItem = aSpecDlg.tableWidget.item(aRow, 0)
+        if aTableItem is None:
+            return
+        # if
+
+        aSpcoItem = aTableItem.data(Qt.UserRole)
+        if aSpcoItem is None:
+            return
+        # if
+
+        self.beamSpec = aSpcoItem
+
+        self.textBeam.setText(aSpcoItem.Catref.Name)
+
+        self.textBeamJustification.setText(aSpecDlg.comboJust.currentText)
+        self.textBeamMemberLine.setText(aSpecDlg.comboMline.currentText)
+        self.textBeamJointLine.setText(aSpecDlg.comboJline.currentText)
+    # selectBeamSpec
 
     def preview(self):
     
-        PipeCad.ClearAid()
+        PipeCad.RemoveAid(self.aidNumber)
         
         aLx = []
         aLy = []
@@ -835,16 +948,19 @@ class RegularDialog(QDialog):
         aSpacings = self.textEast.plainText.split("\n")
         for x in aSpacings:
             aLx.append(float(x))
+        # for
         
         # North Spacings
         aSpacings = self.textNorth.plainText.split("\n")
         for y in aSpacings:
             aLy.append(float(y))
+        # for
         
         # Elevation
         aSpacings = self.textElev.plainText.split("\n")
         for z in aSpacings:
             aLz.append(float(z))
+        # for
         
         aPs = Position(0, 0, 0)
         aPe = Position(0, 0, 0)
@@ -865,7 +981,10 @@ class RegularDialog(QDialog):
                 for y in aLy:
                     aPs.y += y
                     aPe.y += y
-                    PipeCad.AddAidLine(aPs, aPe, 1)
+                    PipeCad.AddAidLine(aPs, aPe, self.aidNumber)
+                # for
+            # for
+        # for
 
         # Draw aid line in x direction.
         aPs = Position(0.0, 0.0, 0.0)
@@ -885,7 +1004,10 @@ class RegularDialog(QDialog):
                 for e in aLz:
                     aPs.z += e
                     aPe.z += e
-                    PipeCad.AddAidLine(aPs, aPe, 1)
+                    PipeCad.AddAidLine(aPs, aPe, self.aidNumber)
+                # for
+            # for
+        # for
 
         # Draw aid line in y direction.
         aPs = Position(0.0, 0.0, 0.0)
@@ -905,31 +1027,38 @@ class RegularDialog(QDialog):
                 for e in aLz:
                     aPs.z += e
                     aPe.z += e
-                    PipeCad.AddAidLine(aPs, aPe, 1)
+                    PipeCad.AddAidLine(aPs, aPe, self.aidNumber)
+                # for
+            # for
+        # for
         
         PipeCad.UpdateViewer()
     # preview
         
     def build(self):
-        aColumnArea = PipeCad.GetItem(self.textColumnArea.text)
+        aColumnArea = self.columnArea
         if aColumnArea is None:
-            QMessageBox.warning(self, "", "Please enter Column Storage Area!")
+            QMessageBox.warning(self, "", QT_TRANSLATE_NOOP("Structure", "Please enter Column Storage Area!"))
             return
+        # if
 
-        aBeamArea = PipeCad.GetItem(self.textBeamArea.text)
+        aBeamArea = self.beamArea
         if aBeamArea is None:
-            QMessageBox.warning(self, "", "Please enter Beam Storage Area!")
+            QMessageBox.warning(self, "", QT_TRANSLATE_NOOP("Structure", "Please enter Beam Storage Area!"))
             return
+        # if
 
-        aColumnSpec = PipeCad.GetItem(self.textColumn.text)
+        aColumnSpec = self.columnSpec
         if aColumnSpec is None:
-            QMessageBox.warning(self, "", "Please enter Column Profile Spec!")
+            QMessageBox.warning(self, "", QT_TRANSLATE_NOOP("Structure", "Please enter Column Profile Spec!"))
             return
+        # if
 
-        aBeamSpec = PipeCad.GetItem(self.textBeam.text)
+        aBeamSpec = self.beamSpec
         if aBeamSpec is None:
-            QMessageBox.warning(self, "", "Please enter Beam Profile Spec!")
+            QMessageBox.warning(self, "", QT_TRANSLATE_NOOP("Structure", "Please enter Beam Profile Spec!"))
             return
+        # if
 
         aLx = []
         aLy = []
@@ -939,16 +1068,19 @@ class RegularDialog(QDialog):
         aSpacings = self.textEast.plainText.split("\n")
         for x in aSpacings:
             aLx.append(float(x))
+        # for
         
         # North Spacings
         aSpacings = self.textNorth.plainText.split("\n")
         for y in aSpacings:
             aLy.append(float(y))
+        # for
         
         # Elevation
         aSpacings = self.textElev.plainText.split("\n")
         for z in aSpacings:
             aLz.append(float(z))
+        # for
 
         PipeCad.StartTransaction("Create Structure")
         PipeCad.SetCurrentItem(aBeamArea)
@@ -975,9 +1107,13 @@ class RegularDialog(QDialog):
                     if aPs.distance(aPe) > 1.0:
                         PipeCad.CreateItem("SCTN")
                         aSctnItem = PipeCad.CurrentItem()
-                        aSctnItem.startPosition = aPs
-                        aSctnItem.endPosition = aPe
-                        aSctnItem.spref = aBeamSpec
+                        aSctnItem.StartPosition = aPs
+                        aSctnItem.EndPosition = aPe
+                        aSctnItem.Spref = aBeamSpec
+                    # if
+                # for
+            # for
+        # for
 
         PipeCad.SetCurrentItem(aColumnArea)
         # Draw aid line in x direction.
@@ -1001,9 +1137,13 @@ class RegularDialog(QDialog):
                     if aPs.distance(aPe) > 1.0:
                         PipeCad.CreateItem("SCTN")
                         aSctnItem = PipeCad.CurrentItem()
-                        aSctnItem.startPosition = aPs
-                        aSctnItem.endPosition = aPe
-                        aSctnItem.spref = aColumnSpec
+                        aSctnItem.StartPosition = aPs
+                        aSctnItem.EndPosition = aPe
+                        aSctnItem.Spref = aColumnSpec
+                    # if
+                # for
+            # for
+        # for
 
         PipeCad.SetCurrentItem(aColumnArea)
         # Draw aid line in y direction.
@@ -1027,15 +1167,19 @@ class RegularDialog(QDialog):
                     if aPs.distance(aPe) > 1.0:
                         PipeCad.CreateItem("SCTN")
                         aSctnItem = PipeCad.CurrentItem()
-                        aSctnItem.startPosition = aPs
-                        aSctnItem.endPosition = aPe
-                        aSctnItem.spref = aColumnSpec
+                        aSctnItem.StartPosition = aPs
+                        aSctnItem.EndPosition = aPe
+                        aSctnItem.Spref = aColumnSpec
+                    # if
+                # for
+            # for
+        # for
 
         PipeCad.CommitTransaction()
     # build
 
     def reject(self):
-        PipeCad.ClearAid()
+        PipeCad.RemoveAid(self.aidNumber)
         QDialog.reject(self)
     # reject
 
