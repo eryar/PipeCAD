@@ -22,6 +22,9 @@ from PythonQt.QtSql import *
 
 from pipecad import *
 
+import pandas as pd 
+
+
 class AdminMain(QWidget):
     """docstring for AdminMain"""
     def __init__(self, parent = None):
@@ -31,6 +34,7 @@ class AdminMain(QWidget):
         self.userDialog = UserDialog(self)
         self.mdbDialog = MdbDialog(self)
         self.dbDialog = DatabaseDialog(self)
+        self.importProjectInfo = ImportProjectInfoFromExcel(self)
 
         self.setupUi()
 
@@ -122,6 +126,10 @@ class AdminMain(QWidget):
         self.buttonDelete = QPushButton(QT_TRANSLATE_NOOP("Admin", "Delete"))
         self.buttonDelete.clicked.connect(self.delete)
         self.horizontalLayout.addWidget(self.buttonDelete)
+        
+        self.buttonUpdate = QPushButton(QT_TRANSLATE_NOOP("Admin", "Import Project Info from Excel"))
+        self.buttonUpdate.clicked.connect(self.update)
+        self.horizontalLayout.addWidget(self.buttonUpdate)
 
         self.horizontalSpacer = QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
         self.horizontalLayout.addItem(self.horizontalSpacer)
@@ -338,8 +346,116 @@ class AdminMain(QWidget):
 
         PipeCad.SaveWork()
     # delete
+    
+    def update(self):
+        self.importProjectInfo.runImport()
+        
+class ImportProjectInfoFromExcel(QDialog):
+    """docstring for UpdateLibraryFromGitHub"""
+    def __init__(self, parent = None):
+        QDialog.__init__(self, parent)
+        self.setupUi()
+        
+    def setupUi(self):
+        
+        self.lblUsers = QLabel(QT_TRANSLATE_NOOP("Admin", "Users import"))
+        self.lblTeams = QLabel(QT_TRANSLATE_NOOP("Admin", "Teams import"))
+        self.lblDbs = QLabel(QT_TRANSLATE_NOOP("Admin", "Databases import"))
+        self.lblMdbs = QLabel(QT_TRANSLATE_NOOP("Admin", "MDBs import"))
+        
+        self.buttonUpdateLibrary = QPushButton(QT_TRANSLATE_NOOP("Admin Import", " Update PipeCAD Library From GitHub "))        
+        self.progressBar = QProgressBar(self)
+          
+        self.verticalLayout = QVBoxLayout(self)
+        
+        self.verticalLayout.addWidget(self.lblTeams)
+        self.verticalLayout.addWidget(self.lblUsers)
+        self.verticalLayout.addWidget(self.lblDbs)
+        self.verticalLayout.addWidget(self.lblMdbs)
+        self.verticalLayout.addWidget(self.buttonUpdateLibrary)
+        self.verticalLayout.addWidget(self.progressBar)
+        
+        self.progressBar.hide()
+        self.progressBar.setValue(0)
+        
+        self.buttonUpdateLibrary.clicked.connect(self.update)
+        
+    def update(self):
+        # pip install pandas
+        # pip install openpyxl
+       
+        excel_path = 'C:\PipeCAD\Lib\ExportProjectDefinition.xlsx'
+        
+        df_users = pd.read_excel( excel_path, 'Users' )
+        df_teams = pd.read_excel( excel_path, 'Teams' )
+        df_dbs = pd.read_excel( excel_path, 'Databases' )
+        df_mdbs = pd.read_excel( excel_path, 'MDBs' )
+        
+        df_users_max = len(df_users)
+        df_teams_max = len(df_teams)
+        df_dbs_max = len(df_dbs)
+        df_mdbs_max = len(df_mdbs)
+        
+        self.progressBar.show()
+        
+        common_max = df_users_max + df_teams_max + df_dbs_max + df_mdbs_max
+        current_progress = 0
+        
+        for i in range(len(df_teams)):   
+            try:
+                PipeCad.CreateTeam( df_teams.iloc[i].Name, df_teams.iloc[i].Description )
+            except NameError as e:
+                pass
 
-
+            current_progress = i / common_max * 100
+            self.progressBar.setValue( current_progress )         
+                
+            
+        for i in range(len(df_users)):
+            try:
+                PipeCad.CreateUser( df_users.iloc[i].Name, df_users.iloc[i].Description )
+            except NameError as e:
+                pass
+            current_progress = ( i + df_teams_max ) / common_max * 100
+            #print(df_users.iloc[i].Name)
+            self.progressBar.setValue( current_progress )
+                    
+        for i in range(len(df_dbs)):
+            current_progress = ( i + df_users_max + df_teams_max ) / common_max * 100
+            #print(df_dbs.iloc[i].Name)
+            self.progressBar.setValue( current_progress )    
+            
+        for i in range(len(df_mdbs)):
+            current_progress = ( i + df_users_max + df_teams_max + df_dbs_max ) / common_max * 100
+            #print(df_mdbs.iloc[i].Name)
+            self.progressBar.setValue( current_progress )
+        
+        self.progressBar.setValue( 100 )
+        self.progressBar.hide()
+         
+        
+        # print(df_users.iloc[1].Name)
+        # print(df_users.iloc[1].Description)
+        
+        # try:
+        #     PipeCad.CreateUser( df_sheets.iloc[1].Name, df_sheets.iloc[1].Description)
+        # except NameError as e:
+        #     pass
+        # 
+        # 
+        # try:
+        #     PipeCad.CreateUser(aName, self.textDescription.text)
+        # except NameError as e:
+        #     QMessageBox.critical(self, "", str(e))
+        #     raise
+        #     
+        # 
+        # print(df_sheets)
+        #print(df_sheets['Teams'])
+                
+    def runImport(self):
+        self.show()
+        
 class TeamDialog(QDialog):
     """docstring for TeamDailog"""
     def __init__(self, parent = None):
