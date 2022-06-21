@@ -351,19 +351,22 @@ class AdminMain(QWidget):
         self.importProjectInfo.runImport()
         
 class ImportProjectInfoFromExcel(QDialog):
-    """docstring for UpdateLibraryFromGitHub"""
+    """docstring for ImportProjectInfoFromExcel"""
     def __init__(self, parent = None):
         QDialog.__init__(self, parent)
         self.setupUi()
         
     def setupUi(self):
         
+        self.setWindowTitle(QT_TRANSLATE_NOOP("Admin", "Admin Import"))
+        self.resize(350, 300)
+        
         self.lblUsers = QLabel(QT_TRANSLATE_NOOP("Admin", "Users import"))
         self.lblTeams = QLabel(QT_TRANSLATE_NOOP("Admin", "Teams import"))
         self.lblDbs = QLabel(QT_TRANSLATE_NOOP("Admin", "Databases import"))
         self.lblMdbs = QLabel(QT_TRANSLATE_NOOP("Admin", "MDBs import"))
         
-        self.buttonUpdateLibrary = QPushButton(QT_TRANSLATE_NOOP("Admin Import", " Update PipeCAD Library From GitHub "))        
+        self.buttonUpdateLibrary = QPushButton(QT_TRANSLATE_NOOP("Admin Import", " Import Project Info from Excel "))        
         self.progressBar = QProgressBar(self)
           
         self.verticalLayout = QVBoxLayout(self)
@@ -378,18 +381,20 @@ class ImportProjectInfoFromExcel(QDialog):
         self.progressBar.hide()
         self.progressBar.setValue(0)
         
-        self.buttonUpdateLibrary.clicked.connect(self.update)
+        self.buttonUpdateLibrary.clicked.connect(self.run_import)
         
-    def update(self):
+    def run_import(self):
         # pip install pandas
         # pip install openpyxl
-       
+        
+        self.collect_reserved_db_numbers()
+        
         excel_path = 'C:\PipeCAD\Lib\ExportProjectDefinition.xlsx'
         
-        df_users = pd.read_excel( excel_path, 'Users' )
-        df_teams = pd.read_excel( excel_path, 'Teams' )
-        df_dbs = pd.read_excel( excel_path, 'Databases' )
-        df_mdbs = pd.read_excel( excel_path, 'MDBs' )
+        df_users = pd.read_excel( excel_path, 'Users' ).rename(columns=lambda x: x.replace(' ', '_'))
+        df_teams = pd.read_excel( excel_path, 'Teams' ).rename(columns=lambda x: x.replace(' ', '_'))
+        df_dbs = pd.read_excel( excel_path, 'Databases' ).rename(columns=lambda x: x.replace(' ', '_'))
+        df_mdbs = pd.read_excel( excel_path, 'MDBs' ).rename(columns=lambda x: x.replace(' ', '_'))
         
         df_users_max = len(df_users)
         df_teams_max = len(df_teams)
@@ -401,60 +406,111 @@ class ImportProjectInfoFromExcel(QDialog):
         common_max = df_users_max + df_teams_max + df_dbs_max + df_mdbs_max
         current_progress = 0
         
+        # Importing Teams  
         for i in range(len(df_teams)):   
-            try:
-                PipeCad.CreateTeam( df_teams.iloc[i].Name, df_teams.iloc[i].Description )
+            
+            team_name = df_teams.iloc[i].Name
+            team_description = df_teams.iloc[i].Description
+                    
+            try: 
+                PipeCad.SetCurrentItem( '/*' + team_name )
+               
             except NameError as e:
-                pass
+                PipeCad.CreateTeam( team_name, team_description )
 
+            current_team = PipeCad.CurrentItem()
+            current_team.Description = team_description    
+            
             current_progress = i / common_max * 100
             self.progressBar.setValue( current_progress )         
                 
-            
+        # Importing Users   
+        # TODO: Add functional for adding Teams to user
         for i in range(len(df_users)):
-            try:
-                PipeCad.CreateUser( df_users.iloc[i].Name, df_users.iloc[i].Description )
-            except NameError as e:
-                pass
-            current_progress = ( i + df_teams_max ) / common_max * 100
-            #print(df_users.iloc[i].Name)
-            self.progressBar.setValue( current_progress )
-                    
-        for i in range(len(df_dbs)):
-            current_progress = ( i + df_users_max + df_teams_max ) / common_max * 100
-            #print(df_dbs.iloc[i].Name)
-            self.progressBar.setValue( current_progress )    
             
+            user_name = df_users.iloc[i].Name
+            user_description = df_users.iloc[i].Description
+            user_security = df_users.iloc[i].Security
+            user_teams = df_users.iloc[i].Teams
+            
+            try: 
+                PipeCad.SetCurrentItem( '/' + user_name )
+                          
+            except NameError as e:
+                PipeCad.CreateUser( user_name, user_description )    
+            
+            current_user = PipeCad.CurrentItem()
+            current_user.Description = user_description
+            current_user.Security = user_security
+                
+            current_progress = ( i + df_teams_max ) / common_max * 100
+            self.progressBar.setValue( current_progress ) 
+
+        # Importing Databases        
+        for i in range(len(df_dbs)):
+            
+            db_team = df_dbs.iloc[i].Owning_Team
+            db_name = df_dbs.iloc[i].Name
+            db_description = df_dbs.iloc[i].Description
+            db_type = df_dbs.iloc[i].Type.replace('CATA', 'CATE') # Temporary fix for ver. 1.0.15.
+            #db_claim_mode = df_dbs.iloc[i].Claim_Mode
+            db_number = df_dbs.iloc[i].Number
+            # db_area = db_dbs.iloc[i].Area
+            
+            if db_type == 'DESI' or db_type == 'CATE':             # TODO: Change to CATA after fixing function PipeCad.CreateDb to use proper type for catalogues db. 
+                if db_number > 1 and db_number < 8000 and db_number != 552:
+                    try: 
+                        PipeCad.SetCurrentItem( '/*' + db_team + '/' + db_name )
+                                  
+                    except NameError as e:
+                        PipeCad.CreateDb( db_team + '/' + db_name , db_type, db_number, db_description )  # TODO: Add check if required db number is availible for assigning
+               
+                else:
+                    continue
+                    
+                current_db = PipeCad.CurrentItem()
+                current_db.Description = db_description
+                #current_db.Claim_Mode = db_claim_mode
+            
+            else:
+                continue
+                        
+            current_progress = ( i + df_users_max + df_teams_max ) / common_max * 100
+            self.progressBar.setValue( current_progress ) 
+
+        # Importing MDBs
+        # Adding functional for adding databases to mdb
         for i in range(len(df_mdbs)):
+
+            mdb_name = df_mdbs.iloc[i].Name
+            mdb_description = df_mdbs.iloc[i].Description
+                    
+            try: 
+                PipeCad.SetCurrentItem( '/' + mdb_name )
+               
+            except NameError as e:
+                PipeCad.CreateMdb( mdb_name, mdb_description )
+
+            current_mdb = PipeCad.CurrentItem()
+            current_mdb.Description = mdb_description    
+            
+            current_progress = i / common_max * 100
+            self.progressBar.setValue( current_progress )   
+            
             current_progress = ( i + df_users_max + df_teams_max + df_dbs_max ) / common_max * 100
-            #print(df_mdbs.iloc[i].Name)
             self.progressBar.setValue( current_progress )
         
         self.progressBar.setValue( 100 )
         self.progressBar.hide()
-         
-        
-        # print(df_users.iloc[1].Name)
-        # print(df_users.iloc[1].Description)
-        
-        # try:
-        #     PipeCad.CreateUser( df_sheets.iloc[1].Name, df_sheets.iloc[1].Description)
-        # except NameError as e:
-        #     pass
-        # 
-        # 
-        # try:
-        #     PipeCad.CreateUser(aName, self.textDescription.text)
-        # except NameError as e:
-        #     QMessageBox.critical(self, "", str(e))
-        #     raise
-        #     
-        # 
-        # print(df_sheets)
-        #print(df_sheets['Teams'])
-                
+        PipeCad.SaveWork()
+        self.parent().refreshList()
+
     def runImport(self):
         self.show()
+    
+    # TODO: Add functional for collecting all used dbs numbers
+    def collect_reserved_db_numbers(self):
+        print("find all used dbs numbers")
         
 class TeamDialog(QDialog):
     """docstring for TeamDailog"""
