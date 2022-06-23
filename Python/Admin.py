@@ -19,11 +19,16 @@
 from PythonQt.QtCore import *
 from PythonQt.QtGui import *
 from PythonQt.QtSql import *
+import os
 
 from pipecad import *
 
+#pip install pandas
 import pandas as pd 
 import os
+
+# pip install markdown
+# import markdown as md
 
 
 class AdminMain(QWidget):
@@ -36,6 +41,7 @@ class AdminMain(QWidget):
         self.mdbDialog = MdbDialog(self)
         self.dbDialog = DatabaseDialog(self)
         self.importProjectInfo = ImportProjectInfoFromExcel(self)
+        self.helpViewer = HelpViewer(self)
 
         self.setupUi()
 
@@ -134,7 +140,11 @@ class AdminMain(QWidget):
         
         self.buttonUpdate = QPushButton(QT_TRANSLATE_NOOP("Admin", "Import from Excel"))
         self.buttonUpdate.clicked.connect(self.update)
-        self.horizontalLayout.addWidget(self.buttonUpdate)
+        self.horizontalLayout.addWidget(self.buttonUpdate)   
+        
+        self.btnHelpViewer = QPushButton(QT_TRANSLATE_NOOP("Admin", " Show Help Viewer - Dev. "))
+        self.btnHelpViewer.clicked.connect(self.show_help_viewer)
+        self.horizontalLayout.addWidget(self.btnHelpViewer)
 
         self.horizontalSpacer = QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
         self.horizontalLayout.addItem(self.horizontalSpacer)
@@ -353,8 +363,37 @@ class AdminMain(QWidget):
     # delete
     
     def update(self):
-        self.importProjectInfo.runImport()
+        self.importProjectInfo.showImportExcel()
+    
+    def show_help_viewer(self):
+        self.helpViewer.showHelpViewer()
+
+class HelpViewer(QDialog):
+    """docstring for HelpViewer"""
+    def __init__(self, parent = None):
+        QDialog.__init__(self, parent)
+        self.setupUi()
+    
+    def setupUi(self):
+        self.setWindowTitle(QT_TRANSLATE_NOOP("Admin", " PipeCAD Help "))
+        self.resize(1000, 600)
         
+        self.toolbar = QToolBar(self)
+        self.toolButton = QToolButton()
+        self.toolButton.setText("Refresh")
+        self.toolButton.setCheckable(True)
+        self.toolButton.setAutoExclusive(True)
+        self.toolbar.addWidget(self.toolButton)
+        
+        self.vLayout = QVBoxLayout(self)
+        self.lblUsers = QLabel(QT_TRANSLATE_NOOP("Admin", "Users import"))
+        self.vLayout.addWidget(self.toolbar)
+        self.vLayout.addWidget(self.lblUsers)
+
+    def showHelpViewer(self):
+        self.show()
+
+
 class ImportProjectInfoFromExcel(QDialog):
     """docstring for ImportProjectInfoFromExcel"""
     def __init__(self, parent = None):
@@ -364,6 +403,7 @@ class ImportProjectInfoFromExcel(QDialog):
     def setupUi(self):
         
         self.setWindowTitle(QT_TRANSLATE_NOOP("Admin", "Admin Import"))
+<<<<<<< HEAD
         self.resize(400, 50)
         
         aCurrentPath = os.path.dirname( os.path.abspath(__file__) )
@@ -383,6 +423,67 @@ class ImportProjectInfoFromExcel(QDialog):
         self.verticalLayout.addLayout(self.horLayoutPath)
                 
         self.btnExplorer.clicked.connect(self.run_import)
+=======
+        self.resize(350, 150)
+                
+        self.icon_users = QLabel()
+        self.icon_teams = QLabel()
+        self.icon_dbs = QLabel()
+        self.icon_mdbs = QLabel()     
+        
+        self.icon_users_counter = QLabel("2/10")
+        self.icon_teams_counter = QLabel("10/10")
+        self.icon_dbs_counter = QLabel("5/10")
+        self.icon_mdbs_counter = QLabel("10/10")  
+        
+        self.icon_users.setStyleSheet("border: 1px solid black;")
+        self.icon_teams.setStyleSheet("border: 1px solid black;")
+        self.icon_dbs.setStyleSheet("border: 1px solid black;")
+        self.icon_mdbs.setStyleSheet("border: 1px solid black;")
+                
+        self.icon_users.setAlignment(Qt.AlignCenter)
+        self.icon_teams.setAlignment(Qt.AlignCenter)
+        self.icon_dbs.setAlignment(Qt.AlignCenter)
+        self.icon_mdbs.setAlignment(Qt.AlignCenter)    
+        
+        self.icon_users_counter.setAlignment(Qt.AlignCenter)
+        self.icon_teams_counter.setAlignment(Qt.AlignCenter)
+        self.icon_dbs_counter.setAlignment(Qt.AlignCenter)
+        self.icon_mdbs_counter.setAlignment(Qt.AlignCenter)
+        
+        aCurrentPath = os.path.dirname( os.path.abspath(__file__) )
+        
+        self.icon_teams.setPixmap( QPixmap( aCurrentPath + '/icons/admin/128x128_team_select.png' ).scaled( QSize( 64, 64 ) ) )
+        self.icon_users.setPixmap( QPixmap( aCurrentPath + '/icons/admin/128x128_user_select.png'  ).scaled( QSize( 64, 64 ) ) )
+        self.icon_dbs.setPixmap( QPixmap( aCurrentPath + '/icons/admin/128x128_database_select.png' ).scaled( QSize( 64, 64 ) ) )
+        self.icon_mdbs.setPixmap( QPixmap( aCurrentPath + '/icons/admin/128x128_mdb_select.png' ).scaled( QSize( 64, 64 ) ) )
+         
+        self.hLayIcons = QHBoxLayout()
+        self.hLayIcons.addWidget(self.icon_teams)  
+        self.hLayIcons.addWidget(self.icon_users) 
+        self.hLayIcons.addWidget(self.icon_dbs)  
+        self.hLayIcons.addWidget(self.icon_mdbs)  
+        self.hLayIcons.setContentsMargins(0, 0, 0, 0) 
+        
+        self.hLayIconsCounters = QHBoxLayout()
+        self.hLayIconsCounters.addWidget(self.icon_teams_counter)  
+        self.hLayIconsCounters.addWidget(self.icon_users_counter) 
+        self.hLayIconsCounters.addWidget(self.icon_dbs_counter)  
+        self.hLayIconsCounters.addWidget(self.icon_mdbs_counter)  
+        self.hLayIconsCounters.setContentsMargins(0, 0, 0, 0)
+        
+        self.btnUpdateLibrary = QPushButton(QT_TRANSLATE_NOOP("Admin Import", " Import Project Info from Excel ")) 
+        
+           
+        self.verticalLayout = QVBoxLayout(self)
+        
+        self.verticalLayout.addLayout(self.hLayIcons)
+        self.verticalLayout.addLayout(self.hLayIconsCounters)
+        self.verticalLayout.addWidget(self.btnUpdateLibrary)
+        
+        self.btnUpdateLibrary.clicked.connect(self.run_import)
+        
+>>>>>>> de88942625cc36ba3af6fde53f6112201ac42193
         
     def run_import(self):
         # pip install pandas
@@ -424,7 +525,11 @@ class ImportProjectInfoFromExcel(QDialog):
             current_team.Description = team_description    
             
             current_progress = i / common_max * 100
+<<<<<<< HEAD
             self.parent().progressBar.setValue( current_progress )         
+=======
+            #self.progressBar.setValue( current_progress )         
+>>>>>>> de88942625cc36ba3af6fde53f6112201ac42193
                 
         # Importing Users   
         # TODO: Add functional for adding Teams to user
@@ -446,7 +551,11 @@ class ImportProjectInfoFromExcel(QDialog):
             #current_user.Security = user_security
                 
             current_progress = ( i + df_teams_max ) / common_max * 100
+<<<<<<< HEAD
             self.parent().progressBar.setValue( current_progress ) 
+=======
+            #self.progressBar.setValue( current_progress ) 
+>>>>>>> de88942625cc36ba3af6fde53f6112201ac42193
 
         # Importing Databases        
         for i in range(len(df_dbs)):
@@ -460,13 +569,12 @@ class ImportProjectInfoFromExcel(QDialog):
             # db_area = db_dbs.iloc[i].Area
             
             if db_type == 'DESI' or db_type == 'CATE':             # TODO: Change to CATA after fixing function PipeCad.CreateDb to use proper type for catalogues db. 
-                if db_number > 1 and db_number < 8000 and db_number != 552:
+                if db_number > 1 and db_number < 8000:
                     try: 
                         PipeCad.SetCurrentItem( '/*' + db_team + '/' + db_name )
                                   
                     except NameError as e:
                         PipeCad.CreateDb( db_team + '/' + db_name , db_type, db_number, db_description )  # TODO: Add check if required db number is availible for assigning
-               
                 else:
                     continue
                     
@@ -478,7 +586,11 @@ class ImportProjectInfoFromExcel(QDialog):
                 continue
                         
             current_progress = ( i + df_users_max + df_teams_max ) / common_max * 100
+<<<<<<< HEAD
             self.parent().progressBar.setValue( current_progress ) 
+=======
+            #self.progressBar.setValue( current_progress ) 
+>>>>>>> de88942625cc36ba3af6fde53f6112201ac42193
 
         # Importing MDBs
         # Adding functional for adding databases to mdb
@@ -500,14 +612,21 @@ class ImportProjectInfoFromExcel(QDialog):
             self.parent().progressBar.setValue( current_progress )   
             
             current_progress = ( i + df_users_max + df_teams_max + df_dbs_max ) / common_max * 100
+<<<<<<< HEAD
             self.parent().progressBar.setValue( current_progress )
         
         self.parent().progressBar.setValue( 100 )
         self.parent().progressBar.hide()
+=======
+            #self.progressBar.setValue( current_progress )
+        
+        #self.progressBar.setValue( 100 )
+        #self.progressBar.hide()
+>>>>>>> de88942625cc36ba3af6fde53f6112201ac42193
         PipeCad.SaveWork()
         self.parent().refreshList()
 
-    def runImport(self):
+    def showImportExcel(self):
         self.show()
     
     # TODO: Add functional for collecting all used dbs numbers
