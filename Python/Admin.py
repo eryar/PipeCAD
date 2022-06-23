@@ -23,6 +23,7 @@ from PythonQt.QtSql import *
 from pipecad import *
 
 import pandas as pd 
+import os
 
 
 class AdminMain(QWidget):
@@ -106,7 +107,11 @@ class AdminMain(QWidget):
 
         self.groupOption = QGroupBox(QT_TRANSLATE_NOOP("Admin", "Operations"))
         self.verticalLayout.addWidget(self.groupOption)
-
+        
+        self.progressBar = QProgressBar(self)
+        self.progressBar.hide()
+        self.verticalLayout.addWidget(self.progressBar)
+        
         self.verticalLayout = QVBoxLayout(self.groupOption)
 
         self.horizontalLayout = QHBoxLayout()
@@ -127,7 +132,7 @@ class AdminMain(QWidget):
         self.buttonDelete.clicked.connect(self.delete)
         self.horizontalLayout.addWidget(self.buttonDelete)
         
-        self.buttonUpdate = QPushButton(QT_TRANSLATE_NOOP("Admin", "Import Project Info from Excel"))
+        self.buttonUpdate = QPushButton(QT_TRANSLATE_NOOP("Admin", "Import from Excel"))
         self.buttonUpdate.clicked.connect(self.update)
         self.horizontalLayout.addWidget(self.buttonUpdate)
 
@@ -135,7 +140,7 @@ class AdminMain(QWidget):
         self.horizontalLayout.addItem(self.horizontalSpacer)
 
         self.verticalLayout.addLayout(self.horizontalLayout)
-
+        
         self.statItem = PipeCad.GetItem("/*S")
         self.tmwlItem = PipeCad.GetItem("/*T")
         self.uswlItem = PipeCad.GetItem("/*U")
@@ -359,29 +364,25 @@ class ImportProjectInfoFromExcel(QDialog):
     def setupUi(self):
         
         self.setWindowTitle(QT_TRANSLATE_NOOP("Admin", "Admin Import"))
-        self.resize(350, 300)
+        self.resize(400, 50)
         
-        self.lblUsers = QLabel(QT_TRANSLATE_NOOP("Admin", "Users import"))
-        self.lblTeams = QLabel(QT_TRANSLATE_NOOP("Admin", "Teams import"))
-        self.lblDbs = QLabel(QT_TRANSLATE_NOOP("Admin", "Databases import"))
-        self.lblMdbs = QLabel(QT_TRANSLATE_NOOP("Admin", "MDBs import"))
+        aCurrentPath = os.path.dirname( os.path.abspath(__file__) )
         
-        self.buttonUpdateLibrary = QPushButton(QT_TRANSLATE_NOOP("Admin Import", " Import Project Info from Excel "))        
-        self.progressBar = QProgressBar(self)
-          
+        self.txtPathToFile = QLineEdit()    
+        self.btnExplorer = QPushButton( "", self)
+        self.btnExplorer.setMinimumSize( 32 , 32 )
+        self.btnExplorer.setMaximumSize( 32 , 32 )
+        self.btnExplorer.setIcon( QIcon( aCurrentPath + '/icons/common/32x32_explorer.png') )
+        self.btnExplorer.setIconSize( QSize( 32, 32 ) )
+        
+        self.horLayoutPath = QHBoxLayout(self)
+        self.horLayoutPath.addWidget(self.txtPathToFile)
+        self.horLayoutPath.addWidget(self.btnExplorer)
+                               
         self.verticalLayout = QVBoxLayout(self)
-        
-        self.verticalLayout.addWidget(self.lblTeams)
-        self.verticalLayout.addWidget(self.lblUsers)
-        self.verticalLayout.addWidget(self.lblDbs)
-        self.verticalLayout.addWidget(self.lblMdbs)
-        self.verticalLayout.addWidget(self.buttonUpdateLibrary)
-        self.verticalLayout.addWidget(self.progressBar)
-        
-        self.progressBar.hide()
-        self.progressBar.setValue(0)
-        
-        self.buttonUpdateLibrary.clicked.connect(self.run_import)
+        self.verticalLayout.addLayout(self.horLayoutPath)
+                
+        self.btnExplorer.clicked.connect(self.run_import)
         
     def run_import(self):
         # pip install pandas
@@ -390,6 +391,7 @@ class ImportProjectInfoFromExcel(QDialog):
         self.collect_reserved_db_numbers()
         
         excel_path = 'C:\PipeCAD\Lib\ExportProjectDefinition.xlsx'
+        self.txtPathToFile.setText( excel_path ) 
         
         df_users = pd.read_excel( excel_path, 'Users' ).rename(columns=lambda x: x.replace(' ', '_'))
         df_teams = pd.read_excel( excel_path, 'Teams' ).rename(columns=lambda x: x.replace(' ', '_'))
@@ -401,7 +403,7 @@ class ImportProjectInfoFromExcel(QDialog):
         df_dbs_max = len(df_dbs)
         df_mdbs_max = len(df_mdbs)
         
-        self.progressBar.show()
+        self.parent().progressBar.show()
         
         common_max = df_users_max + df_teams_max + df_dbs_max + df_mdbs_max
         current_progress = 0
@@ -422,7 +424,7 @@ class ImportProjectInfoFromExcel(QDialog):
             current_team.Description = team_description    
             
             current_progress = i / common_max * 100
-            self.progressBar.setValue( current_progress )         
+            self.parent().progressBar.setValue( current_progress )         
                 
         # Importing Users   
         # TODO: Add functional for adding Teams to user
@@ -441,10 +443,10 @@ class ImportProjectInfoFromExcel(QDialog):
             
             current_user = PipeCad.CurrentItem()
             current_user.Description = user_description
-            current_user.Security = user_security
+            #current_user.Security = user_security
                 
             current_progress = ( i + df_teams_max ) / common_max * 100
-            self.progressBar.setValue( current_progress ) 
+            self.parent().progressBar.setValue( current_progress ) 
 
         # Importing Databases        
         for i in range(len(df_dbs)):
@@ -476,7 +478,7 @@ class ImportProjectInfoFromExcel(QDialog):
                 continue
                         
             current_progress = ( i + df_users_max + df_teams_max ) / common_max * 100
-            self.progressBar.setValue( current_progress ) 
+            self.parent().progressBar.setValue( current_progress ) 
 
         # Importing MDBs
         # Adding functional for adding databases to mdb
@@ -495,13 +497,13 @@ class ImportProjectInfoFromExcel(QDialog):
             current_mdb.Description = mdb_description    
             
             current_progress = i / common_max * 100
-            self.progressBar.setValue( current_progress )   
+            self.parent().progressBar.setValue( current_progress )   
             
             current_progress = ( i + df_users_max + df_teams_max + df_dbs_max ) / common_max * 100
-            self.progressBar.setValue( current_progress )
+            self.parent().progressBar.setValue( current_progress )
         
-        self.progressBar.setValue( 100 )
-        self.progressBar.hide()
+        self.parent().progressBar.setValue( 100 )
+        self.parent().progressBar.hide()
         PipeCad.SaveWork()
         self.parent().refreshList()
 
