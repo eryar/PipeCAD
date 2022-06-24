@@ -1257,32 +1257,24 @@ class UserDialog(QDialog):
 
     def createUser(self):
         aName = self.textName.text
+        aDescription = self.textDescription.text
         aPassword = self.textPassword.text
+        aSecurity = self.comboSecurity.currentText
 
-        PipeCad.StartTransaction("Create User")
+        aTeamItems = list()
+
+        for r in range (self.tableUserTeams.rowCount):
+            aTeamItem = self.tableUserTeams.item(r, 0).data(Qt.UserRole)
+            aTeamItems.append(aTeamItem)
+        # for
 
         try:
-            PipeCad.CreateUser(aName, self.textDescription.text)
+            PipeCad.CreateUser(aName, aDescription, aPassword, aSecurity, aTeamItems)
         except NameError as e:
             QMessageBox.critical(self, "", str(e))
             raise
         # try
 
-        aUserItem = PipeCad.CurrentItem()
-        aUserItem.Security = self.comboSecurity.currentText
-        aUserItem.Password = self.textPassword.text
-
-        PipeCad.CreateItem("TMLI")
-        aTmliItem = PipeCad.CurrentItem()
-
-        for r in range (self.tableUserTeams.rowCount):
-            aItem = self.tableUserTeams.item(r, 0).data(Qt.UserRole)
-
-            PipeCad.CreateItem("LTEA")
-            aLteaItem = PipeCad.CurrentItem()
-            aLteaItem.Temf = aItem
-
-        PipeCad.CommitTransaction()
         PipeCad.SaveWork()
     # createUser
 
