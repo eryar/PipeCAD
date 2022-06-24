@@ -48,7 +48,7 @@ PipeCAD是工业设计软件，面向石油化工、环保医药等行业的的�
 | 三维建模 | \emoji :heavy_check_mark: | \emoji :heavy_check_mark:   |
 | 管道PCF文件 | \emoji :heavy_check_mark: | \emoji :heavy_check_mark:   |
 | 管道材料报表 | \emoji :warning: 基本材料报表 | \emoji :heavy_check_mark: 根据公司模板定制 |
-| 管道ISO图 | \emoji :warning: 固定图框 | \emoji :heavy_check_mark: 根据公司模板定制 |
+| 管道轴测ISO图 | \emoji :warning: 固定图框 | \emoji :heavy_check_mark: 根据公司模板定制 |
 | 设备管口方位图 | \emoji :warning: 固定图框 | \emoji :heavy_check_mark: 根据公司模板定制 |
 | 管道平面布置图 | \emoji :x: | \emoji :heavy_check_mark: |
 
