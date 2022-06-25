@@ -1188,4 +1188,191 @@ aRegularDlg = RegularDialog(PipeCad)
 
 def CreateRegular():
     aRegularDlg.show()
-# Create
+# CreateRegular
+
+
+class PanelDialog(QDialog):
+    def __init__(self, theParent = None):
+        QDialog.__init__(self, theParent)
+
+        self.aidNumber = PipeCad.NextAidNumber()
+
+        self.setupUi()
+    # __init__
+
+    def setupUi(self):
+        #self.resize(380, 290)
+        self.setWindowTitle(QT_TRANSLATE_NOOP("Structure", "Create Panel"))
+
+        self.verticalLayout = QVBoxLayout(self)
+        self.formLayout = QFormLayout()
+
+        # Name
+        self.labelName = QLabel(QT_TRANSLATE_NOOP("Structure", "Name"))
+        self.textName = QLineEdit()
+
+        self.formLayout.setWidget(0, QFormLayout.LabelRole, self.labelName)
+        self.formLayout.setWidget(0, QFormLayout.FieldRole, self.textName)
+
+        # Description
+        self.labelDescription = QLabel(QT_TRANSLATE_NOOP("Structure", "Description"))
+        self.textDescription = QLineEdit()
+
+        self.formLayout.setWidget(1, QFormLayout.LabelRole, self.labelDescription)
+        self.formLayout.setWidget(1, QFormLayout.FieldRole, self.textDescription)
+
+        self.verticalLayout.addLayout(self.formLayout)
+
+        # Thickness
+        self.labelThickness = QLabel(QT_TRANSLATE_NOOP("Structure", "Thickness"))
+        self.textThickness = QLineEdit("10")
+
+        self.formLayout.setWidget(2, QFormLayout.LabelRole, self.labelThickness)
+        self.formLayout.setWidget(2, QFormLayout.FieldRole, self.textThickness)
+
+        # Polyline vertex.
+        self.tableWidget = QTableWidget()
+        self.tableWidget.setColumnCount(4)
+        self.tableWidget.setHorizontalHeaderLabels(["X", "Y", "Z", "Radius"])
+        self.tableWidget.setAlternatingRowColors(True)
+        self.tableWidget.setSelectionMode(QAbstractItemView.SingleSelection)
+        self.tableWidget.horizontalHeader().setStretchLastSection(True)
+        self.tableWidget.horizontalHeader().setDefaultSectionSize(68)
+        self.tableWidget.verticalHeader().setMinimumSectionSize(16)
+        self.tableWidget.verticalHeader().setDefaultSectionSize(18)
+
+        self.verticalLayout.addWidget(self.tableWidget)
+
+        # Action box.
+        self.horizontalLayout = QHBoxLayout()
+
+        # Add/Pick, Remove
+        self.buttonPick = QPushButton(QT_TRANSLATE_NOOP("Structure", "Pick"))
+        self.buttonPick.clicked.connect(self.pickVertex)
+
+        self.buttonAdd = QPushButton(QT_TRANSLATE_NOOP("Structure", "Add"))
+        self.buttonAdd.clicked.connect(self.addVertex)
+
+        self.buttonRemove = QPushButton(QT_TRANSLATE_NOOP("Structure", "Remove"))
+        self.buttonRemove.clicked.connect(self.removeVertex)
+
+        self.buttonPreview = QPushButton(QT_TRANSLATE_NOOP("Structure", "Preview"))
+        self.buttonPreview.clicked.connect(self.previewPanel)
+
+        self.horizontalLayout.addWidget(self.buttonPick)
+        self.horizontalLayout.addWidget(self.buttonAdd)
+        self.horizontalLayout.addWidget(self.buttonRemove)
+        self.horizontalLayout.addWidget(self.buttonPreview)
+
+        self.buttonBox = QDialogButtonBox(QDialogButtonBox.Cancel|QDialogButtonBox.Ok, self)
+
+        self.buttonBox.accepted.connect(self.accept)
+        self.buttonBox.rejected.connect(self.reject)
+
+        self.horizontalLayout.addWidget(self.buttonBox)
+
+        self.verticalLayout.addLayout(self.horizontalLayout)
+    # setupUi
+
+    def pickVertex(self):
+        aTreeItem = PipeCad.PickItem()
+        if aTreeItem.Type == "SCTN":
+            aPs = aTreeItem.StartPosition
+            aPe = aTreeItem.EndPosition
+            aPz = max(aPs.z, aPe.z)
+
+            aRow = self.tableWidget.rowCount
+
+            self.tableWidget.insertRow(aRow)
+            self.tableWidget.setItem(aRow, 0, QTableWidgetItem(str(aPs.x)))
+            self.tableWidget.setItem(aRow, 1, QTableWidgetItem(str(aPs.y)))
+            self.tableWidget.setItem(aRow, 2, QTableWidgetItem(str(aPz)))
+            self.tableWidget.setItem(aRow, 3, QTableWidgetItem("0"))
+        # if
+    # pickVertex
+
+    def addVertex(self):
+        aRow = self.tableWidget.rowCount
+
+        self.tableWidget.insertRow(aRow)
+        self.tableWidget.setItem(aRow, 0, QTableWidgetItem("0"))
+        self.tableWidget.setItem(aRow, 1, QTableWidgetItem("0"))
+        self.tableWidget.setItem(aRow, 2, QTableWidgetItem("0"))
+        self.tableWidget.setItem(aRow, 3, QTableWidgetItem("0"))
+    # addVertex
+
+    def removeVertex(self):
+        aRow = self.tableWidget.currentRow()
+
+        if QMessageBox.question(self, "", QT_TRANSLATE_NOOP("Structure", "Are you to remove the selected vertex?")) == QMessageBox.Yes:
+            self.tableWidget.removeRow(aRow)
+        # if
+    # removeVertex
+
+    def previewPanel(self):
+
+        PipeCad.RemoveAid(self.aidNumber)
+
+        aPointList = list()
+
+        for r in range(self.tableWidget.rowCount):
+            aX = float(self.tableWidget.item(r, 0).text())
+            aY = float(self.tableWidget.item(r, 1).text())
+            aZ = float(self.tableWidget.item(r, 2).text())
+            aR = float(self.tableWidget.item(r, 3).text())
+
+            aPoint = Position(aX, aY, aZ)
+            aPointList.append(aPoint)
+        # for
+
+        PipeCad.AddAidPolygon(aPointList, self.aidNumber)
+        PipeCad.UpdateViewer()
+
+    # previewPanel
+
+    def accept(self):
+
+        PipeCad.StartTransaction("Create Panel")
+
+        PipeCad.CreateItem("PANE", self.textName.text)
+
+        aPaneItem = PipeCad.CurrentItem()
+        aPaneItem.Description = self.textDescription.text
+
+        PipeCad.CreateItem("PLOO")
+        aPlooItem = PipeCad.CurrentItem()
+        aPlooItem.Height = float(self.textThickness.text)
+
+        for r in range(self.tableWidget.rowCount):
+            aX = float(self.tableWidget.item(r, 0).text())
+            aY = float(self.tableWidget.item(r, 1).text())
+            aZ = float(self.tableWidget.item(r, 2).text())
+            aR = float(self.tableWidget.item(r, 3).text())
+
+            PipeCad.CreateItem("PAVE")
+            aPaveItem = PipeCad.CurrentItem()
+            aPaveItem.Position = Position(aX, aY, aZ)
+            aPaveItem.Radius = aR
+        # for
+
+        PipeCad.CommitTransaction()
+
+        PipeCad.RemoveAid(self.aidNumber)
+        PipeCad.UpdateViewer()
+
+        QDialog.accept(self)
+    # accept
+
+    def reject(self):
+        PipeCad.RemoveAid(self.aidNumber)
+        QDialog.reject(self)
+    # reject
+
+# PanelDialog
+
+# Singleton Instance.
+aPanelDlg = PanelDialog(PipeCad)
+
+def CreatePanel():
+    aPanelDlg.show()
+# CreatePanel

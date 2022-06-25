@@ -48,7 +48,7 @@ PipeCAD是工业设计软件，面向石油化工、环保医药等行业的的�
 | 三维建模 | \emoji :heavy_check_mark: | \emoji :heavy_check_mark:   |
 | 管道PCF文件 | \emoji :heavy_check_mark: | \emoji :heavy_check_mark:   |
 | 管道材料报表 | \emoji :warning: 基本材料报表 | \emoji :heavy_check_mark: 根据公司模板定制 |
-| 管道ISO图 | \emoji :warning: 固定图框 | \emoji :heavy_check_mark: 根据公司模板定制 |
+| 管道轴测ISO图 | \emoji :warning: 固定图框 | \emoji :heavy_check_mark: 根据公司模板定制 |
 | 设备管口方位图 | \emoji :warning: 固定图框 | \emoji :heavy_check_mark: 根据公司模板定制 |
 | 管道平面布置图 | \emoji :x: | \emoji :heavy_check_mark: |
 
@@ -193,6 +193,7 @@ PipeCAD中数据都是以树形层次组织的，所以在各个模块中都提�
 ![View Cube](images/common/common_view_cube_zh.png "视图方块") 
 
 - 视图快捷键：为了方便视图操作，增加快捷键。
+
 | 快捷键 | 功能描述 |
 | --- | --- |
 | F8 | 线框模式和着色模式切换 |
