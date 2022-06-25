@@ -1376,3 +1376,143 @@ aPanelDlg = PanelDialog(PipeCad)
 def CreatePanel():
     aPanelDlg.show()
 # CreatePanel
+
+
+class PostDialog(QDialog):
+    """docstring for PostDialog"""
+    def __init__(self, theParent = None):
+        QDialog.__init__(self, theParent)
+
+        self.setupUi()
+    # __init__
+
+    def setupUi(self):
+        self.setWindowTitle(QT_TRANSLATE_NOOP("Structure", "Create Post"))
+
+        self.verticalLayout = QVBoxLayout(self)
+        self.formLayout = QFormLayout()
+
+        # Point
+        self.labelPx = QLabel("X")
+        self.textPx = QLineEdit("0")
+
+        self.labelPy = QLabel("Y")
+        self.textPy = QLineEdit("0")
+
+        self.labelPz = QLabel("Z")
+        self.textPz = QLineEdit("0")
+
+        self.formLayout.setWidget(0, QFormLayout.LabelRole, self.labelPx)
+        self.formLayout.setWidget(0, QFormLayout.FieldRole, self.textPx)
+
+        self.formLayout.setWidget(1, QFormLayout.LabelRole, self.labelPy)
+        self.formLayout.setWidget(1, QFormLayout.FieldRole, self.textPy)
+
+        self.formLayout.setWidget(2, QFormLayout.LabelRole, self.labelPz)
+        self.formLayout.setWidget(2, QFormLayout.FieldRole, self.textPz)
+
+        self.verticalLayout.addLayout(self.formLayout)
+
+        # Action Box
+        self.horizontalLayout = QHBoxLayout()
+
+        self.buttonPick = QPushButton("Pick")
+        self.buttonPick.clicked.connect(self.pickVertex)
+
+        self.buttonBox = QDialogButtonBox(QDialogButtonBox.Cancel|QDialogButtonBox.Ok, self)
+
+        self.buttonBox.accepted.connect(self.accept)
+        self.buttonBox.rejected.connect(self.reject)
+
+        self.horizontalLayout.addWidget(self.buttonPick)
+        self.horizontalLayout.addWidget(self.buttonBox)
+
+        self.verticalLayout.addLayout(self.horizontalLayout)
+    # setupUi
+
+    def pickVertex(self):
+        aPoint = PipeCad.PickPoint(1)
+        if aPoint is None:
+            return
+        # if
+
+        self.textPx.setText(str(aPoint.x))
+        self.textPy.setText(str(aPoint.y))
+        self.textPz.setText(str(aPoint.z))
+    # pickVertex
+
+    def accept(self):
+        aPx = float(self.textPx.text)
+        aPy = float(self.textPy.text)
+        aPz = float(self.textPz.text)
+
+        PipeCad.StartTransaction("Create Post")
+
+        PipeCad.CreateItem("SUBS")
+        aSubsItem = PipeCad.CurrentItem()
+        aSubsItem.Position = Position(aPx, aPy, aPz)
+
+        PipeCad.CreateItem("CYLI")
+        aTreeItem = PipeCad.CurrentItem()
+        aTreeItem.Diameter = 38
+        aTreeItem.Height = 1070
+        aTreeItem.Color = 122
+        aTreeItem.Position = Position(0, 0, 535, aSubsItem)
+
+        PipeCad.CreateItem("DISH")
+        aTreeItem = PipeCad.CurrentItem()
+        aTreeItem.Diameter = 76
+        aTreeItem.Height = 38
+        aTreeItem.Color = 122
+        aTreeItem.Position = Position(0, 0, 1070, aSubsItem)
+        aTreeItem.Orientation = Orientation(90, 0, 0, aSubsItem)
+
+        PipeCad.CreateItem("DISH")
+        aTreeItem = PipeCad.CurrentItem()
+        aTreeItem.Diameter = 76
+        aTreeItem.Height = 38
+        aTreeItem.Color = 122
+        aTreeItem.Position = Position(0, 0, 1070, aSubsItem)
+        aTreeItem.Orientation = Orientation(-90, 0, 0, aSubsItem)
+
+        PipeCad.CreateItem("DISH")
+        aTreeItem = PipeCad.CurrentItem()
+        aTreeItem.Diameter = 76
+        aTreeItem.Height = 38
+        aTreeItem.Color = 122
+        aTreeItem.Position = Position(0, 0, 535, aSubsItem)
+        aTreeItem.Orientation = Orientation(90, 0, 0, aSubsItem)
+
+        PipeCad.CreateItem("DISH")
+        aTreeItem = PipeCad.CurrentItem()
+        aTreeItem.Diameter = 76
+        aTreeItem.Height = 38
+        aTreeItem.Color = 122
+        aTreeItem.Position = Position(0, 0, 535, aSubsItem)
+        aTreeItem.Orientation = Orientation(-90, 0, 0, aSubsItem)
+
+        PipeCad.CreateItem("BOX")
+        aTreeItem = PipeCad.CurrentItem()
+        aTreeItem.Xlength = 76
+        aTreeItem.Ylength = 114
+        aTreeItem.Zlength = 10
+        aTreeItem.Color = 122
+        aTreeItem.Position = Position(0, 0, 5, aSubsItem)
+
+        PipeCad.CommitTransaction()
+
+        PipeCad.SetCurrentItem(aSubsItem)
+    # accept
+
+# PostDialog
+
+# Singleton Instance.
+aPostDlg = PostDialog(PipeCad)
+
+def CreatePost():
+    aPostDlg.show()    
+# CreatePost
+
+def CreateHandrail():
+    print("handrail")
+# CreateHandrail
