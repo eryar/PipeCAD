@@ -403,43 +403,32 @@ class ImportProjectInfoFromExcel(QDialog):
     def setupUi(self):
         
         self.setWindowTitle(QT_TRANSLATE_NOOP("Admin", "Admin Import"))
-<<<<<<< HEAD
-        self.resize(400, 50)
+        self.resize(450, 150)
         
-        aCurrentPath = os.path.dirname( os.path.abspath(__file__) )
+        self.aCurrentPath = os.path.dirname( os.path.abspath(__file__) )
         
-        self.txtPathToFile = QLineEdit()    
-        self.btnExplorer = QPushButton( "", self)
+        self.txtPathToFile = QLineEdit()
+        
+        self.btnExplorer = QPushButton( "", self) 
         self.btnExplorer.setMinimumSize( 32 , 32 )
         self.btnExplorer.setMaximumSize( 32 , 32 )
-        self.btnExplorer.setIcon( QIcon( aCurrentPath + '/icons/common/32x32_explorer.png') )
+        self.btnExplorer.setIcon( QIcon( self.aCurrentPath + '/icons/common/32x32_explorer.png') )
         self.btnExplorer.setIconSize( QSize( 32, 32 ) )
-        
-        self.horLayoutPath = QHBoxLayout(self)
-        self.horLayoutPath.addWidget(self.txtPathToFile)
-        self.horLayoutPath.addWidget(self.btnExplorer)
-                               
-        self.verticalLayout = QVBoxLayout(self)
-        self.verticalLayout.addLayout(self.horLayoutPath)
-                
-        self.btnExplorer.clicked.connect(self.run_import)
-=======
-        self.resize(350, 150)
-                
+       
         self.icon_users = QLabel()
         self.icon_teams = QLabel()
         self.icon_dbs = QLabel()
         self.icon_mdbs = QLabel()     
         
-        self.icon_users_counter = QLabel("2/10")
-        self.icon_teams_counter = QLabel("10/10")
-        self.icon_dbs_counter = QLabel("5/10")
-        self.icon_mdbs_counter = QLabel("10/10")  
-        
-        self.icon_users.setStyleSheet("border: 1px solid black;")
-        self.icon_teams.setStyleSheet("border: 1px solid black;")
-        self.icon_dbs.setStyleSheet("border: 1px solid black;")
-        self.icon_mdbs.setStyleSheet("border: 1px solid black;")
+        self.icon_users_counter = QLabel()
+        self.icon_teams_counter = QLabel()
+        self.icon_dbs_counter = QLabel()
+        self.icon_mdbs_counter = QLabel()  
+            
+        self.icon_users.setStyleSheet("border: 0.5px solid grey;")
+        self.icon_teams.setStyleSheet("border: 0.5px solid grey;")
+        self.icon_dbs.setStyleSheet("border: 0.5px solid grey;")
+        self.icon_mdbs.setStyleSheet("border: 0.5px solid grey;")
                 
         self.icon_users.setAlignment(Qt.AlignCenter)
         self.icon_teams.setAlignment(Qt.AlignCenter)
@@ -451,53 +440,59 @@ class ImportProjectInfoFromExcel(QDialog):
         self.icon_dbs_counter.setAlignment(Qt.AlignCenter)
         self.icon_mdbs_counter.setAlignment(Qt.AlignCenter)
         
-        aCurrentPath = os.path.dirname( os.path.abspath(__file__) )
+        self.icon_teams.setPixmap( QPixmap( self.aCurrentPath + '/icons/admin/128x128_team_select.png' ).scaled( QSize( 96, 96 ) ) )
+        self.icon_users.setPixmap( QPixmap( self.aCurrentPath + '/icons/admin/128x128_user_select.png'  ).scaled( QSize( 96, 96 ) ) )
+        self.icon_dbs.setPixmap( QPixmap( self.aCurrentPath + '/icons/admin/128x128_database_select.png' ).scaled( QSize( 96, 96 ) ) )
+        self.icon_mdbs.setPixmap( QPixmap( self.aCurrentPath + '/icons/admin/128x128_mdb_select.png' ).scaled( QSize( 96, 96 ) ) )
         
-        self.icon_teams.setPixmap( QPixmap( aCurrentPath + '/icons/admin/128x128_team_select.png' ).scaled( QSize( 64, 64 ) ) )
-        self.icon_users.setPixmap( QPixmap( aCurrentPath + '/icons/admin/128x128_user_select.png'  ).scaled( QSize( 64, 64 ) ) )
-        self.icon_dbs.setPixmap( QPixmap( aCurrentPath + '/icons/admin/128x128_database_select.png' ).scaled( QSize( 64, 64 ) ) )
-        self.icon_mdbs.setPixmap( QPixmap( aCurrentPath + '/icons/admin/128x128_mdb_select.png' ).scaled( QSize( 64, 64 ) ) )
-         
+        self.hLayPath = QHBoxLayout()
+        self.hLayPath.addWidget(self.txtPathToFile)
+        self.hLayPath.addWidget(self.btnExplorer)
+        
         self.hLayIcons = QHBoxLayout()
+        self.hLayIcons.setAlignment(Qt.AlignVCenter) 
         self.hLayIcons.addWidget(self.icon_teams)  
         self.hLayIcons.addWidget(self.icon_users) 
         self.hLayIcons.addWidget(self.icon_dbs)  
         self.hLayIcons.addWidget(self.icon_mdbs)  
         self.hLayIcons.setContentsMargins(0, 0, 0, 0) 
         
-        self.hLayIconsCounters = QHBoxLayout()
-        self.hLayIconsCounters.addWidget(self.icon_teams_counter)  
-        self.hLayIconsCounters.addWidget(self.icon_users_counter) 
-        self.hLayIconsCounters.addWidget(self.icon_dbs_counter)  
-        self.hLayIconsCounters.addWidget(self.icon_mdbs_counter)  
-        self.hLayIconsCounters.setContentsMargins(0, 0, 0, 0)
+        self.hLayCounters = QHBoxLayout()
+        self.hLayCounters.addWidget(self.icon_teams_counter)  
+        self.hLayCounters.addWidget(self.icon_users_counter) 
+        self.hLayCounters.addWidget(self.icon_dbs_counter)  
+        self.hLayCounters.addWidget(self.icon_mdbs_counter)  
+        self.hLayCounters.setContentsMargins(0, 0, 0, 0)
         
-        self.btnUpdateLibrary = QPushButton(QT_TRANSLATE_NOOP("Admin Import", " Import Project Info from Excel ")) 
+        self.icon_users_counter.hide()
+        self.icon_teams_counter.hide()
+        self.icon_dbs_counter.hide()
+        self.icon_mdbs_counter.hide()
+                  
+        self.vLayMain = QVBoxLayout(self)
+        self.vLayMain.addLayout(self.hLayPath)
+        self.vLayMain.addLayout(self.hLayIcons)
+        self.vLayMain.addLayout(self.hLayCounters)
         
-           
-        self.verticalLayout = QVBoxLayout(self)
-        
-        self.verticalLayout.addLayout(self.hLayIcons)
-        self.verticalLayout.addLayout(self.hLayIconsCounters)
-        self.verticalLayout.addWidget(self.btnUpdateLibrary)
-        
-        self.btnUpdateLibrary.clicked.connect(self.run_import)
-        
->>>>>>> de88942625cc36ba3af6fde53f6112201ac42193
-        
+        self.btnExplorer.clicked.connect(self.run_import)
+                
     def run_import(self):
         # pip install pandas
         # pip install openpyxl
         
-        self.collect_reserved_db_numbers()
+        #self.collect_reserved_db_numbers()
         
-        excel_path = 'C:\PipeCAD\Lib\ExportProjectDefinition.xlsx'
-        self.txtPathToFile.setText( excel_path ) 
+        excel_path = QFileDialog.getOpenFileName( self, 'Import Project Definition', 'C:\\', "Excel file (*.xlsx)" )
+        if len(excel_path) < 1:
+            return
+        # if
         
-        df_users = pd.read_excel( excel_path, 'Users' ).rename(columns=lambda x: x.replace(' ', '_'))
-        df_teams = pd.read_excel( excel_path, 'Teams' ).rename(columns=lambda x: x.replace(' ', '_'))
-        df_dbs = pd.read_excel( excel_path, 'Databases' ).rename(columns=lambda x: x.replace(' ', '_'))
-        df_mdbs = pd.read_excel( excel_path, 'MDBs' ).rename(columns=lambda x: x.replace(' ', '_'))
+        self.txtPathToFile.setText( excel_path.replace("/","\\") ) 
+        
+        df_users = pd.read_excel( excel_path, 'Users' ).rename ( columns=lambda x: x.replace(' ', '_') )
+        df_teams = pd.read_excel( excel_path, 'Teams' ).rename ( columns=lambda x: x.replace(' ', '_') )
+        df_dbs = pd.read_excel( excel_path, 'Databases' ).rename ( columns=lambda x: x.replace(' ', '_') )
+        df_mdbs = pd.read_excel( excel_path, 'MDBs' ).rename ( columns=lambda x: x.replace(' ', '_') )
         
         df_users_max = len(df_users)
         df_teams_max = len(df_teams)
@@ -508,6 +503,11 @@ class ImportProjectInfoFromExcel(QDialog):
         
         common_max = df_users_max + df_teams_max + df_dbs_max + df_mdbs_max
         current_progress = 0
+        
+        loaded_users = 0
+        loaded_teams = 0
+        loaded_dbs = 0
+        loaded_mdbs = 0
         
         # Importing Teams  
         for i in range(len(df_teams)):   
@@ -520,17 +520,20 @@ class ImportProjectInfoFromExcel(QDialog):
                
             except NameError as e:
                 PipeCad.CreateTeam( team_name, team_description )
-
+            
+            loaded_teams = loaded_teams + 1
+            
             current_team = PipeCad.CurrentItem()
             current_team.Description = team_description    
             
             current_progress = i / common_max * 100
-<<<<<<< HEAD
             self.parent().progressBar.setValue( current_progress )         
-=======
-            #self.progressBar.setValue( current_progress )         
->>>>>>> de88942625cc36ba3af6fde53f6112201ac42193
-                
+        
+        if loaded_teams == df_teams_max:
+            self.icon_teams.setPixmap( QPixmap( self.aCurrentPath + '/icons/admin/128x128_team_done.png' ).scaled( QSize( 96, 96 ) ) )
+        else: 
+            self.icon_teams.setPixmap( QPixmap( self.aCurrentPath + '/icons/admin/128x128_team_fail.png' ).scaled( QSize( 96, 96 ) ) )
+        
         # Importing Users   
         # TODO: Add functional for adding Teams to user
         for i in range(len(df_users)):
@@ -542,20 +545,42 @@ class ImportProjectInfoFromExcel(QDialog):
             
             try: 
                 PipeCad.SetCurrentItem( '/' + user_name )
-                          
+
             except NameError as e:
-                PipeCad.CreateUser( user_name, user_description )    
-            
+                PipeCad.CreateUser( user_name, user_description )   
+                current_user = PipeCad.CurrentItem()
+                PipeCad.CreateItem("TMLI")
+           
+            PipeCad.SetCurrentItem( '/' + user_name )
             current_user = PipeCad.CurrentItem()
             current_user.Description = user_description
-            #current_user.Security = user_security
+            current_user.Security = user_security
+            
+            loaded_users = loaded_users + 1
+            
+            user_tmli = PipeCad.SetCurrentItem( current_user.Member[0] )
+            user_lteas = PipeCad.CurrentItem().Member
+            
+            for i in range ( len( user_lteas ) ):
+                PipeCad.SetCurrentItem( user_lteas[i] ) 
+                PipeCad.DeleteItem("LTEA")
+            
+            for i in range ( len( user_teams )):
+                PipeCad.CreateItem("LTEA")
+                user_ltea = PipeCad.CurrentItem()
+                user_teame_name = "/*" + user_teams[i]
+                user_team = PipeCad.GetItem( user_teame_name )
                 
+                print( type(user_team) )
+                #user_ltea.Temf = user_team
+                  
             current_progress = ( i + df_teams_max ) / common_max * 100
-<<<<<<< HEAD
             self.parent().progressBar.setValue( current_progress ) 
-=======
-            #self.progressBar.setValue( current_progress ) 
->>>>>>> de88942625cc36ba3af6fde53f6112201ac42193
+        
+        if loaded_users == df_users_max:
+            self.icon_users.setPixmap( QPixmap( self.aCurrentPath + '/icons/admin/128x128_user_done.png' ).scaled( QSize( 96, 96 ) ) )
+        else: 
+            self.icon_users.setPixmap( QPixmap( self.aCurrentPath + '/icons/admin/128x128_user_fail.png' ).scaled( QSize( 96, 96 ) ) )
 
         # Importing Databases        
         for i in range(len(df_dbs)):
@@ -564,34 +589,38 @@ class ImportProjectInfoFromExcel(QDialog):
             db_name = df_dbs.iloc[i].Name
             db_description = df_dbs.iloc[i].Description
             db_type = df_dbs.iloc[i].Type.replace('CATA', 'CATE') # Temporary fix for ver. 1.0.15.
-            #db_claim_mode = df_dbs.iloc[i].Claim_Mode
+            db_claim_mode = df_dbs.iloc[i].Claim_Mode
             db_number = df_dbs.iloc[i].Number
             # db_area = db_dbs.iloc[i].Area
             
-            if db_type == 'DESI' or db_type == 'CATE':             # TODO: Change to CATA after fixing function PipeCad.CreateDb to use proper type for catalogues db. 
-                if db_number > 1 and db_number < 8000:
-                    try: 
-                        PipeCad.SetCurrentItem( '/*' + db_team + '/' + db_name )
+            #if db_type == 'DESI' or db_type == 'CATE':             # TODO: Change to CATA after fixing function PipeCad.CreateDb to use proper type for catalogues db. 
+            if db_number > 1 and db_number < 8000:
+                try: 
+                    PipeCad.SetCurrentItem( '/*' + db_team + '/' + db_name )
                                   
-                    except NameError as e:
-                        PipeCad.CreateDb( db_team + '/' + db_name , db_type, db_number, db_description )  # TODO: Add check if required db number is availible for assigning
-                else:
-                    continue
+                except NameError as e:
+                    PipeCad.CreateDb( db_team + '/' + db_name , db_type, db_number, db_description )  # TODO: Add check if required db number is availible for assigning
+                
+                loaded_dbs = loaded_dbs + 1
+   
+            #else:
+            #    continue
                     
                 current_db = PipeCad.CurrentItem()
                 current_db.Description = db_description
-                #current_db.Claim_Mode = db_claim_mode
+                current_db.ClaimMode = db_claim_mode
             
-            else:
-                continue
+            #else:
+            #    continue
                         
             current_progress = ( i + df_users_max + df_teams_max ) / common_max * 100
-<<<<<<< HEAD
             self.parent().progressBar.setValue( current_progress ) 
-=======
-            #self.progressBar.setValue( current_progress ) 
->>>>>>> de88942625cc36ba3af6fde53f6112201ac42193
-
+                    
+        if loaded_dbs == df_dbs_max:
+            self.icon_dbs.setPixmap( QPixmap( self.aCurrentPath + '/icons/admin/128x128_database_done.png' ).scaled( QSize( 96, 96 ) ) )
+        else: 
+            self.icon_dbs.setPixmap( QPixmap( self.aCurrentPath + '/icons/admin/128x128_database_fail.png' ).scaled( QSize( 96, 96 ) ) )
+        
         # Importing MDBs
         # Adding functional for adding databases to mdb
         for i in range(len(df_mdbs)):
@@ -604,7 +633,9 @@ class ImportProjectInfoFromExcel(QDialog):
                
             except NameError as e:
                 PipeCad.CreateMdb( mdb_name, mdb_description )
-
+            
+            loaded_mdbs = loaded_mdbs + 1
+            
             current_mdb = PipeCad.CurrentItem()
             current_mdb.Description = mdb_description    
             
@@ -612,17 +643,26 @@ class ImportProjectInfoFromExcel(QDialog):
             self.parent().progressBar.setValue( current_progress )   
             
             current_progress = ( i + df_users_max + df_teams_max + df_dbs_max ) / common_max * 100
-<<<<<<< HEAD
             self.parent().progressBar.setValue( current_progress )
+
+        if loaded_mdbs == df_mdbs_max:
+            self.icon_mdbs.setPixmap( QPixmap( self.aCurrentPath + '/icons/admin/128x128_mdb_done.png' ).scaled( QSize( 96, 96 ) ) )
+        else: 
+            self.icon_mdbs.setPixmap( QPixmap( self.aCurrentPath + '/icons/admin/128x128_mdb_fail.png' ).scaled( QSize( 96, 96 ) ) )
+        
+        self.icon_users_counter.show()
+        self.icon_teams_counter.show()
+        self.icon_dbs_counter.show()
+        self.icon_mdbs_counter.show()
+        
+        self.icon_teams_counter.setText( "Loaded " + str( loaded_teams ) + "/" + str( df_teams_max ) )        
+        self.icon_users_counter.setText( "Loaded " + str( loaded_users ) + "/" + str( df_users_max ) )        
+        self.icon_dbs_counter.setText( "Loaded " + str( loaded_dbs ) + "/" + str( df_dbs_max ) )        
+        self.icon_mdbs_counter.setText( "Loaded " + str( loaded_mdbs ) + "/" + str( df_mdbs_max ) )
         
         self.parent().progressBar.setValue( 100 )
         self.parent().progressBar.hide()
-=======
-            #self.progressBar.setValue( current_progress )
-        
-        #self.progressBar.setValue( 100 )
-        #self.progressBar.hide()
->>>>>>> de88942625cc36ba3af6fde53f6112201ac42193
+
         PipeCad.SaveWork()
         self.parent().refreshList()
 
@@ -1257,24 +1297,32 @@ class UserDialog(QDialog):
 
     def createUser(self):
         aName = self.textName.text
-        aDescription = self.textDescription.text
         aPassword = self.textPassword.text
-        aSecurity = self.comboSecurity.currentText
 
-        aTeamItems = list()
-
-        for r in range (self.tableUserTeams.rowCount):
-            aTeamItem = self.tableUserTeams.item(r, 0).data(Qt.UserRole)
-            aTeamItems.append(aTeamItem)
-        # for
+        PipeCad.StartTransaction("Create User")
 
         try:
-            PipeCad.CreateUser(aName, aDescription, aPassword, aSecurity, aTeamItems)
+            PipeCad.CreateUser(aName, self.textDescription.text)
         except NameError as e:
             QMessageBox.critical(self, "", str(e))
             raise
         # try
 
+        aUserItem = PipeCad.CurrentItem()
+        aUserItem.Security = self.comboSecurity.currentText
+        aUserItem.Password = self.textPassword.text
+
+        PipeCad.CreateItem("TMLI")
+        aTmliItem = PipeCad.CurrentItem()
+
+        for r in range (self.tableUserTeams.rowCount):
+            aItem = self.tableUserTeams.item(r, 0).data(Qt.UserRole)
+
+            PipeCad.CreateItem("LTEA")
+            aLteaItem = PipeCad.CurrentItem()
+            aLteaItem.Temf = aItem
+
+        PipeCad.CommitTransaction()
         PipeCad.SaveWork()
     # createUser
 
