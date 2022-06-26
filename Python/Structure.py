@@ -1514,5 +1514,62 @@ def CreatePost():
 # CreatePost
 
 def CreateHandrail():
-    print("handrail")
+    aTreeItem = PipeCad.CurrentItem()
+    if aTreeItem.Type not in ["STRU", "SUBS"]:
+        return
+    # if
+
+    aItem1 = PipeCad.PickItem()
+    if aItem1 is None:
+        return
+    # if
+
+    aItem2 = PipeCad.PickItem()
+    if aItem2 is None:
+        return
+    # if
+
+    aP1 = aItem1.Position
+    aP2 = aItem2.Position
+
+    aHeight = aP1.distance(aP2)
+    if aHeight < 10:
+        return
+    # if
+
+    aDir = Direction(aP1, aP2)
+    aOri = Orientation(aDir.Orthogonal(), aDir)
+
+    PipeCad.SetCurrentItem(aTreeItem)
+
+    PipeCad.StartTransaction("Create Handrail")
+
+    PipeCad.CreateItem("SUBS")
+    aSubsItem = PipeCad.CurrentItem()
+    aSubsItem.Position = aItem1.Position
+
+    aPos = aSubsItem.Position.Offset(aDir, aHeight * 0.5)
+
+    PipeCad.CreateItem("CYLI")
+    aCyliItem = PipeCad.CurrentItem()
+    aCyliItem.Color = 122
+    aCyliItem.Diameter = 38
+    aCyliItem.Height = aHeight
+    aCyliItem.Orientation = aOri
+    aCyliItem.Position = aPos
+
+    aPos.z = aPos.z - 535
+
+    PipeCad.CreateItem("CYLI")
+    aCyliItem = PipeCad.CurrentItem()
+    aCyliItem.Color = 122
+    aCyliItem.Diameter = 38
+    aCyliItem.Height = aHeight
+    aCyliItem.Orientation = aOri
+    aCyliItem.Position = aPos
+
+    PipeCad.CommitTransaction()
+
+    PipeCad.SetCurrentItem(aSubsItem)
+
 # CreateHandrail
