@@ -303,8 +303,8 @@ class GridDialog(QDialog):
                 aT = self.tableWidgetX.item(i, 0).text()
                 aX = float(self.tableWidgetX.item(i, 1).text())
                 
-                aPs.x = aX
-                aPe.x = aX
+                aPs.X = aX
+                aPe.X = aX
                 PipeCad.AddAidLine(aPs, aPe, self.aidNumber)
                 PipeCad.AddAidText(aPs, aT, self.aidNumber)
             # for
@@ -317,8 +317,8 @@ class GridDialog(QDialog):
                 aT = self.tableWidgetY.item(i, 0).text()
                 aY = float(self.tableWidgetY.item(i, 1).text())
                 
-                aPs.y = aY
-                aPe.y = aY
+                aPs.Y = aY
+                aPe.Y = aY
                 PipeCad.AddAidLine(aPs, aPe, 1)
                 PipeCad.AddAidText(aPs, aT, 1)
             # for
@@ -367,7 +367,7 @@ class GridDialog(QDialog):
 
             # Draw aid line in elevations.
             for e in range (self.tableWidgetZ.rowCount):
-                aT = self.tableWidgetZ.item(i, 0).text()
+                aT = self.tableWidgetZ.item(e, 0).text()
                 aZ = float(self.tableWidgetZ.item(e, 1).text())
 
                 # Draw aid line in x direction.
@@ -383,8 +383,8 @@ class GridDialog(QDialog):
                     aT = self.tableWidgetX.item(i, 0).text()
                     aX = float(self.tableWidgetX.item(i, 1).text())
                     
-                    aPs.x = aX
-                    aPe.x = aX
+                    aPs.X = aX
+                    aPe.X = aX
 
                     PipeCad.CreateItem("SCTN", aSbfrItem.Name + "/X" + str(i+1))
                     aSctnItem = PipeCad.CurrentItem()
@@ -401,8 +401,8 @@ class GridDialog(QDialog):
                     aT = self.tableWidgetY.item(i, 0).text()
                     aY = float(self.tableWidgetY.item(i, 1).text())
                     
-                    aPs.y = aY
-                    aPe.y = aY
+                    aPs.Y = aY
+                    aPe.Y = aY
 
                     PipeCad.CreateItem("SCTN", aSbfrItem.Name + "/Y" + str(i+1))
                     aSctnItem = PipeCad.CurrentItem()

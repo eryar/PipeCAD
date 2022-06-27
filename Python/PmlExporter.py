@@ -466,7 +466,7 @@ def exportEquipment(theTreeItem, thePmlFile):
     else:
         thePmlFile.write("\nNEW EQUIPMENT")
     # if
-    thePmlFile.write("\nPOS E%f N%f U%f" % (aPos.x, aPos.y, aPos.z))
+    thePmlFile.write("\nPOS E%f N%f U%f" % (aPos.X, aPos.Y, aPos.Z))
     thePmlFile.write("\n")
 
     for aItem in theTreeItem.Member:
@@ -491,7 +491,7 @@ def exportEquipment(theTreeItem, thePmlFile):
                     thePmlFile.write("\nNEW LOOP")
                     for aVertItem in aChildItem.Member:
                         aPnt = aVertItem.Position
-                        thePmlFile.write("\nNEW VERT POS E%f N%f U%f" % (aPnt.x, aPnt.y, aPnt.z))
+                        thePmlFile.write("\nNEW VERT POS E%f N%f U%f" % (aPnt.X, aPnt.Y, aPnt.Z))
                     # for
                 elif aChildItem.Type == "NXTR":
                     thePmlFile.write("\nNEW NXTR HEIG %f" % (aChildItem.Height))
@@ -499,7 +499,7 @@ def exportEquipment(theTreeItem, thePmlFile):
                         thePmlFile.write("\nNEW LOOP")
                         for aVertItem in aLoopItem.Member:
                             aPnt = aVertItem.Position
-                            thePmlFile.write("\nNEW VERT POS E%f N%f U%f" % (aPnt.x, aPnt.y, aPnt.z))
+                            thePmlFile.write("\nNEW VERT POS E%f N%f U%f" % (aPnt.X, aPnt.Y, aPnt.Z))
                         # for
                     # for
                 # if
@@ -529,7 +529,7 @@ def exportEquipment(theTreeItem, thePmlFile):
         aOri = aItem.Orientation
         aDy = aOri.YDirection
         aDz = aOri.ZDirection
-        thePmlFile.write("\nPOS E%f N%f U%f" % (aPos.x, aPos.y, aPos.z))
+        thePmlFile.write("\nPOS E%f N%f U%f" % (aPos.X, aPos.Y, aPos.Z))
         thePmlFile.write("\n!aDy = object Direction('N')")
         thePmlFile.write("\n!aDz = object Direction('U')")
         thePmlFile.write("\n!aDy.east = %f" % aDy.x)
