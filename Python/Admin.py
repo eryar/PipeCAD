@@ -41,7 +41,7 @@ class AdminMain(QWidget):
         self.mdbDialog = MdbDialog(self)
         self.dbDialog = DatabaseDialog(self)
         self.importProjectInfo = ImportProjectInfoFromExcel(self)
-        self.helpViewer = HelpViewer(self)
+        #self.helpViewer = HelpViewer(self)
 
         self.setupUi()
 
@@ -142,9 +142,9 @@ class AdminMain(QWidget):
         self.buttonUpdate.clicked.connect(self.update)
         self.horizontalLayout.addWidget(self.buttonUpdate)   
         
-        self.btnHelpViewer = QPushButton(QT_TRANSLATE_NOOP("Admin", " Show Help Viewer - Dev. "))
-        self.btnHelpViewer.clicked.connect(self.show_help_viewer)
-        self.horizontalLayout.addWidget(self.btnHelpViewer)
+        #self.btnHelpViewer = QPushButton(QT_TRANSLATE_NOOP("Admin", " Show Help Viewer - Dev. "))
+        #self.btnHelpViewer.clicked.connect(self.show_help_viewer)
+        #self.horizontalLayout.addWidget(self.btnHelpViewer)
 
         self.horizontalSpacer = QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
         self.horizontalLayout.addItem(self.horizontalSpacer)
