@@ -1436,9 +1436,9 @@ class PostDialog(QDialog):
             return
         # if
 
-        self.textPx.setText(str(aPoint.x))
-        self.textPy.setText(str(aPoint.y))
-        self.textPz.setText(str(aPoint.z))
+        self.textPx.setText(str(aPoint.X))
+        self.textPy.setText(str(aPoint.Y))
+        self.textPz.setText(str(aPoint.Z))
     # pickVertex
 
     def accept(self):
@@ -1513,63 +1513,268 @@ def CreatePost():
     aPostDlg.show()    
 # CreatePost
 
+
+class HandrailDialog(QDialog):
+    """docstring for HandrailDialog"""
+    def __init__(self, theParent = None):
+        QDialog.__init__(self, theParent)
+
+        self.postBegin = None
+        self.postEnd = None
+        self.aidNumber = PipeCad.NextAidNumber()
+
+        self.setupUi()
+    # __init__
+
+    def setupUi(self):
+        self.setWindowTitle(QT_TRANSLATE_NOOP("Structure", "Create Handrail"))
+
+        self.verticalLayout = QVBoxLayout(self)
+        self.formLayout = QFormLayout()
+
+        self.labelPostBegin = QLabel(QT_TRANSLATE_NOOP("Structure", "Post Begin"))
+        self.buttonPostBegin = QPushButton(QT_TRANSLATE_NOOP("Structure", "CE"))
+        self.buttonPostBegin.clicked.connect(self.setPostBegin)
+
+        self.formLayout.setWidget(0, QFormLayout.LabelRole, self.labelPostBegin)
+        self.formLayout.setWidget(0, QFormLayout.FieldRole, self.buttonPostBegin)
+
+        self.labelPostEnd = QLabel(QT_TRANSLATE_NOOP("Structure", "Post End"))
+        self.buttonPostEnd = QPushButton(QT_TRANSLATE_NOOP("Structure", "CE"))
+        self.buttonPostEnd.clicked.connect(self.setPostEnd)
+
+        self.formLayout.setWidget(1, QFormLayout.LabelRole, self.labelPostEnd)
+        self.formLayout.setWidget(1, QFormLayout.FieldRole, self.buttonPostEnd)
+
+        self.labelPosts = QLabel(QT_TRANSLATE_NOOP("Structure", "Posts"))
+        self.checkPosts = QCheckBox()
+        self.checkPosts.setChecked(True)
+
+        self.formLayout.setWidget(2, QFormLayout.LabelRole, self.labelPosts)
+        self.formLayout.setWidget(2, QFormLayout.FieldRole, self.checkPosts)
+
+        self.verticalLayout.addLayout(self.formLayout)
+
+        # Action Box
+        self.horizontalLayout = QHBoxLayout()
+
+        self.buttonPreview = QPushButton("Preview")
+        self.buttonPreview.clicked.connect(self.preview)
+
+        self.buttonBox = QDialogButtonBox(QDialogButtonBox.Cancel|QDialogButtonBox.Ok, self)
+
+        self.buttonBox.accepted.connect(self.accept)
+        self.buttonBox.rejected.connect(self.reject)
+
+        self.horizontalLayout.addWidget(self.buttonPreview)
+        self.horizontalLayout.addWidget(self.buttonBox)
+
+        self.verticalLayout.addLayout(self.horizontalLayout)
+    # setupUi
+
+    def setPostBegin(self):
+        aTreeItem = PipeCad.CurrentItem()
+        if aTreeItem.Type != "DISH":
+            QMessageBox.warning(self, "", QT_TRANSLATE_NOOP("Structure", "Please select post DISH!"))
+            return
+        # if
+
+        self.postBegin = aTreeItem
+
+        aName = aTreeItem.Name
+        if len(aName) < 1:
+            aName = aTreeItem.RefNo
+        # if
+
+        self.buttonPostBegin.setText("CE " + aName)
+    # setPostBegin
+
+    def setPostEnd(self):
+        aTreeItem = PipeCad.CurrentItem()
+        if aTreeItem.Type != "DISH":
+            QMessageBox.warning(self, "", QT_TRANSLATE_NOOP("Structure", "Please select post DISH!"))
+            return
+        # if
+
+        self.postEnd = aTreeItem
+
+        aName = aTreeItem.Name
+        if len(aName) < 1:
+            aName = aTreeItem.RefNo
+        # if
+
+        self.buttonPostEnd.setText("CE " + aName)
+    # setPostEnd
+
+    def preview(self):
+        if self.postBegin is None or self.postEnd is None:
+            return
+        # if
+
+        if self.postBegin == self.postEnd:
+            return
+        # if
+
+        aP1 = self.postBegin.Position
+        aP2 = self.postEnd.Position
+
+        aDz = Direction(0, 0, 1)
+        aDn = Direction(aP1, aP2)
+
+        PipeCad.RemoveAid(self.aidNumber)
+
+        # Post distance interval: 1000~1500
+        aDistance = aP1.Distance(aP2)
+        if aDistance > 2000 and self.checkPosts.isChecked():
+            # Build post line
+            aPostSize = int(aDistance / 1500)
+            aInterval = aDistance / (aPostSize + 1)
+
+            for i in range(1, aPostSize + 1):
+                aPi = aP1.Offset(aDn, aInterval * i)
+                aPj = aPi.Offset(aDz, -1070)
+
+                PipeCad.AddAidLine(aPi, aPj, self.aidNumber)
+            # for
+        # if
+
+        PipeCad.AddAidLine(aP1, aP2, self.aidNumber)
+
+        aP1.Z = aP1.Z - 535
+        aP2.Z = aP2.Z - 535
+
+        PipeCad.AddAidLine(aP1, aP2, self.aidNumber)
+
+        PipeCad.UpdateViewer()
+    # preview
+
+    def accept(self):
+        if self.postBegin is None or self.postEnd is None:
+            return
+        # if
+
+        if self.postBegin == self.postEnd:
+            return
+        # if
+
+        aP1 = self.postBegin.Position
+        aP2 = self.postEnd.Position
+
+        aDz = Direction(0, 0, 1)
+        aDir = Direction(aP1, aP2)
+        aOri = Orientation(aDir.Orthogonal(), aDir)
+
+        PipeCad.StartTransaction("Create Handrail")
+
+        # Post distance interval: 1000~1500
+        aDistance = aP1.Distance(aP2)
+        if aDistance > 2000 and self.checkPosts.isChecked():
+            # Build post line
+            aPostSize = int(aDistance / 1500)
+            aInterval = aDistance / (aPostSize + 1)
+
+            for i in range(1, aPostSize + 1):
+                aPi = aP1.Offset(aDir, aInterval * i)
+                aPk = aPi.Offset(aDz, -535)
+                aPj = aPi.Offset(aDz, -1070)
+
+                PipeCad.CreateItem("SUBS")
+                aSubsItem = PipeCad.CurrentItem()
+                aSubsItem.Position = aPj
+
+                PipeCad.CreateItem("CYLI")
+                aTreeItem = PipeCad.CurrentItem()
+                aTreeItem.Diameter = 38
+                aTreeItem.Height = 1070
+                aTreeItem.Color = 122
+                aTreeItem.Position = Position(0, 0, 535, aSubsItem)
+
+                PipeCad.CreateItem("DISH")
+                aTreeItem = PipeCad.CurrentItem()
+                aTreeItem.Diameter = 76
+                aTreeItem.Height = 38
+                aTreeItem.Color = 122
+                aTreeItem.Position = Position(0, 0, 1070, aSubsItem)
+                aTreeItem.Orientation = Orientation(90, 0, 0, aSubsItem)
+
+                PipeCad.CreateItem("DISH")
+                aTreeItem = PipeCad.CurrentItem()
+                aTreeItem.Diameter = 76
+                aTreeItem.Height = 38
+                aTreeItem.Color = 122
+                aTreeItem.Position = Position(0, 0, 1070, aSubsItem)
+                aTreeItem.Orientation = Orientation(-90, 0, 0, aSubsItem)
+
+                PipeCad.CreateItem("DISH")
+                aTreeItem = PipeCad.CurrentItem()
+                aTreeItem.Diameter = 76
+                aTreeItem.Height = 38
+                aTreeItem.Color = 122
+                aTreeItem.Position = Position(0, 0, 535, aSubsItem)
+                aTreeItem.Orientation = Orientation(90, 0, 0, aSubsItem)
+
+                PipeCad.CreateItem("DISH")
+                aTreeItem = PipeCad.CurrentItem()
+                aTreeItem.Diameter = 76
+                aTreeItem.Height = 38
+                aTreeItem.Color = 122
+                aTreeItem.Position = Position(0, 0, 535, aSubsItem)
+                aTreeItem.Orientation = Orientation(-90, 0, 0, aSubsItem)
+
+                PipeCad.CreateItem("BOX")
+                aTreeItem = PipeCad.CurrentItem()
+                aTreeItem.Xlength = 76
+                aTreeItem.Ylength = 114
+                aTreeItem.Zlength = 10
+                aTreeItem.Color = 122
+                aTreeItem.Position = Position(0, 0, 5, aSubsItem)
+
+                PipeCad.SetCurrentItem(aSubsItem)
+            # for
+        # if
+
+        # Handrail
+        PipeCad.CreateItem("SUBS")
+        aSubsItem = PipeCad.CurrentItem()
+        aSubsItem.Position = aP1
+
+        aPos = aP1.Offset(aDir, aDistance * 0.5)
+
+        PipeCad.CreateItem("CYLI")
+        aCyliItem = PipeCad.CurrentItem()
+        aCyliItem.Color = 122
+        aCyliItem.Diameter = 38
+        aCyliItem.Height = aDistance
+        aCyliItem.Orientation = aOri
+        aCyliItem.Position = aPos
+
+        aPos.Z = aPos.Z - 535
+
+        PipeCad.CreateItem("CYLI")
+        aCyliItem = PipeCad.CurrentItem()
+        aCyliItem.Color = 122
+        aCyliItem.Diameter = 38
+        aCyliItem.Height = aDistance
+        aCyliItem.Orientation = aOri
+        aCyliItem.Position = aPos
+
+        PipeCad.CommitTransaction()
+
+        PipeCad.RemoveAid(self.aidNumber)
+
+        QDialog.accept(self)
+    # accept
+
+    def reject(self):
+        PipeCad.RemoveAid(self.aidNumber)
+        QDialog.reject(self)
+    # reject
+
+# HandrailDialog
+
+# Singleton Instance.
+aHandrailDlg = HandrailDialog(PipeCad)
+
 def CreateHandrail():
-    aTreeItem = PipeCad.CurrentItem()
-    if aTreeItem.Type not in ["STRU", "SUBS"]:
-        return
-    # if
-
-    aItem1 = PipeCad.PickItem()
-    if aItem1 is None:
-        return
-    # if
-
-    aItem2 = PipeCad.PickItem()
-    if aItem2 is None:
-        return
-    # if
-
-    aP1 = aItem1.Position
-    aP2 = aItem2.Position
-
-    aHeight = aP1.distance(aP2)
-    if aHeight < 10:
-        return
-    # if
-
-    aDir = Direction(aP1, aP2)
-    aOri = Orientation(aDir.Orthogonal(), aDir)
-
-    PipeCad.SetCurrentItem(aTreeItem)
-
-    PipeCad.StartTransaction("Create Handrail")
-
-    PipeCad.CreateItem("SUBS")
-    aSubsItem = PipeCad.CurrentItem()
-    aSubsItem.Position = aItem1.Position
-
-    aPos = aSubsItem.Position.Offset(aDir, aHeight * 0.5)
-
-    PipeCad.CreateItem("CYLI")
-    aCyliItem = PipeCad.CurrentItem()
-    aCyliItem.Color = 122
-    aCyliItem.Diameter = 38
-    aCyliItem.Height = aHeight
-    aCyliItem.Orientation = aOri
-    aCyliItem.Position = aPos
-
-    aPos.z = aPos.z - 535
-
-    PipeCad.CreateItem("CYLI")
-    aCyliItem = PipeCad.CurrentItem()
-    aCyliItem.Color = 122
-    aCyliItem.Diameter = 38
-    aCyliItem.Height = aHeight
-    aCyliItem.Orientation = aOri
-    aCyliItem.Position = aPos
-
-    PipeCad.CommitTransaction()
-
-    PipeCad.SetCurrentItem(aSubsItem)
-
+    aHandrailDlg.show()
 # CreateHandrail
