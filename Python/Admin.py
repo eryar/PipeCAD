@@ -407,7 +407,9 @@ class ImportProjectInfoFromExcel(QDialog):
         
         self.aCurrentPath = os.path.dirname( os.path.abspath(__file__) )
         
+        aFont = QFont( "Times", 16 )
         self.txtPathToFile = QLineEdit()
+        self.txtPathToFile.setFont(aFont)
         
         self.btnExplorer = QPushButton( "", self) 
         self.btnExplorer.setMinimumSize( 32 , 32 )
@@ -440,10 +442,10 @@ class ImportProjectInfoFromExcel(QDialog):
         self.icon_dbs_counter.setAlignment(Qt.AlignCenter)
         self.icon_mdbs_counter.setAlignment(Qt.AlignCenter)
         
-        self.icon_teams.setPixmap( QPixmap( self.aCurrentPath + '/icons/admin/128x128_team_select.png' ).scaled( QSize( 96, 96 ) ) )
-        self.icon_users.setPixmap( QPixmap( self.aCurrentPath + '/icons/admin/128x128_user_select.png'  ).scaled( QSize( 96, 96 ) ) )
-        self.icon_dbs.setPixmap( QPixmap( self.aCurrentPath + '/icons/admin/128x128_database_select.png' ).scaled( QSize( 96, 96 ) ) )
-        self.icon_mdbs.setPixmap( QPixmap( self.aCurrentPath + '/icons/admin/128x128_mdb_select.png' ).scaled( QSize( 96, 96 ) ) )
+        self.icon_teams.setPixmap( QPixmap( self.aCurrentPath + '/icons/admin/128x128_team_select.png' ).scaled( QSize( 128, 128 ) ) )
+        self.icon_users.setPixmap( QPixmap( self.aCurrentPath + '/icons/admin/128x128_user_select.png'  ).scaled( QSize( 128, 128 ) ) )
+        self.icon_dbs.setPixmap( QPixmap( self.aCurrentPath + '/icons/admin/128x128_database_select.png' ).scaled( QSize( 128, 128 ) ) )
+        self.icon_mdbs.setPixmap( QPixmap( self.aCurrentPath + '/icons/admin/128x128_mdb_select.png' ).scaled( QSize( 128, 128 ) ) )
         
         self.hLayPath = QHBoxLayout()
         self.hLayPath.addWidget(self.txtPathToFile)
@@ -510,8 +512,8 @@ class ImportProjectInfoFromExcel(QDialog):
         loaded_mdbs = 0
         
         # Importing Teams  
-        for i in range(len(df_teams)):   
-            
+        for i in range(len(df_teams)): 
+        
             team_name = df_teams.iloc[i].Name
             team_description = df_teams.iloc[i].Description
                     
@@ -530,61 +532,70 @@ class ImportProjectInfoFromExcel(QDialog):
             self.parent().progressBar.setValue( current_progress )         
         
         if loaded_teams == df_teams_max:
-            self.icon_teams.setPixmap( QPixmap( self.aCurrentPath + '/icons/admin/128x128_team_done.png' ).scaled( QSize( 96, 96 ) ) )
+            self.icon_teams.setPixmap( QPixmap( self.aCurrentPath + '/icons/admin/128x128_team_done.png' ).scaled( QSize( 128, 128 ) ) )
         else: 
-            self.icon_teams.setPixmap( QPixmap( self.aCurrentPath + '/icons/admin/128x128_team_fail.png' ).scaled( QSize( 96, 96 ) ) )
+            self.icon_teams.setPixmap( QPixmap( self.aCurrentPath + '/icons/admin/128x128_team_fail.png' ).scaled( QSize( 128, 128 ) ) )
+        
+        return 
         
         # Importing Users   
-        # TODO: Add functional for adding Teams to user
         for i in range(len(df_users)):
             
             user_name = df_users.iloc[i].Name
             user_description = df_users.iloc[i].Description
             user_security = df_users.iloc[i].Security
-            user_teams = df_users.iloc[i].Teams
+            user_password = df_users.iloc[i].Password
+            user_teams = df_users.iloc[i].Teams.split()
+            
+            # print(user_teams)
+            for team_name in range ( user_teams ):
+                #user_team = PipeCad.GetItem( "/*" + team_name )
+                print(team_name)
+            
+            continue
             
             try: 
                 PipeCad.SetCurrentItem( '/' + user_name )
+                current_user = PipeCad.CurrentItem()
+                current_user.Password = user_password
+                current_user.Description = user_description
+                current_user.Security = user_security
+                current_user.JoinTeams( user_teams )
 
             except NameError as e:
-                PipeCad.CreateUser( user_name, user_description )   
-                current_user = PipeCad.CurrentItem()
-                PipeCad.CreateItem("TMLI")
+                PipeCad.CreateUser( user_name, user_description, user_password, user_security, user_teams )   
+                #current_user = PipeCad.CurrentItem()
+                #PipeCad.CreateItem("TMLI")
            
             PipeCad.SetCurrentItem( '/' + user_name )
-            current_user = PipeCad.CurrentItem()
-            current_user.Description = user_description
-            current_user.Security = user_security
             
             loaded_users = loaded_users + 1
             
-            user_tmli = PipeCad.SetCurrentItem( current_user.Member[0] )
-            user_lteas = PipeCad.CurrentItem().Member
+            #user_tmli = PipeCad.SetCurrentItem( current_user.Member[0] )
+            #user_lteas = PipeCad.CurrentItem().Member
             
-            for i in range ( len( user_lteas ) ):
-                PipeCad.SetCurrentItem( user_lteas[i] ) 
-                PipeCad.DeleteItem("LTEA")
-            
-            for i in range ( len( user_teams )):
-                PipeCad.CreateItem("LTEA")
-                user_ltea = PipeCad.CurrentItem()
-                user_teame_name = "/*" + user_teams[i]
-                user_team = PipeCad.GetItem( user_teame_name )
-                
-                print( type(user_team) )
-                #user_ltea.Temf = user_team
+            # for i in range ( len( user_lteas ) ):
+            #     PipeCad.SetCurrentItem( user_lteas[i] ) 
+            #     PipeCad.DeleteItem("LTEA")
+            # 
+            # for i in range ( len( user_teams )):
+            #     PipeCad.CreateItem("LTEA")
+            #     user_ltea = PipeCad.CurrentItem()
+            #     user_teame_name = "/*" + user_teams[i]
+            #     user_team = PipeCad.GetItem( user_teame_name )
+            #     user_ltea.Temf = user_team
                   
             current_progress = ( i + df_teams_max ) / common_max * 100
             self.parent().progressBar.setValue( current_progress ) 
         
         if loaded_users == df_users_max:
-            self.icon_users.setPixmap( QPixmap( self.aCurrentPath + '/icons/admin/128x128_user_done.png' ).scaled( QSize( 96, 96 ) ) )
+            self.icon_users.setPixmap( QPixmap( self.aCurrentPath + '/icons/admin/128x128_user_done.png' ).scaled( QSize( 128, 128 ) ) )
         else: 
-            self.icon_users.setPixmap( QPixmap( self.aCurrentPath + '/icons/admin/128x128_user_fail.png' ).scaled( QSize( 96, 96 ) ) )
+            self.icon_users.setPixmap( QPixmap( self.aCurrentPath + '/icons/admin/128x128_user_fail.png' ).scaled( QSize( 128, 128 ) ) )
 
         # Importing Databases        
         for i in range(len(df_dbs)):
-            
+            continue
             db_team = df_dbs.iloc[i].Owning_Team
             db_name = df_dbs.iloc[i].Name
             db_description = df_dbs.iloc[i].Description
@@ -594,7 +605,7 @@ class ImportProjectInfoFromExcel(QDialog):
             # db_area = db_dbs.iloc[i].Area
             
             #if db_type == 'DESI' or db_type == 'CATE':             # TODO: Change to CATA after fixing function PipeCad.CreateDb to use proper type for catalogues db. 
-            if db_number > 1 and db_number < 8000:
+            if db_number > 0 and db_number < 8000:
                 try: 
                     PipeCad.SetCurrentItem( '/*' + db_team + '/' + db_name )
                                   
@@ -602,9 +613,9 @@ class ImportProjectInfoFromExcel(QDialog):
                     PipeCad.CreateDb( db_team + '/' + db_name , db_type, db_number, db_description )  # TODO: Add check if required db number is availible for assigning
                 
                 loaded_dbs = loaded_dbs + 1
-   
-            #else:
-            #    continue
+                
+            else:
+                continue
                     
                 current_db = PipeCad.CurrentItem()
                 current_db.Description = db_description
@@ -617,16 +628,17 @@ class ImportProjectInfoFromExcel(QDialog):
             self.parent().progressBar.setValue( current_progress ) 
                     
         if loaded_dbs == df_dbs_max:
-            self.icon_dbs.setPixmap( QPixmap( self.aCurrentPath + '/icons/admin/128x128_database_done.png' ).scaled( QSize( 96, 96 ) ) )
+            self.icon_dbs.setPixmap( QPixmap( self.aCurrentPath + '/icons/admin/128x128_database_done.png' ).scaled( QSize( 128, 128 ) ) )
         else: 
-            self.icon_dbs.setPixmap( QPixmap( self.aCurrentPath + '/icons/admin/128x128_database_fail.png' ).scaled( QSize( 96, 96 ) ) )
+            self.icon_dbs.setPixmap( QPixmap( self.aCurrentPath + '/icons/admin/128x128_database_fail.png' ).scaled( QSize( 128, 128 ) ) )
         
         # Importing MDBs
         # Adding functional for adding databases to mdb
         for i in range(len(df_mdbs)):
-
+            continue
             mdb_name = df_mdbs.iloc[i].Name
             mdb_description = df_mdbs.iloc[i].Description
+            mdb_dbs = df_mdbs.iloc[i].Databases.split()
                     
             try: 
                 PipeCad.SetCurrentItem( '/' + mdb_name )
@@ -638,7 +650,20 @@ class ImportProjectInfoFromExcel(QDialog):
             
             current_mdb = PipeCad.CurrentItem()
             current_mdb.Description = mdb_description    
-            
+
+            for i in range ( len( mdb_dbs )):
+                print( mdb_dbs[i] )
+                PipeCad.CreateItem("DBL")
+                mdb_dbl = PipeCad.CurrentItem()
+                
+                mdb_db = PipeCad.SetCurrentItem( "/*" + mdb_dbs[i] )
+                dbref = PipeCad.CurrentItem()
+                
+                PipeCad.SetCurrentItem( mdb_dbl )
+                PipeCad.CurrentItem()
+                mdb_dbl.dbref = dbref
+                #user_teame_name = "/*" + user_teams[i]
+
             current_progress = i / common_max * 100
             self.parent().progressBar.setValue( current_progress )   
             
@@ -646,9 +671,9 @@ class ImportProjectInfoFromExcel(QDialog):
             self.parent().progressBar.setValue( current_progress )
 
         if loaded_mdbs == df_mdbs_max:
-            self.icon_mdbs.setPixmap( QPixmap( self.aCurrentPath + '/icons/admin/128x128_mdb_done.png' ).scaled( QSize( 96, 96 ) ) )
+            self.icon_mdbs.setPixmap( QPixmap( self.aCurrentPath + '/icons/admin/128x128_mdb_done.png' ).scaled( QSize( 128, 128 ) ) )
         else: 
-            self.icon_mdbs.setPixmap( QPixmap( self.aCurrentPath + '/icons/admin/128x128_mdb_fail.png' ).scaled( QSize( 96, 96 ) ) )
+            self.icon_mdbs.setPixmap( QPixmap( self.aCurrentPath + '/icons/admin/128x128_mdb_fail.png' ).scaled( QSize( 128, 128 ) ) )
         
         self.icon_users_counter.show()
         self.icon_teams_counter.show()
