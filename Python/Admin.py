@@ -23,8 +23,10 @@ import os
 
 from pipecad import *
 
-#pip install pandas
+# pip install pandas
+# pip install openpyxl  
 import pandas as pd 
+
 import os
 
 # pip install markdown
@@ -41,7 +43,7 @@ class AdminMain(QWidget):
         self.mdbDialog = MdbDialog(self)
         self.dbDialog = DatabaseDialog(self)
         self.importProjectInfo = ImportProjectInfoFromExcel(self)
-        #self.helpViewer = HelpViewer(self)
+        self.helpViewer = HelpViewer(self)
 
         self.setupUi()
 
@@ -407,9 +409,7 @@ class ImportProjectInfoFromExcel(QDialog):
         
         self.aCurrentPath = os.path.dirname( os.path.abspath(__file__) )
         
-        aFont = QFont( "Times", 16 )
         self.txtPathToFile = QLineEdit()
-        self.txtPathToFile.setFont(aFont)
         
         self.btnExplorer = QPushButton( "", self) 
         self.btnExplorer.setMinimumSize( 32 , 32 )
@@ -479,9 +479,7 @@ class ImportProjectInfoFromExcel(QDialog):
         self.btnExplorer.clicked.connect(self.run_import)
                 
     def run_import(self):
-        # pip install pandas
-        # pip install openpyxl
-        
+
         #self.collect_reserved_db_numbers()
         
         excel_path = QFileDialog.getOpenFileName( self, 'Import Project Definition', 'C:\\', "Excel file (*.xlsx)" )
@@ -512,8 +510,7 @@ class ImportProjectInfoFromExcel(QDialog):
         loaded_mdbs = 0
         
         # Importing Teams  
-        for i in range(len(df_teams)): 
-        
+        for i in range(len(df_teams)):   
             team_name = df_teams.iloc[i].Name
             team_description = df_teams.iloc[i].Description
                     
@@ -536,23 +533,22 @@ class ImportProjectInfoFromExcel(QDialog):
         else: 
             self.icon_teams.setPixmap( QPixmap( self.aCurrentPath + '/icons/admin/128x128_team_fail.png' ).scaled( QSize( 128, 128 ) ) )
         
-        return 
-        
         # Importing Users   
         for i in range(len(df_users)):
-            
             user_name = df_users.iloc[i].Name
             user_description = df_users.iloc[i].Description
             user_security = df_users.iloc[i].Security
             user_password = df_users.iloc[i].Password
             user_teams = df_users.iloc[i].Teams.split()
             
-            # print(user_teams)
-            for team_name in range ( user_teams ):
-                #user_team = PipeCad.GetItem( "/*" + team_name )
-                print(team_name)
+            list_user_teams = []
             
-            continue
+            for i in range ( len( user_teams ) ):
+                user_team = PipeCad.SetCurrentItem( "/*" + user_teams[i] )
+                user_team_ref = PipeCad.CurrentItem()
+                list_user_teams.append( user_team_ref )
+            
+            list_user_teams = list_user_teams
             
             try: 
                 PipeCad.SetCurrentItem( '/' + user_name )
@@ -560,31 +556,12 @@ class ImportProjectInfoFromExcel(QDialog):
                 current_user.Password = user_password
                 current_user.Description = user_description
                 current_user.Security = user_security
-                current_user.JoinTeams( user_teams )
+                current_user.JoinTeam( list_user_teams )
 
             except NameError as e:
-                PipeCad.CreateUser( user_name, user_description, user_password, user_security, user_teams )   
-                #current_user = PipeCad.CurrentItem()
-                #PipeCad.CreateItem("TMLI")
-           
-            PipeCad.SetCurrentItem( '/' + user_name )
-            
-            loaded_users = loaded_users + 1
-            
-            #user_tmli = PipeCad.SetCurrentItem( current_user.Member[0] )
-            #user_lteas = PipeCad.CurrentItem().Member
-            
-            # for i in range ( len( user_lteas ) ):
-            #     PipeCad.SetCurrentItem( user_lteas[i] ) 
-            #     PipeCad.DeleteItem("LTEA")
-            # 
-            # for i in range ( len( user_teams )):
-            #     PipeCad.CreateItem("LTEA")
-            #     user_ltea = PipeCad.CurrentItem()
-            #     user_teame_name = "/*" + user_teams[i]
-            #     user_team = PipeCad.GetItem( user_teame_name )
-            #     user_ltea.Temf = user_team
-                  
+                PipeCad.CreateUser( user_name, user_description, user_password, user_security, list_user_teams )   
+                           
+            loaded_users = loaded_users + 1                  
             current_progress = ( i + df_teams_max ) / common_max * 100
             self.parent().progressBar.setValue( current_progress ) 
         
@@ -595,34 +572,33 @@ class ImportProjectInfoFromExcel(QDialog):
 
         # Importing Databases        
         for i in range(len(df_dbs)):
-            continue
             db_team = df_dbs.iloc[i].Owning_Team
             db_name = df_dbs.iloc[i].Name
             db_description = df_dbs.iloc[i].Description
-            db_type = df_dbs.iloc[i].Type.replace('CATA', 'CATE') # Temporary fix for ver. 1.0.15.
+            db_type = df_dbs.iloc[i].Type
             db_claim_mode = df_dbs.iloc[i].Claim_Mode
             db_number = df_dbs.iloc[i].Number
             # db_area = db_dbs.iloc[i].Area
             
-            #if db_type == 'DESI' or db_type == 'CATE':             # TODO: Change to CATA after fixing function PipeCad.CreateDb to use proper type for catalogues db. 
-            if db_number > 0 and db_number < 8000:
-                try: 
-                    PipeCad.SetCurrentItem( '/*' + db_team + '/' + db_name )
-                                  
-                except NameError as e:
-                    PipeCad.CreateDb( db_team + '/' + db_name , db_type, db_number, db_description )  # TODO: Add check if required db number is availible for assigning
-                
-                loaded_dbs = loaded_dbs + 1
-                
+            if db_type == 'DESI' or db_type == 'CATA':            
+                if db_number > 0 and db_number < 8000:
+                    try: 
+                        PipeCad.SetCurrentItem( '/*' + db_team + '/' + db_name )
+                                      
+                    except NameError as e:
+                        PipeCad.CreateDb( db_team + '/' + db_name , db_type, db_number, db_description )  # TODO: Add check if required db number is availible for assigning
+                    
+                    loaded_dbs = loaded_dbs + 1
+                    
+                else:
+                    continue
+                        
+                    current_db = PipeCad.CurrentItem()
+                    current_db.Description = db_description
+                    current_db.ClaimMode = db_claim_mode
+            
             else:
                 continue
-                    
-                current_db = PipeCad.CurrentItem()
-                current_db.Description = db_description
-                current_db.ClaimMode = db_claim_mode
-            
-            #else:
-            #    continue
                         
             current_progress = ( i + df_users_max + df_teams_max ) / common_max * 100
             self.parent().progressBar.setValue( current_progress ) 
@@ -633,15 +609,18 @@ class ImportProjectInfoFromExcel(QDialog):
             self.icon_dbs.setPixmap( QPixmap( self.aCurrentPath + '/icons/admin/128x128_database_fail.png' ).scaled( QSize( 128, 128 ) ) )
         
         # Importing MDBs
-        # Adding functional for adding databases to mdb
         for i in range(len(df_mdbs)):
-            continue
             mdb_name = df_mdbs.iloc[i].Name
             mdb_description = df_mdbs.iloc[i].Description
             mdb_dbs = df_mdbs.iloc[i].Databases.split()
                     
             try: 
                 PipeCad.SetCurrentItem( '/' + mdb_name )
+                mdb_dbs = PipeCad.CurrentItem().Member
+                
+                for i in range ( len( mdb_dbs ) ):
+                    PipeCad.SetCurrentItem( mdb_dbs[i] )
+                    PipeCad.DeleteItem("DBL")
                
             except NameError as e:
                 PipeCad.CreateMdb( mdb_name, mdb_description )
@@ -652,17 +631,16 @@ class ImportProjectInfoFromExcel(QDialog):
             current_mdb.Description = mdb_description    
 
             for i in range ( len( mdb_dbs )):
-                print( mdb_dbs[i] )
                 PipeCad.CreateItem("DBL")
                 mdb_dbl = PipeCad.CurrentItem()
                 
                 mdb_db = PipeCad.SetCurrentItem( "/*" + mdb_dbs[i] )
-                dbref = PipeCad.CurrentItem()
-                
+                mdb_db_ref = PipeCad.CurrentItem()
+                                
                 PipeCad.SetCurrentItem( mdb_dbl )
-                PipeCad.CurrentItem()
-                mdb_dbl.dbref = dbref
-                #user_teame_name = "/*" + user_teams[i]
+                mdb_dbl = PipeCad.CurrentItem()
+                
+                mdb_dbl.Dbref = mdb_db_ref
 
             current_progress = i / common_max * 100
             self.parent().progressBar.setValue( current_progress )   
