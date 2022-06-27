@@ -679,12 +679,12 @@ class OrientDialog(QDialog):
             self.tableWidget.setItem(aRow, 0, aTableItem)
 
             aPn = aNozzItem.Position
-            self.tableWidget.setItem(aRow, 4, QTableWidgetItem(str(aPn.z)))
+            self.tableWidget.setItem(aRow, 4, QTableWidgetItem(str(aPn.Z)))
 
-            aDistance = int(math.sqrt(aPn.x * aPn.x + aPn.y * aPn.y))
+            aDistance = int(math.sqrt(aPn.X * aPn.X + aPn.Y * aPn.Y))
 
             try:
-                aAngle = math.atan2(aPn.x, aPn.y)
+                aAngle = math.atan2(aPn.X, aPn.Y)
             except Exception as e:
                 aAngle = 0
             # try
@@ -858,9 +858,9 @@ class OrientDialog(QDialog):
             else:
                 aSplits = aName.split("-")
                 if len(aSplits) > 1:
-                    aModelSpace.add_text(aSplits[-1], dxfattribs={"height": 3.5, "width":0.7, "style": "XZ"}).set_pos((aPc.x, aPc.y))
+                    aModelSpace.add_text(aSplits[-1], dxfattribs={"height": 3.5, "width":0.7, "style": "XZ"}).set_pos((aPc.X, aPc.Y))
                 else:
-                    aModelSpace.add_text(aName, dxfattribs={"height": 3.5, "width": 0.7, "style": "XZ"}).set_pos((aPc.x, aPc.y))
+                    aModelSpace.add_text(aName, dxfattribs={"height": 3.5, "width": 0.7, "style": "XZ"}).set_pos((aPc.X, aPc.Y))
                 # if
             # if
         # for
@@ -871,18 +871,18 @@ class OrientDialog(QDialog):
                 continue
             # if
 
-            aDistance = math.sqrt(aPnt.x * aPnt.x + aPnt.y * aPnt.y)
+            aDistance = math.sqrt(aPnt.X * aPnt.X + aPnt.Y * aPnt.Y)
             if aDistance < 0.01:
                 continue
             # if
 
-            aDx = aPnt.x / aDistance
-            aDy = aPnt.y / aDistance
+            aDx = aPnt.X / aDistance
+            aDy = aPnt.Y / aDistance
 
-            aPx = aDx * aMaxDistance * aScale + aPc.x
-            aPy = aDy * aMaxDistance * aScale + aPc.y
+            aPx = aDx * aMaxDistance * aScale + aPc.X
+            aPy = aDy * aMaxDistance * aScale + aPc.Y
 
-            aModelSpace.add_line((aPc.x, aPc.y), (aPx, aPy), dxfattribs={"layer": "EQUI_CENTER"})
+            aModelSpace.add_line((aPc.X, aPc.Y), (aPx, aPy), dxfattribs={"layer": "EQUI_CENTER"})
             aModelSpace.add_text(aAngle + "%%D", dxfattribs={"height": 3.5, "width": 0.7, "style": "XZ"}).set_pos((aPx + aDx * 3.5, aPy + aDy * 3.5), align="MIDDLE_CENTER")
 
             for i in range(len(aNozzles)):
