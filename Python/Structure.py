@@ -967,20 +967,20 @@ class RegularDialog(QDialog):
 
         # Draw aid line in elevations.
         for e in aLz:
-            aPs.z = aPe.z
-            aPe.z += e
+            aPs.Z = aPe.Z
+            aPe.Z += e
 
-            aPs.x = 0
-            aPe.x = 0
+            aPs.X = 0
+            aPe.X = 0
 
             for x in aLx:
-                aPs.x += x
-                aPe.x += x
-                aPs.y = 0
-                aPe.y = 0
+                aPs.X += x
+                aPe.X += x
+                aPs.Y = 0
+                aPe.Y = 0
                 for y in aLy:
-                    aPs.y += y
-                    aPe.y += y
+                    aPs.Y += y
+                    aPe.Y += y
                     PipeCad.AddAidLine(aPs, aPe, self.aidNumber)
                 # for
             # for
@@ -990,20 +990,20 @@ class RegularDialog(QDialog):
         aPs = Position(0.0, 0.0, 0.0)
         aPe = Position(0.0, 0.0, 0.0)
         for x in aLx: 
-            aPs.x = aPe.x
-            aPe.x += x
+            aPs.X = aPe.X
+            aPe.X += x
 
-            aPs.y = 0
-            aPe.y = 0
+            aPs.Y = 0
+            aPe.Y = 0
 
             for y in aLy:
-                aPs.y += y
-                aPe.y += y
-                aPs.z = 0
-                aPe.z = 0
+                aPs.Y += y
+                aPe.Y += y
+                aPs.Z = 0
+                aPe.Z = 0
                 for e in aLz:
-                    aPs.z += e
-                    aPe.z += e
+                    aPs.Z += e
+                    aPe.Z += e
                     PipeCad.AddAidLine(aPs, aPe, self.aidNumber)
                 # for
             # for
@@ -1013,20 +1013,20 @@ class RegularDialog(QDialog):
         aPs = Position(0.0, 0.0, 0.0)
         aPe = Position(0.0, 0.0, 0.0)
         for y in aLy: 
-            aPs.y = aPe.y
-            aPe.y += y
+            aPs.Y = aPe.Y
+            aPe.Y += y
 
-            aPs.x = 0
-            aPe.x = 0
+            aPs.X = 0
+            aPe.X = 0
 
             for x in aLx:
-                aPs.x += x
-                aPe.x += x
-                aPs.z = 0
-                aPe.z = 0
+                aPs.X += x
+                aPe.X += x
+                aPs.Z = 0
+                aPe.Z = 0
                 for e in aLz:
-                    aPs.z += e
-                    aPe.z += e
+                    aPs.Z += e
+                    aPe.Z += e
                     PipeCad.AddAidLine(aPs, aPe, self.aidNumber)
                 # for
             # for
@@ -1083,28 +1083,58 @@ class RegularDialog(QDialog):
         # for
 
         PipeCad.StartTransaction("Create Structure")
-        PipeCad.SetCurrentItem(aBeamArea)
+        PipeCad.SetCurrentItem(aColumnArea)
 
         # Draw aid line in elevations.
         aPs = Position(0, 0, 0)
         aPe = Position(0, 0, 0)
         for e in aLz:
-            aPs.z = aPe.z
-            aPe.z += e
+            aPs.Z = aPe.Z
+            aPe.Z += e
 
-            aPs.x = 0
-            aPe.x = 0
+            aPs.X = 0
+            aPe.X = 0
 
             for x in aLx:
-                aPs.x += x
-                aPe.x += x
-                aPs.y = 0
-                aPe.y = 0
+                aPs.X += x
+                aPe.X += x
+                aPs.Y = 0
+                aPe.Y = 0
                 for y in aLy:
-                    aPs.y += y
-                    aPe.y += y
+                    aPs.Y += y
+                    aPe.Y += y
 
-                    if aPs.distance(aPe) > 1.0:
+                    if aPs.Distance(aPe) > 1.0:
+                        PipeCad.CreateItem("SCTN")
+                        aSctnItem = PipeCad.CurrentItem()
+                        aSctnItem.StartPosition = aPs
+                        aSctnItem.EndPosition = aPe
+                        aSctnItem.Spref = aColumnSpec
+                    # if
+                # for
+            # for
+        # for
+
+        PipeCad.SetCurrentItem(aBeamArea)
+        # Draw aid line in x direction.
+        aPs = Position(0.0, 0.0, 0.0)
+        aPe = Position(0.0, 0.0, 0.0)
+        for x in aLx: 
+            aPs.X = aPe.X
+            aPe.X += x
+
+            aPs.Y = 0
+            aPe.Y = 0
+
+            for y in aLy:
+                aPs.Y += y
+                aPe.Y += y
+                aPs.Z = 0
+                aPe.Z = 0
+                for e in aLz:
+                    aPs.Z += e
+                    aPe.Z += e
+                    if aPs.Distance(aPe) > 1.0:
                         PipeCad.CreateItem("SCTN")
                         aSctnItem = PipeCad.CurrentItem()
                         aSctnItem.StartPosition = aPs
@@ -1115,61 +1145,31 @@ class RegularDialog(QDialog):
             # for
         # for
 
-        PipeCad.SetCurrentItem(aColumnArea)
-        # Draw aid line in x direction.
-        aPs = Position(0.0, 0.0, 0.0)
-        aPe = Position(0.0, 0.0, 0.0)
-        for x in aLx: 
-            aPs.x = aPe.x
-            aPe.x += x
-
-            aPs.y = 0
-            aPe.y = 0
-
-            for y in aLy:
-                aPs.y += y
-                aPe.y += y
-                aPs.z = 0
-                aPe.z = 0
-                for e in aLz:
-                    aPs.z += e
-                    aPe.z += e
-                    if aPs.distance(aPe) > 1.0:
-                        PipeCad.CreateItem("SCTN")
-                        aSctnItem = PipeCad.CurrentItem()
-                        aSctnItem.StartPosition = aPs
-                        aSctnItem.EndPosition = aPe
-                        aSctnItem.Spref = aColumnSpec
-                    # if
-                # for
-            # for
-        # for
-
-        PipeCad.SetCurrentItem(aColumnArea)
+        PipeCad.SetCurrentItem(aBeamArea)
         # Draw aid line in y direction.
         aPs = Position(0.0, 0.0, 0.0)
         aPe = Position(0.0, 0.0, 0.0)
         for y in aLy: 
-            aPs.y = aPe.y
-            aPe.y += y
+            aPs.Y = aPe.Y
+            aPe.Y += y
 
-            aPs.x = 0
-            aPe.x = 0
+            aPs.X = 0
+            aPe.X = 0
 
             for x in aLx:
-                aPs.x += x
-                aPe.x += x
-                aPs.z = 0
-                aPe.z = 0
+                aPs.X += x
+                aPe.X += x
+                aPs.Z = 0
+                aPe.Z = 0
                 for e in aLz:
-                    aPs.z += e
-                    aPe.z += e
-                    if aPs.distance(aPe) > 1.0:
+                    aPs.Z += e
+                    aPe.Z += e
+                    if aPs.Distance(aPe) > 1.0:
                         PipeCad.CreateItem("SCTN")
                         aSctnItem = PipeCad.CurrentItem()
                         aSctnItem.StartPosition = aPs
                         aSctnItem.EndPosition = aPe
-                        aSctnItem.Spref = aColumnSpec
+                        aSctnItem.Spref = aBeamSpec
                     # if
                 # for
             # for
@@ -1279,13 +1279,13 @@ class PanelDialog(QDialog):
         if aTreeItem.Type == "SCTN":
             aPs = aTreeItem.StartPosition
             aPe = aTreeItem.EndPosition
-            aPz = max(aPs.z, aPe.z)
+            aPz = max(aPs.Z, aPe.Z)
 
             aRow = self.tableWidget.rowCount
 
             self.tableWidget.insertRow(aRow)
-            self.tableWidget.setItem(aRow, 0, QTableWidgetItem(str(aPs.x)))
-            self.tableWidget.setItem(aRow, 1, QTableWidgetItem(str(aPs.y)))
+            self.tableWidget.setItem(aRow, 0, QTableWidgetItem(str(aPs.X)))
+            self.tableWidget.setItem(aRow, 1, QTableWidgetItem(str(aPs.Y)))
             self.tableWidget.setItem(aRow, 2, QTableWidgetItem(str(aPz)))
             self.tableWidget.setItem(aRow, 3, QTableWidgetItem("0"))
         # if
