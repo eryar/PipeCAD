@@ -116,10 +116,6 @@ class AdminMain(QWidget):
         self.groupOption = QGroupBox(QT_TRANSLATE_NOOP("Admin", "Operations"))
         self.verticalLayout.addWidget(self.groupOption)
         
-        self.progressBar = QProgressBar(self)
-        self.progressBar.hide()
-        self.verticalLayout.addWidget(self.progressBar)
-        
         self.verticalLayout = QVBoxLayout(self.groupOption)
 
         self.horizontalLayout = QHBoxLayout()
@@ -144,15 +140,20 @@ class AdminMain(QWidget):
         self.buttonUpdate.clicked.connect(self.update)
         self.horizontalLayout.addWidget(self.buttonUpdate)   
         
-        #self.btnHelpViewer = QPushButton(QT_TRANSLATE_NOOP("Admin", " Show Help Viewer - Dev. "))
-        #self.btnHelpViewer.clicked.connect(self.show_help_viewer)
-        #self.horizontalLayout.addWidget(self.btnHelpViewer)
+        self.btnHelpViewer = QPushButton(QT_TRANSLATE_NOOP("Admin", " Show Help Viewer - Dev. "))
+        self.btnHelpViewer.clicked.connect(self.show_help_viewer)
+        self.horizontalLayout.addWidget(self.btnHelpViewer)
 
         self.horizontalSpacer = QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
         self.horizontalLayout.addItem(self.horizontalSpacer)
 
         self.verticalLayout.addLayout(self.horizontalLayout)
         
+        self.statusBar = PipeCad.statusBar()
+        self.progressBar = QProgressBar()
+        self.statusBar.addPermanentWidget(self.progressBar)
+        self.progressBar.hide()
+         
         self.statItem = PipeCad.GetItem("/*S")
         self.tmwlItem = PipeCad.GetItem("/*T")
         self.uswlItem = PipeCad.GetItem("/*U")
@@ -388,9 +389,7 @@ class HelpViewer(QDialog):
         self.toolbar.addWidget(self.toolButton)
         
         self.vLayout = QVBoxLayout(self)
-        self.lblUsers = QLabel(QT_TRANSLATE_NOOP("Admin", "Users import"))
         self.vLayout.addWidget(self.toolbar)
-        self.vLayout.addWidget(self.lblUsers)
 
     def showHelpViewer(self):
         self.show()
@@ -542,7 +541,6 @@ class ImportProjectInfoFromExcel(QDialog):
             user_teams = df_users.iloc[i].Teams.split()
             
             list_user_teams = []
-            
             for i in range ( len( user_teams ) ):
                 user_team = PipeCad.SetCurrentItem( "/*" + user_teams[i] )
                 user_team_ref = PipeCad.CurrentItem()
@@ -553,6 +551,12 @@ class ImportProjectInfoFromExcel(QDialog):
             try: 
                 PipeCad.SetCurrentItem( '/' + user_name )
                 current_user = PipeCad.CurrentItem()
+                current_user_teams = current_user.Member[0].Member
+
+                for i in range ( len( current_user_teams ) ):
+                    PipeCad.SetCurrentItem( current_user_teams[i] )
+                    PipeCad.DeleteItem("LTEA")
+                
                 current_user.Password = user_password
                 current_user.Description = user_description
                 current_user.Security = user_security
@@ -579,24 +583,26 @@ class ImportProjectInfoFromExcel(QDialog):
             db_claim_mode = df_dbs.iloc[i].Claim_Mode
             db_number = df_dbs.iloc[i].Number
             # db_area = db_dbs.iloc[i].Area
-            
+            db_main_element = df_dbs.iloc[i].Site
+                         
             if db_type == 'DESI' or db_type == 'CATA':            
                 if db_number > 0 and db_number < 8000:
                     try: 
                         PipeCad.SetCurrentItem( '/*' + db_team + '/' + db_name )
-                                      
+
                     except NameError as e:
                         PipeCad.CreateDb( db_team + '/' + db_name , db_type, db_number, db_description )  # TODO: Add check if required db number is availible for assigning
                     
                     loaded_dbs = loaded_dbs + 1
                     
-                else:
-                    continue
-                        
                     current_db = PipeCad.CurrentItem()
                     current_db.Description = db_description
                     current_db.ClaimMode = db_claim_mode
-            
+                    current_db.CreateDbElement(db_main_element)
+                    
+                else:
+                    continue
+                    
             else:
                 continue
                         
@@ -617,7 +623,7 @@ class ImportProjectInfoFromExcel(QDialog):
             try: 
                 PipeCad.SetCurrentItem( '/' + mdb_name )
                 mdb_dbs = PipeCad.CurrentItem().Member
-                
+
                 for i in range ( len( mdb_dbs ) ):
                     PipeCad.SetCurrentItem( mdb_dbs[i] )
                     PipeCad.DeleteItem("DBL")
@@ -634,13 +640,15 @@ class ImportProjectInfoFromExcel(QDialog):
                 PipeCad.CreateItem("DBL")
                 mdb_dbl = PipeCad.CurrentItem()
                 
-                mdb_db = PipeCad.SetCurrentItem( "/*" + mdb_dbs[i] )
-                mdb_db_ref = PipeCad.CurrentItem()
+                print(mdb_dbs[i])
+                #mdb_db = PipeCad.SetCurrentItem( mdb_dbs[i] )
+                #mdb_db_ref = PipeCad.CurrentItem()
                                 
-                PipeCad.SetCurrentItem( mdb_dbl )
-                mdb_dbl = PipeCad.CurrentItem()
+                #PipeCad.SetCurrentItem( mdb_dbl )
+                #mdb_dbl = PipeCad.CurrentItem()
                 
-                mdb_dbl.Dbref = mdb_db_ref
+                #mdb_dbl.Dbref = mdb_db_ref
+                mdb_dbl.Dbref = mdb_dbs[i]
 
             current_progress = i / common_max * 100
             self.parent().progressBar.setValue( current_progress )   
