@@ -176,4 +176,160 @@ aSpiralDlg = SpiralDialog(PipeCad)
 
 def CreateSpiral():
     aSpiralDlg.show()
-# Show
+# CreateSpiral
+
+class StairDialog(QDialog):
+    """docstring for StairDialog"""
+    def __init__(self, theParent = None):
+        QDialog.__init__(self, theParent)
+
+        self.setupUi()
+    # __init__
+
+    def setupUi(self):
+        self.setWindowTitle(QT_TRANSLATE_NOOP("Stair", "Create Stair"))
+
+        self.verticalLayout = QVBoxLayout(self)
+
+        self.formLayout = QFormLayout()
+
+        self.labelName = QLabel(QT_TRANSLATE_NOOP("Stair", "Name"))
+        self.textName = QLineEdit()
+
+        self.labelPx = QLabel(QT_TRANSLATE_NOOP("Stair", "East"))
+        self.textPx = QLineEdit("0")
+
+        self.labelPy = QLabel(QT_TRANSLATE_NOOP("Stair", "North"))
+        self.textPy = QLineEdit("0")
+
+        self.labelPz = QLabel(QT_TRANSLATE_NOOP("Stair", "Up"))
+        self.textPz = QLineEdit("0")
+
+        self.labelDir = QLabel(QT_TRANSLATE_NOOP("Stair", "Direction"))
+        self.textDir = QLineEdit("N")
+
+        self.labelHeight = QLabel(QT_TRANSLATE_NOOP("Stair", "Height"))
+        self.textHeight = QLineEdit("2800")
+
+        self.labelAngle = QLabel(QT_TRANSLATE_NOOP("Stair", "Angle"))
+        self.textAngle = QLineEdit("35")
+
+        self.labelDepth = QLabel(QT_TRANSLATE_NOOP("Stair", "Stringer Depth"))
+        self.textDepth = QLineEdit("200")
+
+        self.labelThickness = QLabel(QT_TRANSLATE_NOOP("Stair", "Stringer Thickness"))
+        self.textThickness = QLineEdit("75")
+
+        self.labelWidth = QLabel(QT_TRANSLATE_NOOP("Stair", "Width Between Stringers"))
+        self.textWidth = QLineEdit("800")
+
+        self.labelFloorThickness = QLabel(QT_TRANSLATE_NOOP("Stair", "Landing Floor Thickness"))
+        self.textFloorThickness = QLineEdit("30")
+
+        self.formLayout.setWidget(0, QFormLayout.LabelRole, self.labelName)
+        self.formLayout.setWidget(0, QFormLayout.FieldRole, self.textName)
+
+        self.formLayout.setWidget(1, QFormLayout.LabelRole, self.labelPx)
+        self.formLayout.setWidget(1, QFormLayout.FieldRole, self.textPx)
+        self.formLayout.setWidget(2, QFormLayout.LabelRole, self.labelPy)
+        self.formLayout.setWidget(2, QFormLayout.FieldRole, self.textPy)
+        self.formLayout.setWidget(3, QFormLayout.LabelRole, self.labelPz)
+        self.formLayout.setWidget(3, QFormLayout.FieldRole, self.textPz)
+
+        self.formLayout.setWidget(4, QFormLayout.LabelRole, self.labelDir)
+        self.formLayout.setWidget(4, QFormLayout.FieldRole, self.textDir)
+
+        self.formLayout.setWidget(5, QFormLayout.LabelRole, self.labelHeight)
+        self.formLayout.setWidget(5, QFormLayout.FieldRole, self.textHeight)
+
+        self.formLayout.setWidget(6, QFormLayout.LabelRole, self.labelAngle)
+        self.formLayout.setWidget(6, QFormLayout.FieldRole, self.textAngle)
+
+        self.formLayout.setWidget(7, QFormLayout.LabelRole, self.labelDepth)
+        self.formLayout.setWidget(7, QFormLayout.FieldRole, self.textDepth)
+
+        self.formLayout.setWidget(8, QFormLayout.LabelRole, self.labelThickness)
+        self.formLayout.setWidget(8, QFormLayout.FieldRole, self.textThickness)
+
+        self.formLayout.setWidget(9, QFormLayout.LabelRole, self.labelWidth)
+        self.formLayout.setWidget(9, QFormLayout.FieldRole, self.textWidth)
+
+        self.formLayout.setWidget(10, QFormLayout.LabelRole, self.labelFloorThickness)
+        self.formLayout.setWidget(10, QFormLayout.FieldRole, self.textFloorThickness)
+
+        self.verticalLayout.addLayout(self.formLayout)
+
+        # Action box.
+        self.horizontalLayout = QHBoxLayout()
+
+        self.buttonReset = QPushButton(QT_TRANSLATE_NOOP("Stair", "Reset"))
+        self.buttonReset.clicked.connect(self.reset)
+
+        self.buttonBox = QDialogButtonBox(QDialogButtonBox.Ok|QDialogButtonBox.Cancel, self)
+
+        self.buttonBox.accepted.connect(self.accept)
+        self.buttonBox.rejected.connect(self.reject)
+        
+        self.horizontalLayout.addWidget(self.buttonReset)
+        self.horizontalLayout.addWidget(self.buttonBox)
+
+        self.verticalLayout.addLayout(self.horizontalLayout)
+    # setupUi
+
+    def reset(self):
+        self.textName.setText("")
+
+        self.textPx.setText("0")
+        self.textPy.setText("0")
+        self.textPz.setText("0")
+        self.textDir.setText("N")
+
+        self.textHeight.setText("2800")
+        self.textAngle.setText("35")
+        self.textDepth.setText("200")
+        self.textThickness.setText("75")
+        self.textWidth.setText("800")
+        self.textFloorThickness.setText("30")
+    # reset
+
+    def accept(self):
+        aPx = float(self.textPx.text)
+        aPy = float(self.textPy.text)
+        aPz = float(self.textPz.text)
+
+        aHeight = float(self.textHeight.text)
+        aAngle = float(self.textAngle.text)
+        aDepth = float(self.textDepth.text)
+        aThickness = float(self.textThickness.text)
+        aWidth = float(self.textWidth.text)
+        aFloorThickness = float(self.textFloorThickness.text)
+
+        aDy = Direction(self.textDir.text)
+        aDz = Direction(0, 0, 1)
+
+        PipeCad.StartTransaction("Create Stair")
+
+        PipeCad.CreateItem("LSTR", self.textName.text)
+        aLstrItem = PipeCad.CurrentItem()
+        aLstrItem.Position = Position(aPx, aPy, aPz)
+        aLstrItem.Orientation = Orientation(aDy, aDz)
+        aLstrItem.Height = aHeight
+        aLstrItem.Angle = aAngle
+        aLstrItem.Width = aWidth
+        aLstrItem.StringerDepth = aDepth
+        aLstrItem.StringerThickness = aThickness
+        aLstrItem.FloorThickness = aFloorThickness
+
+        PipeCad.CommitTransaction()
+
+        QDialog.accept(self)
+    # accept
+# StairDialog
+
+# Singleton Instance.
+aStairDlg = StairDialog(PipeCad)
+
+def CreateStair():
+    aStairDlg.reset()
+    aStairDlg.show()
+# CreateStair
