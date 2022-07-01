@@ -1,6 +1,6 @@
 ![splash](https://user-images.githubusercontent.com/8439181/157780560-6072adf3-f643-4c7a-bfa9-73a01f3f6d34.png)
 
-# PipeCAD - Piping Design CAD Software.
+# PipeCAD -  Plant Piping Design Software.
 PipeCAD can be used for Plant Piping Design, PipeCAD have the following functions:
 * Grid Modeling;
 * Equipment Modeling;
