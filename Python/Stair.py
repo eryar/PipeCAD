@@ -183,6 +183,8 @@ class StairDialog(QDialog):
     def __init__(self, theParent = None):
         QDialog.__init__(self, theParent)
 
+        self.lstrItem = None
+
         self.setupUi()
     # __init__
 
@@ -193,7 +195,11 @@ class StairDialog(QDialog):
 
         self.formLayout = QFormLayout()
 
-        self.labelName = QLabel(QT_TRANSLATE_NOOP("Stair", "Name"))
+        self.comboName = QComboBox()
+        self.comboName.addItem(QT_TRANSLATE_NOOP("Stair", "Create"))
+        self.comboName.addItem(QT_TRANSLATE_NOOP("Stair", "Modify"))
+        self.comboName.activated.connect(self.typeActivated)
+
         self.textName = QLineEdit()
 
         self.labelPx = QLabel(QT_TRANSLATE_NOOP("Stair", "East"))
@@ -226,7 +232,7 @@ class StairDialog(QDialog):
         self.labelFloorThickness = QLabel(QT_TRANSLATE_NOOP("Stair", "Landing Floor Thickness"))
         self.textFloorThickness = QLineEdit("30")
 
-        self.formLayout.setWidget(0, QFormLayout.LabelRole, self.labelName)
+        self.formLayout.setWidget(0, QFormLayout.LabelRole, self.comboName)
         self.formLayout.setWidget(0, QFormLayout.FieldRole, self.textName)
 
         self.formLayout.setWidget(1, QFormLayout.LabelRole, self.labelPx)
@@ -292,7 +298,35 @@ class StairDialog(QDialog):
         self.textFloorThickness.setText("30")
     # reset
 
-    def accept(self):
+    def typeActivated(self):
+        self.lstrItem = None
+        aIndex = self.comboName.currentIndex
+        if aIndex == 1:
+            # Modify
+            aTreeItem = PipeCad.CurrentItem()
+            if aTreeItem.Type == "LSTR":
+                self.lstrItem = aTreeItem
+
+                aPos = aTreeItem.Position
+                aOri = aTreeItem.Orientation
+
+                self.textName.setText(aTreeItem.Name)
+                self.textPx.setText(str(aPos.X))
+                self.textPy.setText(str(aPos.Y))
+                self.textPz.setText(str(aPos.Z))
+
+                self.textDir.setText(aOri.YDirection.string())
+                self.textHeight.setText(str(aTreeItem.Height))
+                self.textAngle.setText(str(aTreeItem.Angle))
+                self.textDepth.setText(str(aTreeItem.StringerDepth))
+                self.textThickness.setText(str(aTreeItem.StringerThickness))
+                self.textWidth.setText(str(aTreeItem.Width))
+                self.textFloorThickness.setText(str(aTreeItem.FloorThickness))
+            # if
+        # if
+    # indexChanged
+
+    def createStair(self):
         aPx = float(self.textPx.text)
         aPy = float(self.textPy.text)
         aPz = float(self.textPz.text)
@@ -321,6 +355,49 @@ class StairDialog(QDialog):
         aLstrItem.FloorThickness = aFloorThickness
 
         PipeCad.CommitTransaction()
+    # createStair
+
+    def modifyStair(self):
+        if self.lstrItem is None:
+            return
+        # if
+
+        aPx = float(self.textPx.text)
+        aPy = float(self.textPy.text)
+        aPz = float(self.textPz.text)
+
+        aHeight = float(self.textHeight.text)
+        aAngle = float(self.textAngle.text)
+        aDepth = float(self.textDepth.text)
+        aThickness = float(self.textThickness.text)
+        aWidth = float(self.textWidth.text)
+        aFloorThickness = float(self.textFloorThickness.text)
+
+        aDy = Direction(self.textDir.text)
+        aDz = Direction(0, 0, 1)
+
+        PipeCad.StartTransaction("Modify Stair")
+
+        self.lstrItem.Name = self.textName.text
+        self.lstrItem.Position = Position(aPx, aPy, aPz)
+        self.lstrItem.Orientation = Orientation(aDy, aDz)
+        self.lstrItem.Height = aHeight
+        self.lstrItem.Angle = aAngle
+        self.lstrItem.Width = aWidth
+        self.lstrItem.StringerDepth = aDepth
+        self.lstrItem.StringerThickness = aThickness
+        self.lstrItem.FloorThickness = aFloorThickness
+
+        PipeCad.CommitTransaction()
+    # modifyStair
+
+    def accept(self):
+        aIndex = self.comboName.currentIndex
+        if aIndex == 0:
+            self.createStair()
+        else:
+            self.modifyStair()
+        # if
 
         QDialog.accept(self)
     # accept
