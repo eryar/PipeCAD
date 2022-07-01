@@ -405,8 +405,14 @@ class ImportProjectDialog(QDialog):
         self.resize(450, 150)
         
         self.aCurrentPath = os.path.dirname( os.path.abspath(__file__) )
+
+        aProjectXlsx = "ProjectDefinition.xlsx"
+        aProjectsDir = os.getenv("PROJECTS_DIR")
+        if len(aProjectsDir) > 0:
+            aProjectXlsx = aProjectsDir + "\\" + aProjectXlsx
+        # if
         
-        self.txtPathToFile = QLineEdit()
+        self.txtPathToFile = QLineEdit(aProjectXlsx)
         
         self.btnExplorer = QPushButton( "", self) 
         self.btnExplorer.setMinimumSize( 32 , 32 )
@@ -479,7 +485,7 @@ class ImportProjectDialog(QDialog):
 
         #self.collect_reserved_db_numbers()
         
-        excel_path = QFileDialog.getOpenFileName( self, 'Import Project Definition', 'C:\\', "Excel file (*.xlsx)" )
+        excel_path = QFileDialog.getOpenFileName( self, 'Import Project Definition', self.txtPathToFile.text, "Excel file (*.xlsx)" )
         if len(excel_path) < 1:
             return
         # if
