@@ -80,8 +80,7 @@ class AdminMain(QWidget):
         self.tableWidget.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeToContents)
         self.tableWidget.verticalHeader().setMinimumSectionSize(16)
         self.tableWidget.verticalHeader().setDefaultSectionSize(18)
-        self.tableWidget.currentItemChanged.connect(self.currentItemChanged)
-
+        
         self.verticalLayout.addWidget(self.tableWidget)
 
         self.horizontalLayout = QHBoxLayout()
@@ -262,7 +261,7 @@ class AdminMain(QWidget):
             self.tableWidget.setRowCount(aRow + 1)
             self.tableWidget.setItem(aRow, 0, aItem)
             self.tableWidget.setItem(aRow, 1, QTableWidgetItem(aDbItem.DbType))
-            self.tableWidget.setItem(aRow, 2, QTableWidgetItem(str(aDbItem.DbNumber)))
+            self.tableWidget.setItem(aRow, 2, QTableWidgetItem( ( '    ' + str(aDbItem.DbNumber))[-4:]))
             self.tableWidget.setItem(aRow, 3, QTableWidgetItem(aDbItem.Description))
             aRow += 1
         # for
