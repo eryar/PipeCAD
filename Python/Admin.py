@@ -22,15 +22,9 @@ from PythonQt.QtSql import *
 
 from pipecad import *
 
-# pip install pandas
-# pip install openpyxl  
 import pandas as pd 
 
 import os
-
-# pip install markdown
-# import markdown as md
-
 
 class AdminMain(QWidget):
     """docstring for AdminMain"""
@@ -41,18 +35,14 @@ class AdminMain(QWidget):
         self.userDialog = UserDialog(self)
         self.mdbDialog = MdbDialog(self)
         self.dbDialog = DatabaseDialog(self)
-        #self.importProjectInfo = ImportProjectInfoFromExcel(self)
-        self.helpViewer = HelpViewer(self)
-
+               
         self.setupUi()
 
     # __init__
 
     def setupUi(self):
+               
         self.verticalLayout = QVBoxLayout(self)
-
-        #self.groupBox = QGroupBox("Admin Elements")
-        #self.verticalLayout.addWidget(self.groupBox)
 
         aCurrentPath = os.path.dirname( os.path.abspath(__file__) )
 
@@ -137,14 +127,6 @@ class AdminMain(QWidget):
         self.buttonDelete.clicked.connect(self.delete)
         self.horizontalLayout.addWidget(self.buttonDelete)
         
-        #self.buttonUpdate = QPushButton(QT_TRANSLATE_NOOP("Admin", "Import from Excel"))
-        #self.buttonUpdate.clicked.connect(self.update)
-        #self.horizontalLayout.addWidget(self.buttonUpdate)   
-        
-        #self.btnHelpViewer = QPushButton(QT_TRANSLATE_NOOP("Admin", " Show Help Viewer - Dev. "))
-        #self.btnHelpViewer.clicked.connect(self.show_help_viewer)
-        #self.horizontalLayout.addWidget(self.btnHelpViewer)
-
         self.horizontalSpacer = QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
         self.horizontalLayout.addItem(self.horizontalSpacer)
 
@@ -363,35 +345,6 @@ class AdminMain(QWidget):
     
     def update(self):
         self.importProjectInfo.showImportExcel()
-    
-    def show_help_viewer(self):
-        self.helpViewer.showHelpViewer()
-
-class HelpViewer(QDialog):
-    """docstring for HelpViewer"""
-    def __init__(self, parent = None):
-        QDialog.__init__(self, parent)
-        self.setupUi()
-    
-    def setupUi(self):
-        self.setWindowTitle(QT_TRANSLATE_NOOP("Admin", " PipeCAD Help "))
-        self.resize(1000, 600)
-        
-        self.toolbar = QToolBar(self)
-        self.toolButton = QToolButton()
-        self.toolButton.setText("Refresh")
-        self.toolButton.setCheckable(True)
-        self.toolButton.setAutoExclusive(True)
-        self.toolbar.addWidget(self.toolButton)
-        
-        self.vLayout = QVBoxLayout(self)
-        self.lblUsers = QLabel(QT_TRANSLATE_NOOP("Admin", "Users import"))
-        self.vLayout.addWidget(self.toolbar)
-        self.vLayout.addWidget(self.lblUsers)
-
-    def showHelpViewer(self):
-        self.show()
-
 
 class ImportProjectDialog(QDialog):
     """docstring for ImportProjectDialog"""
@@ -401,18 +354,24 @@ class ImportProjectDialog(QDialog):
         
     def setupUi(self):
         
+        self.aProgressBar = QProgressBar()
+        self.aProgressBar.hide()
+        
+        self.aStatusBar = PipeCad.statusBar()
+        self.aStatusBar.addPermanentWidget( self.aProgressBar )
+        
         self.setWindowTitle(QT_TRANSLATE_NOOP("Admin", "Import Project"))
         self.resize(450, 150)
         
         self.aCurrentPath = os.path.dirname( os.path.abspath(__file__) )
 
-        aProjectXlsx = "ProjectDefinition.xlsx"
-        aProjectsDir = os.getenv("PROJECTS_DIR")
-        if len(aProjectsDir) > 0:
-            aProjectXlsx = aProjectsDir + "\\" + aProjectXlsx
+        #aProjectXlsx = "ProjectDefinition.xlsx"
+        
+        #if len(aProjectsDir) > 0:
+        #    aProjectXlsx = aProjectsDir + "\\" + aProjectXlsx
         # if
         
-        self.txtPathToFile = QLineEdit(aProjectXlsx)
+        self.txtPathToFile = QLineEdit("")
         
         self.btnExplorer = QPushButton( "", self) 
         self.btnExplorer.setMinimumSize( 32 , 32 )
@@ -484,14 +443,16 @@ class ImportProjectDialog(QDialog):
     def run_import(self):
 
         #self.collect_reserved_db_numbers()
+
         
-        excel_path = QFileDialog.getOpenFileName( self, 'Import Project Definition', self.txtPathToFile.text, "Excel file (*.xlsx)" )
+        aProjectsDir = os.getenv("PROJECTS_DIR")
+        excel_path = QFileDialog.getOpenFileName( self, 'Import Project Definition', aProjectsDir, "Excel file (*.xlsx)" )
         if len(excel_path) < 1:
             return
         # if
         
         self.txtPathToFile.setText( excel_path.replace("/","\\") ) 
-        
+                      
         df_users = pd.read_excel( excel_path, 'Users' ).rename ( columns=lambda x: x.replace(' ', '_') )
         df_teams = pd.read_excel( excel_path, 'Teams' ).rename ( columns=lambda x: x.replace(' ', '_') )
         df_dbs = pd.read_excel( excel_path, 'Databases' ).rename ( columns=lambda x: x.replace(' ', '_') )
@@ -501,11 +462,7 @@ class ImportProjectDialog(QDialog):
         df_teams_max = len(df_teams)
         df_dbs_max = len(df_dbs)
         df_mdbs_max = len(df_mdbs)
-        
-        aStatusBar = PipeCad.statusBar()
-        aProgressBar = QProgressBar()
-        aStatusBar.addPermanentWidget(aProgressBar)
-        
+                
         common_max = df_users_max + df_teams_max + df_dbs_max + df_mdbs_max
         current_progress = 0
         
@@ -514,7 +471,10 @@ class ImportProjectDialog(QDialog):
         loaded_dbs = 0
         loaded_mdbs = 0
         
-        # Importing Teams  
+        self.aProgressBar.show()
+                
+        # Importing Teams
+        PipeCad.StartTransaction("Importing Teams")
         for i in range(len(df_teams)):   
             team_name = df_teams.iloc[i].Name
             team_description = df_teams.iloc[i].Description
@@ -531,14 +491,18 @@ class ImportProjectDialog(QDialog):
             current_team.Description = team_description    
             
             current_progress = i / common_max * 100
-            aProgressBar.setValue( current_progress )         
+            self.aProgressBar.setValue( current_progress )         
         
         if loaded_teams == df_teams_max:
             self.icon_teams.setPixmap( QPixmap( self.aCurrentPath + '/icons/admin/128x128_team_done.png' ).scaled( QSize( 128, 128 ) ) )
         else: 
             self.icon_teams.setPixmap( QPixmap( self.aCurrentPath + '/icons/admin/128x128_team_fail.png' ).scaled( QSize( 128, 128 ) ) )
         
-        # Importing Users   
+        PipeCad.CommitTransaction()
+        PipeCad.SaveWork()
+         
+        # Importing Users 
+        PipeCad.StartTransaction("Importing Users")        
         for i in range(len(df_users)):
             user_name = df_users.iloc[i].Name
             user_description = df_users.iloc[i].Description
@@ -568,14 +532,18 @@ class ImportProjectDialog(QDialog):
                            
             loaded_users = loaded_users + 1                  
             current_progress = ( i + df_teams_max ) / common_max * 100
-            aProgressBar.setValue( current_progress ) 
+            self.aProgressBar.setValue( current_progress ) 
         
         if loaded_users == df_users_max:
             self.icon_users.setPixmap( QPixmap( self.aCurrentPath + '/icons/admin/128x128_user_done.png' ).scaled( QSize( 128, 128 ) ) )
         else: 
             self.icon_users.setPixmap( QPixmap( self.aCurrentPath + '/icons/admin/128x128_user_fail.png' ).scaled( QSize( 128, 128 ) ) )
 
-        # Importing Databases        
+        PipeCad.CommitTransaction()
+        PipeCad.SaveWork()
+
+        # Importing Databases   
+        PipeCad.StartTransaction("Importing Databases")
         for i in range(len(df_dbs)):
             db_team = df_dbs.iloc[i].Owning_Team
             db_name = df_dbs.iloc[i].Name
@@ -606,14 +574,18 @@ class ImportProjectDialog(QDialog):
                 continue
                         
             current_progress = ( i + df_users_max + df_teams_max ) / common_max * 100
-            aProgressBar.setValue( current_progress ) 
+            self.aProgressBar.setValue( current_progress ) 
                     
         if loaded_dbs == df_dbs_max:
             self.icon_dbs.setPixmap( QPixmap( self.aCurrentPath + '/icons/admin/128x128_database_done.png' ).scaled( QSize( 128, 128 ) ) )
         else: 
             self.icon_dbs.setPixmap( QPixmap( self.aCurrentPath + '/icons/admin/128x128_database_fail.png' ).scaled( QSize( 128, 128 ) ) )
         
+        PipeCad.CommitTransaction()
+        PipeCad.SaveWork()
+        
         # Importing MDBs
+        PipeCad.StartTransaction("Importing MDBs")
         for i in range(len(df_mdbs)):
             mdb_name = df_mdbs.iloc[i].Name
             mdb_description = df_mdbs.iloc[i].Description
@@ -638,8 +610,10 @@ class ImportProjectDialog(QDialog):
             for i in range ( len( mdb_dbs )):
                 PipeCad.CreateItem("DBL")
                 mdb_dbl = PipeCad.CurrentItem()
-                
-                mdb_db = PipeCad.SetCurrentItem( "/*" + mdb_dbs[i] )
+
+                #mdb_db = PipeCad.SetCurrentItem( "/*" + mdb_dbs[i] )
+                mdb_db = PipeCad.SetCurrentItem( mdb_dbs[i] )
+
                 mdb_db_ref = PipeCad.CurrentItem()
                                 
                 PipeCad.SetCurrentItem( mdb_dbl )
@@ -648,15 +622,18 @@ class ImportProjectDialog(QDialog):
                 mdb_dbl.Dbref = mdb_db_ref
 
             current_progress = i / common_max * 100
-            aProgressBar.setValue( current_progress )   
+            self.aProgressBar.setValue( current_progress )   
             
             current_progress = ( i + df_users_max + df_teams_max + df_dbs_max ) / common_max * 100
-            aProgressBar.setValue( current_progress )
+            self.aProgressBar.setValue( current_progress )
 
         if loaded_mdbs == df_mdbs_max:
             self.icon_mdbs.setPixmap( QPixmap( self.aCurrentPath + '/icons/admin/128x128_mdb_done.png' ).scaled( QSize( 128, 128 ) ) )
         else: 
             self.icon_mdbs.setPixmap( QPixmap( self.aCurrentPath + '/icons/admin/128x128_mdb_fail.png' ).scaled( QSize( 128, 128 ) ) )
+        
+        PipeCad.CommitTransaction()
+        PipeCad.SaveWork()
         
         self.icon_users_counter.show()
         self.icon_teams_counter.show()
@@ -668,10 +645,9 @@ class ImportProjectDialog(QDialog):
         self.icon_dbs_counter.setText( "Loaded " + str( loaded_dbs ) + "/" + str( df_dbs_max ) )        
         self.icon_mdbs_counter.setText( "Loaded " + str( loaded_mdbs ) + "/" + str( df_mdbs_max ) )
         
-        aProgressBar.setValue( 100 )
-        aProgressBar.hide()
+        self.aProgressBar.setValue( 100 )
+        self.aProgressBar.hide()
 
-        PipeCad.SaveWork()
         PipeCad.centralWidget().refreshList()
 
     
