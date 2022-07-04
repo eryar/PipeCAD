@@ -428,6 +428,10 @@ class StandardDialog(QDialog):
             self.buildKabw()
         elif aSkey == "NZFL":
             self.buildNzfl()
+        elif aSkey == "NZBW":
+            self.buildNzbw()
+        elif aSkey == "SEIM":
+            self.buildSeim()
         elif aSkey == "STEA":
             self.buildStea()
         elif aSkey == "STUA":
@@ -446,6 +450,8 @@ class StandardDialog(QDialog):
             self.buildBssc()
         elif aSkey == "BULB":
             self.buildBulb()
+        elif aSkey == "DINT":
+            self.buildDint()
         elif aSkey == "BOLT":
             self.buildBolt()
         elif aSkey == "WTBW":
@@ -2898,6 +2904,11 @@ class StandardDialog(QDialog):
 
         PipeCad.SetCurrentItem(aGmseItem)
 
+        aModelIndex = QModelIndex()
+        while self.tableModel.canFetchMore(aModelIndex):
+            self.tableModel.fetchMore(aModelIndex)
+        # while
+
         for r in range(self.tableModel.rowCount()):
             aRecord = self.tableModel.record(r)
             aField = aRecord.field("ItemCode")
@@ -2918,7 +2929,274 @@ class StandardDialog(QDialog):
             aScomItem.Gmref = aGmseItem
             
         PipeCad.CommitTransaction()
-    # buildNozz
+    # buildNzfl
+
+    def buildNzbw(self):
+        aCateName = self.treeWidget.currentItem().text(0)
+        aToolTip = self.treeWidget.currentItem().toolTip(0)
+
+        PipeCad.StartTransaction("Build Standard NZBW Components")
+
+        PipeCad.CreateItem("CATE", aCateName)
+        aCateItem = PipeCad.CurrentItem()
+        aCateItem.Gtype = "NOZZ"
+        aCateItem.Description = aToolTip
+
+        PipeCad.CreateItem("SDTE", aCateName + "-D")
+        aSdteItem = PipeCad.CurrentItem()
+        aSdteItem.Skey = "NZBW"
+        aSdteItem.Rtext = aToolTip
+
+        PipeCad.CreateItem("TEXT", aCateName + "-PA1")
+        aTextItem = PipeCad.CurrentItem()
+        aTextItem.Stext = "NOMINAL SIZE"
+
+        PipeCad.CreateItem("TEXT", aCateName + "-PA2")
+        aTextItem = PipeCad.CurrentItem()
+        aTextItem.Stext = "CONN TYPE"
+
+        PipeCad.CreateItem("TEXT", aCateName + "-PA3")
+        aTextItem = PipeCad.CurrentItem()
+        aTextItem.Stext = "OUTSIDE DIAM"
+
+        PipeCad.CreateItem("PTSE", aCateName + "-PTSE")
+        aPtseItem = PipeCad.CurrentItem()
+
+        PipeCad.CreateItem("PTAX", aCateName + "-P1")
+        aPtaxItem = PipeCad.CurrentItem()
+        aPtaxItem.Number = 1
+        aPtaxItem.Connection = "PARAM2"
+        aPtaxItem.Bore = "PARAM1"
+        aPtaxItem.Distance = "0"
+        aPtaxItem.Axis = "-X"
+
+        PipeCad.CreateItem("PTAX", aCateName + "-P2")
+        aPtaxItem = PipeCad.CurrentItem()
+        aPtaxItem.Number = 2
+        aPtaxItem.Connection = "NULL"
+        aPtaxItem.Bore = "0"
+        aPtaxItem.Distance = "DDHEIGHT"
+        aPtaxItem.Axis = "X"
+
+        PipeCad.SetCurrentItem(aPtseItem)
+
+        PipeCad.CreateItem("GMSE", aCateName + "-GMSE")
+        aGmseItem = PipeCad.CurrentItem()
+
+        PipeCad.CreateItem("SCYL")
+        aScylItem = PipeCad.CurrentItem()
+        aScylItem.Axis ="X"
+        aScylItem.Distance = "0"
+        aScylItem.Height = "DDHEIGHT"
+        aScylItem.Diameter = "PARAM3"
+
+        PipeCad.SetCurrentItem(aGmseItem)
+
+        aModelIndex = QModelIndex()
+        while self.tableModel.canFetchMore(aModelIndex):
+            self.tableModel.fetchMore(aModelIndex)
+        # while
+
+        for r in range(self.tableModel.rowCount()):
+            aRecord = self.tableModel.record(r)
+            aField = aRecord.field("ItemCode")
+
+            aDn = aRecord.field("DN").value()
+            aCt = aRecord.field("CT").value()
+            aOd = aRecord.field("OD").value()
+
+            aParam = str(aDn) + " " + str(aCt) + " " + str(aOd)
+
+            PipeCad.CreateItem("SCOM", aField.value())
+            aScomItem = PipeCad.CurrentItem()
+            aScomItem.Gtype = "NOZZ"
+            aScomItem.Param = aParam
+            aScomItem.Ptref = aPtseItem
+            aScomItem.Gmref = aGmseItem
+        # for
+            
+        PipeCad.CommitTransaction()
+
+    # buildNzbw
+
+    def buildSeim(self):
+        aCateName = self.treeWidget.currentItem().text(0)
+        aToolTip = self.treeWidget.currentItem().toolTip(0)
+
+        PipeCad.StartTransaction("Build SEI Man Hole")
+
+        PipeCad.CreateItem("CATE", aCateName)
+        aCateItem = PipeCad.CurrentItem()
+        aCateItem.Gtype = "NOZZ"
+        aCateItem.Description = aToolTip
+
+        PipeCad.CreateItem("SDTE", aCateName + "-D")
+        aSdteItem = PipeCad.CurrentItem()
+        aSdteItem.Skey = "MANH"
+        aSdteItem.Rtext = aToolTip
+
+        PipeCad.CreateItem("TEXT", aCateName + "-PA1")
+        aTextItem = PipeCad.CurrentItem()
+        aTextItem.Stext = "NOMINAL SIZE"
+
+        PipeCad.CreateItem("TEXT", aCateName + "-PA2")
+        aTextItem = PipeCad.CurrentItem()
+        aTextItem.Stext = "FACE CONN TYPE"
+
+        PipeCad.CreateItem("TEXT", aCateName + "-PA3")
+        aTextItem = PipeCad.CurrentItem()
+        aTextItem.Stext = "FLANGE DIAM"
+
+        PipeCad.CreateItem("TEXT", aCateName + "-PA4")
+        aTextItem = PipeCad.CurrentItem()
+        aTextItem.Stext = "FLANGE THICKNESS"
+
+        PipeCad.CreateItem("TEXT", aCateName + "-PA5")
+        aTextItem = PipeCad.CurrentItem()
+        aTextItem.Stext = "TUBE OUTSIDE DIAM"
+
+        PipeCad.CreateItem("PTSE", aCateName + "-PTSE")
+        aPtseItem = PipeCad.CurrentItem()
+
+        PipeCad.CreateItem("PTAX", aCateName + "-P1")
+        aPtaxItem = PipeCad.CurrentItem()
+        aPtaxItem.Number = 1
+        aPtaxItem.Connection = "PARAM2"
+        aPtaxItem.Bore = "PARAM1"
+        aPtaxItem.Distance = "0"
+        aPtaxItem.Axis = "-X"
+
+        PipeCad.CreateItem("PTAX", aCateName + "-P2")
+        aPtaxItem = PipeCad.CurrentItem()
+        aPtaxItem.Number = 2
+        aPtaxItem.Connection = "NULL"
+        aPtaxItem.Bore = "0"
+        aPtaxItem.Distance = "DDHEIGHT"
+        aPtaxItem.Axis = "X"
+
+        PipeCad.CreateItem("PTCA", aCateName + "-P3")
+        aPtcaItem = PipeCad.CurrentItem()
+        aPtcaItem.Number = 3
+        aPtcaItem.Connection = "0"
+        aPtcaItem.Bore = "0"
+        aPtcaItem.Px = "0"
+        aPtcaItem.Py = "PARAM3 * 0.5"
+        aPtcaItem.Pz = "0"
+        aPtcaItem.Direction = "Z"
+
+        PipeCad.CreateItem("PTCA", aCateName + "-P4")
+        aPtcaItem = PipeCad.CurrentItem()
+        aPtcaItem.Number = 4
+        aPtcaItem.Connection = "0"
+        aPtcaItem.Bore = "0"
+        aPtcaItem.Px = "PARAM4 * -1"
+        aPtcaItem.Py = "PARAM3 * -0.35"
+        aPtcaItem.Pz = "50"
+        aPtcaItem.Direction = "X"
+
+        PipeCad.CreateItem("PTCA", aCateName + "-P5")
+        aPtcaItem = PipeCad.CurrentItem()
+        aPtcaItem.Number = 5
+        aPtcaItem.Connection = "0"
+        aPtcaItem.Bore = "0"
+        aPtcaItem.Px = "PARAM4 * -1"
+        aPtcaItem.Py = "PARAM3 * -0.35"
+        aPtcaItem.Pz = "-50"
+        aPtcaItem.Direction = "X"
+
+        PipeCad.CreateItem("PTCA", aCateName + "-P6")
+        aPtcaItem = PipeCad.CurrentItem()
+        aPtcaItem.Number = 6
+        aPtcaItem.Connection = "0"
+        aPtcaItem.Bore = "0"
+        aPtcaItem.Px = "PARAM4 * -1"
+        aPtcaItem.Py = "0"
+        aPtcaItem.Pz = "PARAM3 * -0.4"
+        aPtcaItem.Direction = "-X"
+
+        PipeCad.SetCurrentItem(aPtseItem)
+
+        PipeCad.CreateItem("GMSE", aCateName + "-GMSE")
+        aGmseItem = PipeCad.CurrentItem()
+
+        PipeCad.CreateItem("SCYL")
+        aScylItem = PipeCad.CurrentItem()
+        aScylItem.Axis ="X"
+        aScylItem.Distance = "0"
+        aScylItem.Height = "PARAM4"
+        aScylItem.Diameter = "PARAM3"
+
+        PipeCad.CreateItem("LCYL")
+        aScylItem = PipeCad.CurrentItem()
+        aScylItem.Axis = "-X"
+        aScylItem.Bdistance = "5"
+        aScylItem.Tdistance = "PARAM4 + 5"
+        aScylItem.Diameter = "PARAM3"
+
+        PipeCad.CreateItem("SCYL")
+        aScylItem = PipeCad.CurrentItem()
+        aScylItem.Axis ="X"
+        aScylItem.Distance = "0"
+        aScylItem.Height = "DDHEIGHT"
+        aScylItem.Diameter = "PARAM5"
+
+        PipeCad.CreateItem("SCYL")
+        aScylItem = PipeCad.CurrentItem()
+        aScylItem.Axis ="P3"
+        aScylItem.Distance = "-0.1 * PARAM3"
+        aScylItem.Height = "PARAM3 * 0.2"
+        aScylItem.Diameter = "PARAM4"
+
+        PipeCad.CreateItem("SCYL")
+        aScylItem = PipeCad.CurrentItem()
+        aScylItem.Axis ="P3"
+        aScylItem.Distance = "PARAM3 * 0.1 + 2"
+        aScylItem.Height = "PARAM3 * 0.2"
+        aScylItem.Diameter = "PARAM4"
+
+        PipeCad.CreateItem("SCYL")
+        aScylItem = PipeCad.CurrentItem()
+        aScylItem.Axis ="-P3"
+        aScylItem.Distance = "PARAM3 * 0.1 + 2"
+        aScylItem.Height = "PARAM3 * 0.2"
+        aScylItem.Diameter = "PARAM4"
+
+        PipeCad.CreateItem("SCTO")
+        aSctoItem = PipeCad.CurrentItem()
+        aSctoItem.Aaxis = "P4"
+        aSctoItem.Baxis = "P5"
+        aSctoItem.Diameter = "10"
+
+        PipeCad.SetCurrentItem(aGmseItem)
+
+        aModelIndex = QModelIndex()
+        while self.tableModel.canFetchMore(aModelIndex):
+            self.tableModel.fetchMore(aModelIndex)
+        # while
+
+        for r in range(self.tableModel.rowCount()):
+            aRecord = self.tableModel.record(r)
+            aField = aRecord.field("ItemCode")
+
+            aDn = aRecord.field("DN").value()
+            aFd = aRecord.field("FD").value()
+            aFt = aRecord.field("FT").value()
+            aTd = aRecord.field("TD").value()
+            aCt = aRecord.field("CT").value()
+
+            aParam = str(aDn) + " " + str(aCt) + " " + str(aFd) + " " + str(aFt) + " " + str(aTd)
+
+            PipeCad.CreateItem("SCOM", aField.value())
+            aScomItem = PipeCad.CurrentItem()
+            aScomItem.Gtype = "NOZZ"
+            aScomItem.Param = aParam
+            aScomItem.Ptref = aPtseItem
+            aScomItem.Gmref = aGmseItem
+        # for
+            
+        PipeCad.CommitTransaction()
+
+    # buildSeim
 
     def buildStea(self):
         #print("build stea")
@@ -4840,6 +5118,288 @@ class StandardDialog(QDialog):
     def buildBulb(self):
         print("build bulb")
     # buildBulb
+
+    def buildDint(self):
+        aCateName = self.treeWidget.currentItem().text(0)
+        aToolTip = self.treeWidget.currentItem().toolTip(0)
+
+        PipeCad.StartTransaction("Build DINT")
+
+        aSectItem = PipeCad.CurrentItem()
+
+        PipeCad.CreateItem("STCA", aCateName)
+        aCateItem = PipeCad.CurrentItem()
+        aCateItem.Gtype = "DINT"
+        aCateItem.Description = aToolTip
+
+        PipeCad.CreateItem("TEXT", aCateName + "-PA1")
+        aTextItem = PipeCad.CurrentItem()
+        aTextItem.Stext = "Depth"
+
+        PipeCad.CreateItem("TEXT", aCateName + "-PA2")
+        aTextItem = PipeCad.CurrentItem()
+        aTextItem.Stext = "Width"
+
+        PipeCad.CreateItem("TEXT", aCateName + "-PA3")
+        aTextItem = PipeCad.CurrentItem()
+        aTextItem.Stext = "Web Thickness"
+
+        PipeCad.CreateItem("TEXT", aCateName + "-PA4")
+        aTextItem = PipeCad.CurrentItem()
+        aTextItem.Stext = "Flange Thickness"
+
+        PipeCad.CreateItem("TEXT", aCateName + "-PA5")
+        aTextItem = PipeCad.CurrentItem()
+        aTextItem.Stext = "Distance to neutral axis"
+
+        PipeCad.CreateItem("TEXT", aCateName + "-PA6")
+        aTextItem = PipeCad.CurrentItem()
+        aTextItem.Stext = "Unit Weight"
+
+        PipeCad.CreateItem("TEXT", aCateName + "-PA7")
+        aTextItem = PipeCad.CurrentItem()
+        aTextItem.Stext = "Root Radius"
+
+        PipeCad.CreateItem("TEXT", aCateName + "-PA8")
+        aTextItem = PipeCad.CurrentItem()
+        aTextItem.Stext = "Nominal Width"
+
+        PipeCad.CreateItem("TEXT", aCateName + "-PA9")
+        aTextItem = PipeCad.CurrentItem()
+        aTextItem.Stext = "Nominal Depth"
+
+        PipeCad.CreateItem("TEXT", aCateName + "-PA10")
+        aTextItem = PipeCad.CurrentItem()
+        aTextItem.Stext = "Original Depth"
+
+        PipeCad.CreateItem("TEXT", aCateName + "-PA11")
+        aTextItem = PipeCad.CurrentItem()
+        aTextItem.Stext = "Original Width"
+
+        PipeCad.CreateItem("TEXT", aCateName + "-PA12")
+        aTextItem = PipeCad.CurrentItem()
+        aTextItem.Stext = "Original Weight"
+
+        PipeCad.CreateItem("TEXT", aCateName + "-PA13")
+        aTextItem = PipeCad.CurrentItem()
+        aTextItem.Stext = "Backmark"
+
+        PipeCad.CreateItem("TEXT", aCateName + "-PA14")
+        aTextItem = PipeCad.CurrentItem()
+        aTextItem.Stext = "Flange Radius"
+
+        PipeCad.CreateItem("TEXT", aCateName + "-PA15")
+        aTextItem = PipeCad.CurrentItem()
+        aTextItem.Stext = "Web Radius"
+
+        PipeCad.CreateItem("TEXT", aCateName + "-PA16")
+        aTextItem = PipeCad.CurrentItem()
+        aTextItem.Stext = "Flange Slope"
+
+        PipeCad.CreateItem("TEXT", aCateName + "-PA17")
+        aTextItem = PipeCad.CurrentItem()
+        aTextItem.Stext = "Flange Slope"
+
+        PipeCad.CreateItem("PTSS", aCateName + "-PTSS")
+        aPtssItem = PipeCad.CurrentItem()
+
+        PipeCad.CreateItem("PLIN")
+        aPlinItem = PipeCad.CurrentItem()
+        aPlinItem.Pkey = "CGEO"
+        aPlinItem.Plaxis = "X"
+        aPlinItem.Px = "0"
+        aPlinItem.Py = "PARAM5 - PARAM2 * 0.5"
+        aPlinItem.Dx = "0"
+        aPlinItem.Dy = "0"
+
+        PipeCad.CreateItem("PLIN")
+        aPlinItem = PipeCad.CurrentItem()
+        aPlinItem.Pkey = "NA"
+        aPlinItem.Plaxis = "Y"
+        aPlinItem.Px = "0"
+        aPlinItem.Py = "0"
+        aPlinItem.Dx = "0"
+        aPlinItem.Dy = "0"
+
+        PipeCad.CreateItem("PLIN")
+        aPlinItem = PipeCad.CurrentItem()
+        aPlinItem.Pkey = "TOS"
+        aPlinItem.Plaxis = "Y"
+        aPlinItem.Px = "0"
+        aPlinItem.Py = "PARAM5"
+        aPlinItem.Dx = "0"
+        aPlinItem.Dy = "0"
+
+        PipeCad.CreateItem("PLIN")
+        aPlinItem = PipeCad.CurrentItem()
+        aPlinItem.Pkey = "BOS"
+        aPlinItem.Plaxis = "-Y"
+        aPlinItem.Px = "0"
+        aPlinItem.Py = "PARAM5 - PARAM2"
+        aPlinItem.Dx = "0"
+        aPlinItem.Dy = "0"
+
+        PipeCad.CreateItem("PLIN")
+        aPlinItem = PipeCad.CurrentItem()
+        aPlinItem.Pkey = "LTOS"
+        aPlinItem.Plaxis = "Y"
+        aPlinItem.Px = "PARAM1 * -0.5"
+        aPlinItem.Py = "PARAM5"
+        aPlinItem.Dx = "0"
+        aPlinItem.Dy = "0"
+
+        PipeCad.CreateItem("PLIN")
+        aPlinItem = PipeCad.CurrentItem()
+        aPlinItem.Pkey = "RTOS"
+        aPlinItem.Plaxis = "Y"
+        aPlinItem.Px = "PARAM1 * 0.5"
+        aPlinItem.Py = "PARAM5"
+        aPlinItem.Dx = "0"
+        aPlinItem.Dy = "0"
+
+        PipeCad.CreateItem("PLIN")
+        aPlinItem = PipeCad.CurrentItem()
+        aPlinItem.Pkey = "NAR"
+        aPlinItem.Plaxis = "X"
+        aPlinItem.Px = "PARAM3 * 0.5 - PARAM17 / 100 * (PARAM5 - PARAM2 * 0.5)"
+        aPlinItem.Py = "0"
+        aPlinItem.Dx = "0"
+        aPlinItem.Dy = "0"
+
+        PipeCad.CreateItem("PLIN")
+        aPlinItem = PipeCad.CurrentItem()
+        aPlinItem.Pkey = "NARO"
+        aPlinItem.Plaxis = "X"
+        aPlinItem.Px = "PARAM1 * 0.5"
+        aPlinItem.Py = "0"
+        aPlinItem.Dx = "0"
+        aPlinItem.Dy = "0"
+
+        PipeCad.CreateItem("PLIN")
+        aPlinItem = PipeCad.CurrentItem()
+        aPlinItem.Pkey = "NALO"
+        aPlinItem.Plaxis = "-X"
+        aPlinItem.Px = "PARAM1 * -0.5"
+        aPlinItem.Py = "0"
+        aPlinItem.Dx = "0"
+        aPlinItem.Dy = "0"
+
+        PipeCad.CreateItem("PLIN")
+        aPlinItem = PipeCad.CurrentItem()
+        aPlinItem.Pkey = "NAL"
+        aPlinItem.Plaxis = "-X"
+        aPlinItem.Px = "PARAM3 * -0.5 + PARAM17 / 100 * (PARAM5 - PARAM2 * 0.5)"
+        aPlinItem.Py = "0"
+        aPlinItem.Dx = "0"
+        aPlinItem.Dy = "0"
+
+        PipeCad.CreateItem("PLIN")
+        aPlinItem = PipeCad.CurrentItem()
+        aPlinItem.Pkey = "TBHL"
+        aPlinItem.Plaxis = "-Y"
+        aPlinItem.Px = "PARAM13 * -0.5"
+        aPlinItem.Py = "PARAM5 - PARAM4 + PARAM16 / 100 * (PARAM13 / 2 - PARAM1 / 4)"
+        aPlinItem.Dx = "0"
+        aPlinItem.Dy = "0"
+
+        PipeCad.CreateItem("PLIN")
+        aPlinItem = PipeCad.CurrentItem()
+        aPlinItem.Pkey = "TBHR"
+        aPlinItem.Plaxis = "-Y"
+        aPlinItem.Px = "PARAM13 * 0.5"
+        aPlinItem.Py = "PARAM5 - PARAM4 + PARAM16 / 100 * (PARAM13 / 2 - PARAM1 / 4)"
+        aPlinItem.Dx = "0"
+        aPlinItem.Dy = "0"
+
+        PipeCad.SetCurrentItem(aPtssItem)
+
+        PipeCad.CreateItem("GMSS", aCateName + "-GMSS")
+        aGmssItem = PipeCad.CurrentItem()
+
+        PipeCad.CreateItem("SPRO")
+        aSproItem = PipeCad.CurrentItem()
+        aSproItem.Plaxis = "Y"
+
+        # 1
+        PipeCad.CreateItem("SPVE")
+        aSpveItem = PipeCad.CurrentItem()
+        aSpveItem.Px = "-0.5 * PARAM1"
+        aSpveItem.Py = "PARAM5"
+
+        # 2
+        PipeCad.CreateItem("SPVE")
+        aSpveItem = PipeCad.CurrentItem()
+        aSpveItem.Px = "0.5 * PARAM1"
+        aSpveItem.Py = "PARAM5"
+
+        # 3
+        PipeCad.CreateItem("SPVE")
+        aSpveItem = PipeCad.CurrentItem()
+        aSpveItem.Px = "0.5 * PARAM1"
+        aSpveItem.Py = "PARAM5 - PARAM4 + PARAM1 / 4 * PARAM16 / 100"
+        aSpveItem.Pradius = "PARAM14"
+
+        # 4
+        PipeCad.CreateItem("SPVE")
+        aSpveItem = PipeCad.CurrentItem()
+        aSpveItem.Px = "( PARAM2 * PARAM17 * 100 - PARAM17 * PARAM16 * PARAM1 / 4 - PARAM4 * PARAM17 * 100 + PARAM3 * 5000) / ( 10000 - PARAM17 * PARAM16 )"
+        aSpveItem.Py = "( PARAM5 - PARAM4 + PARAM16 / 100 * ( ( PARAM2 * PARAM17 * 100 - PARAM17 * PARAM16 * PARAM1 / 4 - PARAM4 * PARAM17 * 100 + PARAM3 * 5000 ) / ( 10000 - PARAM16 * PARAM17 ) - PARAM1 / 2 ) )"
+        aSpveItem.Pradius = "PARAM7"
+
+        # 5
+        PipeCad.CreateItem("SPVE")
+        aSpveItem = PipeCad.CurrentItem()
+        aSpveItem.Px = "PARAM3 / 2 - PARAM2 / 2 * PARAM17 / 100"
+        aSpveItem.Py = "PARAM5 - PARAM2"
+        aSpveItem.Pradius = "PARAM15"
+
+        # 6
+        PipeCad.CreateItem("SPVE")
+        aSpveItem = PipeCad.CurrentItem()
+        aSpveItem.Px = "-1 * ( PARAM3 / 2 - PARAM2 / 2 * PARAM17 / 100 )"
+        aSpveItem.Py = "PARAM5 - PARAM2"
+        aSpveItem.Pradius = "PARAM15"
+
+        # 7
+        PipeCad.CreateItem("SPVE")
+        aSpveItem = PipeCad.CurrentItem()
+        aSpveItem.Px = "-1 * ( PARAM2 * PARAM17 * 100 - PARAM17 * PARAM16 * PARAM1 / 4 - PARAM4 * PARAM17 * 100 + PARAM3 * 5000 ) / ( 10000 - PARAM17 * PARAM16 )"
+        aSpveItem.Py = "( PARAM5 - PARAM4 + PARAM16 / 100 * ( ( PARAM2 * PARAM17 * 100 - PARAM17 * PARAM16 * PARAM1 / 4 - PARAM4 * PARAM17 * 100 + PARAM3 * 5000 ) / ( 10000 - PARAM16 * PARAM17 ) - PARAM1 / 2 ) )"
+        aSpveItem.Pradius = "PARAM7"
+
+        # 8
+        PipeCad.CreateItem("SPVE")
+        aSpveItem = PipeCad.CurrentItem()
+        aSpveItem.Px = "-0.5 * PARAM1"
+        aSpveItem.Py = "PARAM5 - PARAM4 + PARAM1 / 4 * PARAM16 / 100"
+        aSpveItem.Pradius = "PARAM14"
+
+        PipeCad.SetCurrentItem(aGmssItem)
+
+        aModelIndex = QModelIndex()
+        while self.tableModel.canFetchMore(aModelIndex):
+            self.tableModel.fetchMore(aModelIndex)
+        # while
+
+        for r in range(self.tableModel.rowCount()):
+            aRecord = self.tableModel.record(r)
+            aField = aRecord.field("ItemCode")
+
+            aParam = []
+            for i in range (3, aRecord.count()):
+                aValue = aRecord.field(i).value()
+                aParam.append(str(aValue))
+
+            PipeCad.CreateItem("SPRF", aField.value())
+            aSprfItem = PipeCad.CurrentItem()
+            aSprfItem.Param = " ".join(aParam)
+            aSprfItem.Gtype = "DINT"
+        # for
+
+        PipeCad.CommitTransaction()
+
+
+    # buildDint
 
     def buildBolt(self):
         # print("Build BOLT")
