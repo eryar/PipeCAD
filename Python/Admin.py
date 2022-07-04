@@ -542,7 +542,6 @@ class ImportProjectDialog(QDialog):
         PipeCad.SaveWork()
 
         # Importing Databases   
-        PipeCad.StartTransaction("Importing Databases")
         for i in range(len(df_dbs)):
             db_team = df_dbs.iloc[i].Owning_Team
             db_name = df_dbs.iloc[i].Name
@@ -550,25 +549,31 @@ class ImportProjectDialog(QDialog):
             db_type = df_dbs.iloc[i].Type
             db_claim_mode = df_dbs.iloc[i].Claim_Mode
             db_number = df_dbs.iloc[i].Number
+            db_main_element = df_dbs.iloc[i].Main_Element
             # db_area = db_dbs.iloc[i].Area
             
             if db_type == 'DESI' or db_type == 'CATA':            
                 if db_number > 0 and db_number < 8000:
                     try: 
                         PipeCad.SetCurrentItem( '/*' + db_team + '/' + db_name )
-                                      
+                        current_db = PipeCad.CurrentItem()
+                        current_db.Description = db_description
+                        current_db.ClaimMode = db_claim_mode 
+                        PipeCad.SaveWork()                        
+                        
                     except NameError as e:
+                        PipeCad.StartTransaction("Create Database")
                         PipeCad.CreateDb( db_team + '/' + db_name , db_type, db_number, db_description )  # TODO: Add check if required db number is availible for assigning
+                        current_db = PipeCad.CurrentItem()
+                        current_db.CreateDbElement( db_main_element )
+                        current_db.ClaimMode = db_claim_mode  
+                        PipeCad.CommitTransaction()
+                        PipeCad.SaveWork()
                     
                     loaded_dbs = loaded_dbs + 1
                     
                 else:
                     continue
-                        
-                    current_db = PipeCad.CurrentItem()
-                    current_db.Description = db_description
-                    current_db.ClaimMode = db_claim_mode
-            
             else:
                 continue
                         
@@ -579,10 +584,7 @@ class ImportProjectDialog(QDialog):
             self.icon_dbs.setPixmap( QPixmap( self.aCurrentPath + '/icons/admin/128x128_database_done.png' ).scaled( QSize( 128, 128 ) ) )
         else: 
             self.icon_dbs.setPixmap( QPixmap( self.aCurrentPath + '/icons/admin/128x128_database_fail.png' ).scaled( QSize( 128, 128 ) ) )
-        
-        PipeCad.CommitTransaction()
-        PipeCad.SaveWork()
-        
+                
         # Importing MDBs
         PipeCad.StartTransaction("Importing MDBs")
         for i in range(len(df_mdbs)):
