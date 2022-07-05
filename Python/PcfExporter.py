@@ -72,7 +72,7 @@ def ExportPcf(theTreeItem, theFileName):
                 aCode = ""
                 aDescription = ""
 
-            if aHeadPoint.distance(aArrivePoint.Position) > 1:
+            if aHeadPoint.Distance(aArrivePoint.Position) > 1:
                 # Add Pipe
                 aPcfFile.write("\nPIPE")
                 aPcfFile.write("\n    END-POINT    " + aHeadPoint.string() + " " + aArrivePoint.Bore)
@@ -120,7 +120,7 @@ def ExportPcf(theTreeItem, theFileName):
         # for
 
         # Add last pipe.
-        if aHeadPoint.distance(aTailPoint) > 1:
+        if aHeadPoint.Distance(aTailPoint) > 1:
             # Add Pipe
             aPcfFile.write("\nPIPE")
             aPcfFile.write("\n    END-POINT    " + aHeadPoint.string() + " " + aBranItem.Tbore)

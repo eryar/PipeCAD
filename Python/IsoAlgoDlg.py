@@ -78,6 +78,10 @@ class IsoAlgoDialog(QDialog):
 
         aTreeItem = PipeCad.CurrentItem()
         aName = aTreeItem.Name
+        if len(aName) < 1:
+            aName = aTreeItem.RefNo.replace("/", "_")
+        # if
+        
         if len(aName) > 1 and len(aIsoEnv) > 1:
             aFileName = aIsoEnv + "/" + aName + ".pcf"
             PcfExporter.ExportPcf(aTreeItem, aFileName)

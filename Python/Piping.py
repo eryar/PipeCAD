@@ -1375,7 +1375,7 @@ class PipeDialog():
                 aPoint = aMemberList[-1].LeavePoint
                 PipeCad.StartTransaction("Set Tail Connection")
                 self.branItem.Tposition = aPoint.Position
-                self.branItem.Tdirection = aPoint.Direction.reversed()
+                self.branItem.Tdirection = aPoint.Direction.Reversed()
                 self.branItem.Tbore = aPoint.Bore
                 self.branItem.Tconnect = aPoint.Type
                 PipeCad.CommitTransaction()
