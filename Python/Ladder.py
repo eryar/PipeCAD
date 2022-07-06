@@ -24,6 +24,221 @@ from PythonQt.pipecad import *
 from pipecad import *
 
 
+class StepDialog(QDialog):
+    def __init__(self, theParent = None):
+        QDialog.__init__(self, theParent)
+
+        self.setupUi()
+    # __init__
+
+    def setupUi(self):
+        self.setWindowTitle(QT_TRANSLATE_NOOP("Ladder", "Step Ladder"))
+
+        self.verticalLayout = QVBoxLayout(self)
+        self.formLayout = QFormLayout()
+
+        # Name
+        self.comboName = QComboBox()
+        self.comboName.addItem(QT_TRANSLATE_NOOP("Ladder", "Create"))
+        self.comboName.addItem(QT_TRANSLATE_NOOP("Ladder", "Modify"))
+
+        self.textName = QLineEdit("STEP-LADD-001")
+
+        self.formLayout.setWidget(0, QFormLayout.LabelRole, self.comboName)
+        self.formLayout.setWidget(0, QFormLayout.FieldRole, self.textName)
+
+        # Height
+        self.labelHeight = QLabel(QT_TRANSLATE_NOOP("Ladder", "Height"))
+        self.textHeight = QLineEdit("1800")
+
+        self.formLayout.setWidget(1, QFormLayout.LabelRole, self.labelHeight)
+        self.formLayout.setWidget(1, QFormLayout.FieldRole, self.textHeight)
+
+        # Width
+        self.labelWidth = QLabel(QT_TRANSLATE_NOOP("Ladder", "Width"))
+        self.textWidth = QLineEdit("500")
+
+        self.formLayout.setWidget(2, QFormLayout.LabelRole, self.labelWidth)
+        self.formLayout.setWidget(2, QFormLayout.FieldRole, self.textWidth)
+
+        self.verticalLayout.addLayout(self.formLayout)
+
+        self.tabWidget = QTabWidget()
+
+        # Tab 1
+        self.tabStep1 = QWidget()
+        self.verticalLayout1 = QVBoxLayout(self.tabStep1)
+        self.formLayout1 = QFormLayout()
+
+        # Position and direction.
+        self.labelX1 = QLabel(QT_TRANSLATE_NOOP("Ladder", "East"))
+        self.textX1 = QLineEdit("0.0")
+
+        self.formLayout1.setWidget(0, QFormLayout.LabelRole, self.labelX1)
+        self.formLayout1.setWidget(0, QFormLayout.FieldRole, self.textX1)
+
+        self.labelY1 = QLabel(QT_TRANSLATE_NOOP("Ladder", "North"))
+        self.textY1 = QLineEdit("0.0")
+
+        self.formLayout1.setWidget(1, QFormLayout.LabelRole, self.labelY1)
+        self.formLayout1.setWidget(1, QFormLayout.FieldRole, self.textY1)
+
+        self.labelZ1 = QLabel(QT_TRANSLATE_NOOP("Ladder", "Up"))
+        self.textZ1 = QLineEdit("0.0")
+
+        self.formLayout1.setWidget(2, QFormLayout.LabelRole, self.labelZ1)
+        self.formLayout1.setWidget(2, QFormLayout.FieldRole, self.textZ1)
+
+        self.labelDir1 = QLabel(QT_TRANSLATE_NOOP("Ladder", "Direction"))
+        self.textDir1 = QLineEdit("N")
+
+        self.formLayout1.setWidget(3, QFormLayout.LabelRole, self.labelDir1)
+        self.formLayout1.setWidget(3, QFormLayout.FieldRole, self.textDir1)
+
+        # Anchor Type
+        self.labelType = QLabel(QT_TRANSLATE_NOOP("Ladder", "Type"))
+        self.comboType = QComboBox()
+        self.comboType.addItem(QT_TRANSLATE_NOOP("Ladder", "a"), 1)
+        self.comboType.addItem(QT_TRANSLATE_NOOP("Ladder", "b"), 2)
+
+        self.formLayout1.setWidget(4, QFormLayout.LabelRole, self.labelType)
+        self.formLayout1.setWidget(4, QFormLayout.FieldRole, self.comboType)
+
+        # Clearance
+        self.labelClearance = QLabel(QT_TRANSLATE_NOOP("Ladder", "Clearance"))
+        self.textClearance = QLineEdit("300")
+
+        self.formLayout1.setWidget(5, QFormLayout.LabelRole, self.labelClearance)
+        self.formLayout1.setWidget(5, QFormLayout.FieldRole, self.textClearance)
+
+        self.horizontalLayout = QHBoxLayout()
+        self.labelDiagram = QLabel()
+        self.labelDiagram.setMinimumWidth(360)
+        self.labelDiagram.setPixmap(QPixmap(":/PipeCad/Resources/step_ladder1.png"))
+        self.horizontalLayout.addLayout(self.formLayout1)
+        self.horizontalLayout.addWidget(self.labelDiagram)
+
+        self.verticalLayout1.addLayout(self.horizontalLayout)
+
+        self.tabWidget.addTab(self.tabStep1, QT_TRANSLATE_NOOP("Ladder", "Step"))
+
+        # Tab 2
+        self.tabStep2 = QWidget()
+        self.verticalLayout2 = QVBoxLayout(self.tabStep2)
+        self.formLayout2 = QFormLayout()
+
+        # Position and direction.
+        self.labelX2 = QLabel(QT_TRANSLATE_NOOP("Ladder", "East"))
+        self.textX2 = QLineEdit("0.0")
+
+        self.formLayout2.setWidget(0, QFormLayout.LabelRole, self.labelX2)
+        self.formLayout2.setWidget(0, QFormLayout.FieldRole, self.textX2)
+
+        self.labelY2 = QLabel(QT_TRANSLATE_NOOP("Ladder", "North"))
+        self.textY2 = QLineEdit("0.0")
+
+        self.formLayout2.setWidget(1, QFormLayout.LabelRole, self.labelY2)
+        self.formLayout2.setWidget(1, QFormLayout.FieldRole, self.textY2)
+
+        self.labelZ2 = QLabel(QT_TRANSLATE_NOOP("Ladder", "Up"))
+        self.textZ2 = QLineEdit("0.0")
+
+        self.formLayout2.setWidget(2, QFormLayout.LabelRole, self.labelZ2)
+        self.formLayout2.setWidget(2, QFormLayout.FieldRole, self.textZ2)
+
+        self.labelDir2 = QLabel(QT_TRANSLATE_NOOP("Ladder", "Direction"))
+        self.textDir2 = QLineEdit("N")
+
+        self.formLayout2.setWidget(3, QFormLayout.LabelRole, self.labelDir2)
+        self.formLayout2.setWidget(3, QFormLayout.FieldRole, self.textDir2)
+
+        self.horizontalLayout = QHBoxLayout()
+        self.labelDiagram = QLabel()
+        self.labelDiagram.setMinimumWidth(360)
+        self.labelDiagram.setPixmap(QPixmap(":/PipeCad/Resources/step_ladder2.png"))
+        self.horizontalLayout.addLayout(self.formLayout2)
+        self.horizontalLayout.addWidget(self.labelDiagram)
+
+        self.verticalLayout2.addLayout(self.horizontalLayout)
+
+        self.tabWidget.addTab(self.tabStep2, QT_TRANSLATE_NOOP("Ladder", "Step with Handrail"))
+
+        self.verticalLayout.addWidget(self.tabWidget)
+
+        # Button Box
+        self.buttonBox = QDialogButtonBox(QDialogButtonBox.Cancel|QDialogButtonBox.Ok, self)
+
+        self.buttonBox.accepted.connect(self.accept)
+        self.buttonBox.rejected.connect(self.reject)
+
+        self.verticalLayout.addWidget(self.buttonBox)
+    # setupUi
+
+    def buildStep1(self):
+        aHeight = float(self.textHeight.text)
+        aWidth = float(self.textWidth.text)
+        aClearance = float(self.textClearance.text)
+        aAnchorType = self.comboType.currentData
+
+        PipeCad.StartTransaction("Create Step Ladder")
+
+        PipeCad.CreateItem("LADD", self.textName.text)
+        aLaddItem = PipeCad.CurrentItem()
+        aLaddItem.Category = 6
+        aLaddItem.Height = aHeight
+        aLaddItem.Width = aWidth
+        aLaddItem.Clearance = aClearance
+        aLaddItem.Anchor = aAnchorType
+
+        PipeCad.CommitTransaction()
+    # buildStep1
+
+    def buildStep2(self):
+        aHeight = float(self.textHeight.text)
+        aWidth = float(self.textWidth.text)
+
+        PipeCad.StartTransaction("Create Step Ladder")
+
+        PipeCad.CreateItem("LADD", self.textName.text)
+        aLaddItem = PipeCad.CurrentItem()
+        aLaddItem.Category = 7
+        aLaddItem.Height = aHeight
+        aLaddItem.Width = aWidth
+
+        PipeCad.CommitTransaction()
+    # buildStep2
+
+    def accept(self):
+        aIndex = self.tabWidget.currentIndex
+        if aIndex == 0:
+            # Step ladder
+            self.buildStep1()
+        else:
+            # Step with angle
+            self.buildStep2()
+        # if
+
+        QDialog.accept(self)
+    # accept
+
+# StepDialog
+
+# Singleton Instance.
+aStepDlg = StepDialog(PipeCad)
+
+def CreateStep():
+    aStepDlg.show()
+# CreateStep
+
+def CreateOnEquipment():
+    print("ladder on equipment")
+# CreateOnEquipment
+
+def CreateOnPlatform():
+    print("ladder on platform")
+# CreateOnPlatform
+
+
 class LadderDialog(QDialog):
     def __init__(self, parent = None):
         QDialog.__init__(self, parent)
