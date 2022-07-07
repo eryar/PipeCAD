@@ -80,7 +80,7 @@ class AdminMain(QWidget):
         self.tableWidget.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeToContents)
         self.tableWidget.verticalHeader().setMinimumSectionSize(16)
         self.tableWidget.verticalHeader().setDefaultSectionSize(18)
-        
+        self.tableWidget.currentItemChanged.connect(self.currentItemChanged)
         self.verticalLayout.addWidget(self.tableWidget)
 
         self.horizontalLayout = QHBoxLayout()
@@ -363,12 +363,6 @@ class ImportProjectDialog(QDialog):
         self.resize(450, 150)
         
         self.aCurrentPath = os.path.dirname( os.path.abspath(__file__) )
-
-        #aProjectXlsx = "ProjectDefinition.xlsx"
-        
-        #if len(aProjectsDir) > 0:
-        #    aProjectXlsx = aProjectsDir + "\\" + aProjectXlsx
-        # if
         
         self.txtPathToFile = QLineEdit("")
         
@@ -507,16 +501,21 @@ class ImportProjectDialog(QDialog):
             user_description = df_users.iloc[i].Description
             user_security = df_users.iloc[i].Security
             user_password = df_users.iloc[i].Password
-            user_teams = df_users.iloc[i].Teams.split()
-            
-            list_user_teams = []
+            user_teams = sorted( set( df_users.iloc[i].Teams.split() ) )
+
+            list_user_teams = []    
             
             for i in range ( len( user_teams ) ):
                 user_team = PipeCad.SetCurrentItem( "/*" + user_teams[i] )
-                user_team_ref = PipeCad.CurrentItem()
+                user_team_ref = PipeCad.CurrentItem()               
                 list_user_teams.append( user_team_ref )
             
-            list_user_teams = list_user_teams
+            # Delete Teams of current user to avoid duplicating of Teams
+            PipeCad.SetCurrentItem( '/' + user_name )
+            current_user_teams = PipeCad.CurrentItem().Member[0].Member
+            for current_user_team in current_user_teams:
+                PipeCad.SetCurrentItem( current_user_team )
+                PipeCad.DeleteItem("LTEA")
             
             try: 
                 PipeCad.SetCurrentItem( '/' + user_name )
