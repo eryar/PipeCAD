@@ -375,7 +375,7 @@ class ImportProjectDialog(QDialog):
         self.btnExplorer = QPushButton( "", self) 
         self.btnExplorer.setMinimumSize( 32 , 32 )
         self.btnExplorer.setMaximumSize( 32 , 32 )
-        self.btnExplorer.setIcon( QIcon( self.aCurrentPath + '/icons/common/32x32_explorer.png') )
+        self.btnExplorer.setIcon( QIcon(':/PipeCad/Resources/CATA.png') )
         self.btnExplorer.setIconSize( QSize( 32, 32 ) )
        
         self.icon_users = QLabel()
