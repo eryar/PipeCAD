@@ -34,12 +34,17 @@ class LoginDialog(QDialog):
         
         self.selectedProject = None
         self.projectDict = dict()
+        self.projectIndex = 0
+        project_users = []
+              
           
         self.setupUi()
     # __init__
 
-    def setupUi( self ):        
+    def setupUi( self ):     
         self.resize(350, 300)
+        self.setMaximumWidth(350)
+        self.setMaximumHeight(300)
         self.setWindowTitle(QT_TRANSLATE_NOOP("Login", "PipeCAD Login"))
         
         aCurrentPath = os.path.dirname(os.path.abspath(__file__))
@@ -49,44 +54,38 @@ class LoginDialog(QDialog):
         
         self.groupButtonsProject = QButtonGroup()
         
-        # self.btnProjectLeft = QPushButton( "", self)           
-        # self.btnProjectLeft.setMinimumSize( 30 , 40 )
-        # self.btnProjectLeft.setMaximumSize( 30 , 40 )
-        # #<a href="https://www.flaticon.com/free-icons/previous" title="previous icons">Previous icons created by Pixel perfect - Flaticon</a>
-        # self.btnProjectLeft.setIcon( QIcon('Lib/PipeCad/icons/login/128x128_arrow_left.png') )
-        # self.btnProjectLeft.setIconSize( QSize( 30 , 40 ) )
-        # self.btnProjectLeft.setAutoDefault(False)
-        # self.hBoxLayoutProjects.addWidget(self.btnProjectLeft)
+        self.btnProjectPrevious = QPushButton( "", self)           
+        self.btnProjectPrevious.setMinimumSize( 32 , 32 )
+        self.btnProjectPrevious.setMaximumSize( 32 , 32 )
+        #<a href="https://www.flaticon.com/free-icons/previous" title="previous icons">Previous icons created by Pixel perfect - Flaticon</a>
+        self.btnProjectPrevious.setIcon( QIcon('Lib/PipeCad/icons/common/32x32_arrow_left.png') )
+        self.btnProjectPrevious.setIconSize( QSize( 32 , 32 ) )
+        self.btnProjectPrevious.setStyleSheet("border:none;")
+        self.hBoxLayoutProjects.addWidget(self.btnProjectPrevious)
+       
+        aProject = PipeCad.Projects[self.projectIndex]
+        self.btnProject = QPushButton( "", self)           
+        self.btnProject.setMinimumSize( 256 , 104 )
+        self.btnProject.setMaximumSize( 256 , 104 )
+        #Icon downloaded from <a href="https://www.flaticon.com/free-icons/factory" title="factory icons">Factory icons created by vectorsmarket15 - Flaticon</a>
+        self.btnProject.setIcon( QIcon(aCurrentPath + '/icons/login/128x128_select_project.png') )
+        self.btnProject.setIconSize( QSize(96,96) )
+        self.btnProject.setStyleSheet("QPushButton { text-align: left; }")
+        self.btnProject.setText(QT_TRANSLATE_NOOP("Login", "Project: %s \nCode: %s \nNumber: %s \nDescription: \n%s") % (aProject.Name, aProject.Code, aProject.Number, aProject.Description))
+        self.btnProject.setObjectName( aProject.Code )
+        self.btnProject.setAutoDefault(False)
 
-        self.projectDict.clear()
-
-        for aProject in (PipeCad.Projects):
-            self.btnProject = QPushButton( "", self)           
-            self.btnProject.setMinimumSize( 256 , 104 )
-            self.btnProject.setMaximumSize( 256 , 104 )
-            #Icon downloaded from <a href="https://www.flaticon.com/free-icons/factory" title="factory icons">Factory icons created by vectorsmarket15 - Flaticon</a>
-            self.btnProject.setIcon( QIcon(aCurrentPath + '/icons/login/128x128_select_project.png') )
-            self.btnProject.setIconSize( QSize(96,96) )
-            self.btnProject.setStyleSheet("QPushButton { text-align: left; }")
-            self.btnProject.setText(QT_TRANSLATE_NOOP("Login", "Project: %s \nCode: %s \nNumber: %s \nDescription: \n%s") % (aProject.Name, aProject.Code, aProject.Number, aProject.Description))
-            self.btnProject.setObjectName( aProject.Code )
-            self.groupButtonsProject.addButton( self.btnProject )
-            self.btnProject.setAutoDefault(False)
-            #self.btnProject.clicked.connect( self.selectProject )
-            self.hBoxLayoutProjects.addWidget( self.btnProject )
-
-            self.projectDict[aProject.Code] = aProject
-        # for
+        self.hBoxLayoutProjects.addWidget(self.btnProject)  
         
-        # self.btnProjectRight = QPushButton( "", self)           
-        # self.btnProjectRight.setMinimumSize( 30 , 40 )
-        # self.btnProjectRight.setMaximumSize( 30 , 40 )
-        # #<a href="https://www.flaticon.com/free-icons/previous" title="previous icons">Previous icons created by Pixel perfect - Flaticon</a>
-        # self.btnProjectRight.setIcon( QIcon('Lib/PipeCad/icons/login/128x128_arrow_right.png') )
-        # self.btnProjectRight.setIconSize( QSize( 30 , 40 ) )
-        # self.btnProjectRight.setAutoDefault(False)
-        # self.hBoxLayoutProjects.addWidget(self.btnProjectRight)
-
+        self.btnProjectNext = QPushButton( "", self)           
+        self.btnProjectNext.setMinimumSize( 32 , 32 )
+        self.btnProjectNext.setMaximumSize( 32 , 32 )
+        #<a href="https://www.flaticon.com/free-icons/previous" title="previous icons">Previous icons created by Pixel perfect - Flaticon</a>
+        self.btnProjectNext.setIcon( QIcon('Lib/PipeCad/icons/common/32x32_arrow_right.png') )
+        self.btnProjectNext.setIconSize( QSize( 32 , 32 ) )
+        self.btnProjectNext.setStyleSheet("border:none;")
+        self.hBoxLayoutProjects.addWidget(self.btnProjectNext)
+                
         aFont = QFont("Times", 12)
 
         self.buttonCreate = QPushButton(QT_TRANSLATE_NOOP("Login", "Create New Project"))        
@@ -100,7 +99,7 @@ class LoginDialog(QDialog):
         self.lineEditPassword = QLineEdit( self )
         self.lineEditPassword.setEchoMode(QLineEdit.Password)
         
-        PipeCad.SetIndicator(self.lineEditPassword)
+        PipeCad.SetIndicator( self.lineEditPassword )
             
         self.buttonChange = QPushButton(QT_TRANSLATE_NOOP("Login", "Change"))
         
@@ -171,6 +170,8 @@ class LoginDialog(QDialog):
         self.labelSoftwareVersion.setAlignment(Qt.AlignRight)
         self.verticalLayout.addWidget(self.labelSoftwareVersion)
        
+        self.btnProjectPrevious.clicked.connect( self.setProjectPrevious )
+        self.btnProjectNext.clicked.connect( self.setProjectNext )
         self.comboBoxUser.currentIndexChanged.connect( self.selectUser )
         self.buttonChange.clicked.connect( self.changePassword )
         self.groupButtonsModule.buttonClicked.connect( self.accept )
@@ -178,17 +179,52 @@ class LoginDialog(QDialog):
         self.groupButtonsProject.buttonClicked.connect( self.selectProject )
         
         # Deactive widgets before selecting project 
-        self.comboBoxUser.setEnabled(False)
-        self.lineEditPassword.setEnabled(False)
-        self.buttonChange.setEnabled(False)
-        self.comboBoxMdb.setEnabled(False)
-        self.checkBox.setEnabled(False)
         self.btnDesign.setEnabled(False)
         self.btnParagon.setEnabled(False)
         self.btnAdmin.setEnabled(False)
-    # setupUi
+        self.btnProjectPrevious.setEnabled(False)
         
-    def selectProject( self, theButton ):
+        # if len( PipeCad.Projects ) == 1:
+        #     self.btnProjectNext.setEnabled(False)
+        # else:
+        #     self.btnProjectNext.setEnabled(True)
+        
+        self.selectProject()
+            
+    # setupUi
+    
+    def setProjectNext( self ):
+        
+        self.projectIndex = self.projectIndex + 1
+      
+        self.selectProject()
+        
+    def setProjectPrevious( self ):
+        
+        self.projectIndex = self.projectIndex - 1
+                
+        self.selectProject()                    
+        
+    def selectProject( self ):
+        
+        if len( PipeCad.Projects ) == 0 or len( PipeCad.Projects ) == 1:
+            self.btnProjectPrevious.setEnabled(False)
+            self.btnProjectNext.setEnabled(False)
+            
+        else:
+            if self.projectIndex == 0:
+                self.btnProjectPrevious.setEnabled(False)
+                self.btnProjectNext.setEnabled(True)
+            elif self.projectIndex > 0  and self.projectIndex < ( len( PipeCad.Projects ) - 1 ):
+                self.btnProjectPrevious.setEnabled(True)
+                self.btnProjectNext.setEnabled(True) 
+            elif self.projectIndex == ( len( PipeCad.Projects ) - 1 ):   
+                self.btnProjectPrevious.setEnabled(True)
+                self.btnProjectNext.setEnabled(False) 
+
+        aProject = PipeCad.Projects[self.projectIndex]
+        self.btnProject.setText(QT_TRANSLATE_NOOP("Login", "Project: %s \nCode: %s \nNumber: %s \nDescription: \n%s") % (aProject.Name, aProject.Code, aProject.Number, aProject.Description))
+        
         self.comboBoxUser.setEnabled(True)
         self.lineEditPassword.setEnabled(True)
         self.buttonChange.setEnabled(True)
@@ -197,9 +233,8 @@ class LoginDialog(QDialog):
         self.comboBoxUser.clear()
         self.comboBoxMdb.clear()
 
-        aProjectCode = theButton.objectName
-        self.selectedProject = self.projectDict.get(aProjectCode)
-
+        self.selectedProject = PipeCad.Projects[self.projectIndex]
+        
         if self.selectedProject is None:
             return
         # if
@@ -210,7 +245,7 @@ class LoginDialog(QDialog):
             self.comboBoxUser.addItem(aUser.Name)
         # for
         
-        if len(self.selectedProject.MdbList) == 0:
+        if len( self.selectedProject.MdbList ) == 0:
             self.comboBoxMdb.setEnabled(False)
             self.btnDesign.setEnabled(False)
             self.btnParagon.setEnabled(False)
@@ -235,7 +270,7 @@ class LoginDialog(QDialog):
         # if
     # selectUser
         
-    def accept(self, theButton):
+    def accept( self ):
 
         if self.selectedProject is None:
             return
