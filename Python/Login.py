@@ -176,18 +176,13 @@ class LoginDialog(QDialog):
         self.buttonChange.clicked.connect( self.changePassword )
         self.groupButtonsModule.buttonClicked.connect( self.accept )
         self.buttonCreate.clicked.connect( self.createProject )
-        self.groupButtonsProject.buttonClicked.connect( self.selectProject )
+        #self.groupButtonsProject.buttonClicked.connect( self.selectProject )
         
         # Deactive widgets before selecting project 
         self.btnDesign.setEnabled(False)
         self.btnParagon.setEnabled(False)
         self.btnAdmin.setEnabled(False)
         self.btnProjectPrevious.setEnabled(False)
-        
-        # if len( PipeCad.Projects ) == 1:
-        #     self.btnProjectNext.setEnabled(False)
-        # else:
-        #     self.btnProjectNext.setEnabled(True)
         
         self.selectProject()
             
@@ -270,13 +265,13 @@ class LoginDialog(QDialog):
         # if
     # selectUser
         
-    def accept( self ):
+    def accept( self, theButton ):
 
         if self.selectedProject is None:
             return
         # if
 
-        aSession = self.selectedProject.CreateSession( self.comboBoxMdb.currentText, self.comboBoxUser.currentText, self.lineEditPassword.text, str(theButton.objectName) )
+        aSession = self.selectedProject.CreateSession( self.comboBoxMdb.currentText, self.comboBoxUser.currentText, self.lineEditPassword.text, str(theButton.objectName)  )
         if aSession is None:
             return
         # if
