@@ -511,11 +511,11 @@ class ImportProjectDialog(QDialog):
                 list_user_teams.append( user_team_ref )
             
             # Delete Teams of current user to avoid duplicating of Teams
-            PipeCad.SetCurrentItem( '/' + user_name )
-            current_user_teams = PipeCad.CurrentItem().Member[0].Member
-            for current_user_team in current_user_teams:
-                PipeCad.SetCurrentItem( current_user_team )
-                PipeCad.DeleteItem("LTEA")
+            #PipeCad.SetCurrentItem( '/' + user_name )
+            #current_user_teams = PipeCad.CurrentItem().Member[0].Member
+            #for current_user_team in current_user_teams:
+            #    PipeCad.SetCurrentItem( current_user_team )
+            #    PipeCad.DeleteItem("LTEA")
             
             try: 
                 PipeCad.SetCurrentItem( '/' + user_name )
@@ -611,8 +611,8 @@ class ImportProjectDialog(QDialog):
                 PipeCad.CreateItem("DBL")
                 mdb_dbl = PipeCad.CurrentItem()
 
-                #mdb_db = PipeCad.SetCurrentItem( "/*" + mdb_dbs[i] )
-                mdb_db = PipeCad.SetCurrentItem( mdb_dbs[i] )
+                mdb_db = PipeCad.SetCurrentItem( "/*" + mdb_dbs[i] )
+                #mdb_db = PipeCad.SetCurrentItem( mdb_dbs[i] )
 
                 mdb_db_ref = PipeCad.CurrentItem()
                                 

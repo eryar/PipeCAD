@@ -58,7 +58,7 @@ class LoginDialog(QDialog):
         self.btnProjectPrevious.setMinimumSize( 32 , 32 )
         self.btnProjectPrevious.setMaximumSize( 32 , 32 )
         #<a href="https://www.flaticon.com/free-icons/previous" title="previous icons">Previous icons created by Pixel perfect - Flaticon</a>
-        self.btnProjectPrevious.setIcon( QIcon('Lib/PipeCad/icons/common/32x32_arrow_left.png') )
+        self.btnProjectPrevious.setIcon( QIcon(aCurrentPath + '/icons/common/32x32_arrow_left.png') )
         self.btnProjectPrevious.setIconSize( QSize( 32 , 32 ) )
         self.btnProjectPrevious.setStyleSheet("border:none;")
         self.hBoxLayoutProjects.addWidget(self.btnProjectPrevious)
@@ -81,7 +81,7 @@ class LoginDialog(QDialog):
         self.btnProjectNext.setMinimumSize( 32 , 32 )
         self.btnProjectNext.setMaximumSize( 32 , 32 )
         #<a href="https://www.flaticon.com/free-icons/previous" title="previous icons">Previous icons created by Pixel perfect - Flaticon</a>
-        self.btnProjectNext.setIcon( QIcon('Lib/PipeCad/icons/common/32x32_arrow_right.png') )
+        self.btnProjectNext.setIcon( QIcon(aCurrentPath + '/icons/common/32x32_arrow_right.png') )
         self.btnProjectNext.setIconSize( QSize( 32 , 32 ) )
         self.btnProjectNext.setStyleSheet("border:none;")
         self.hBoxLayoutProjects.addWidget(self.btnProjectNext)
