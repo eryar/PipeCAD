@@ -28,6 +28,8 @@ class StepDialog(QDialog):
     def __init__(self, theParent = None):
         QDialog.__init__(self, theParent)
 
+        self.laddItem = None
+
         self.setupUi()
     # __init__
 
@@ -41,6 +43,7 @@ class StepDialog(QDialog):
         self.comboName = QComboBox()
         self.comboName.addItem(QT_TRANSLATE_NOOP("Ladder", "Create"))
         self.comboName.addItem(QT_TRANSLATE_NOOP("Ladder", "Modify"))
+        self.comboName.activated.connect(self.activateName)
 
         self.textName = QLineEdit("STEP-LADD-001")
 
@@ -53,13 +56,6 @@ class StepDialog(QDialog):
 
         self.formLayout.setWidget(1, QFormLayout.LabelRole, self.labelHeight)
         self.formLayout.setWidget(1, QFormLayout.FieldRole, self.textHeight)
-
-        # Width
-        self.labelWidth = QLabel(QT_TRANSLATE_NOOP("Ladder", "Width"))
-        self.textWidth = QLineEdit("500")
-
-        self.formLayout.setWidget(2, QFormLayout.LabelRole, self.labelWidth)
-        self.formLayout.setWidget(2, QFormLayout.FieldRole, self.textWidth)
 
         self.verticalLayout.addLayout(self.formLayout)
 
@@ -174,11 +170,68 @@ class StepDialog(QDialog):
         self.verticalLayout.addWidget(self.buttonBox)
     # setupUi
 
+    def activateName(self):
+        self.laddItem = None
+        aIndex = self.comboName.currentIndex
+        if aIndex == 0:
+            # Create
+            self.textName.setText("")
+            self.textHeight.setText("1800")
+        else:
+            # Modify
+            aTreeItem = PipeCad.CurrentItem()
+            if aTreeItem.Type != "LADD":
+                QMessageBox.warning(self, "", QT_TRANSLATE_NOOP("Ladder", "Please select LADD to modify!"))
+                return
+            # if
+
+            aCategory = aTreeItem.Category
+
+            self.laddItem = aTreeItem
+            self.textName.setText(aTreeItem.Name)
+            self.textHeight.setText(str(aTreeItem.Height))
+
+            if aCategory == 6:
+                self.tabWidget.currentIndex = 0
+
+                aPos = aTreeItem.Position
+                aOri = aTreeItem.Orientation
+
+                self.textX1.setText(str(aPos.X))
+                self.textY1.setText(str(aPos.Y))
+                self.textZ1.setText(str(aPos.Z))
+
+                self.textDir1.setText(aOri.YDirection.string())
+
+                self.comboType.setCurrentIndex(aTreeItem.Anchor - 1)
+                self.textClearance.setText(str(aTreeItem.Clearance))
+            elif aCategory == 7:
+                self.tabWidget.currentIndex = 1
+
+                aPos = aTreeItem.Position
+                aOri = aTreeItem.Orientation
+
+                self.textX2.setText(str(aPos.X))
+                self.textY2.setText(str(aPos.Y))
+                self.textZ2.setText(str(aPos.Z))
+
+                self.textDir2.setText(aOri.YDirection.string())
+            # if
+
+        # if
+    # activateName
+
     def buildStep1(self):
         aHeight = float(self.textHeight.text)
-        aWidth = float(self.textWidth.text)
         aClearance = float(self.textClearance.text)
         aAnchorType = self.comboType.currentData
+
+        aPx = float(self.textX1.text)
+        aPy = float(self.textY1.text)
+        aPz = float(self.textZ1.text)
+
+        aDy = Direction(self.textDir1.text)
+        aDz = Direction(0, 0, 1)
 
         PipeCad.StartTransaction("Create Step Ladder")
 
@@ -186,16 +239,51 @@ class StepDialog(QDialog):
         aLaddItem = PipeCad.CurrentItem()
         aLaddItem.Category = 6
         aLaddItem.Height = aHeight
-        aLaddItem.Width = aWidth
+        aLaddItem.Width = 500.0
         aLaddItem.Clearance = aClearance
         aLaddItem.Anchor = aAnchorType
+        aLaddItem.Position = Position(aPx, aPy, aPz)
+        aLaddItem.Orientation = Orientation(aDy, aDz)
 
         PipeCad.CommitTransaction()
     # buildStep1
 
+    def modifyStep1(self):
+        aHeight = float(self.textHeight.text)
+        aClearance = float(self.textClearance.text)
+        aAnchorType = self.comboType.currentData
+
+        aPx = float(self.textX1.text)
+        aPy = float(self.textY1.text)
+        aPz = float(self.textZ1.text)
+
+        aDy = Direction(self.textDir1.text)
+        aDz = Direction(0, 0, 1)
+
+        PipeCad.StartTransaction("Modify Step Ladder")
+
+        aLaddItem = self.laddItem
+        aLaddItem.Name = self.textName.text
+        aLaddItem.Category = 6
+        aLaddItem.Height = aHeight
+        aLaddItem.Width = 500.0
+        aLaddItem.Clearance = aClearance
+        aLaddItem.Anchor = aAnchorType
+        aLaddItem.Position = Position(aPx, aPy, aPz)
+        aLaddItem.Orientation = Orientation(aDy, aDz)
+
+        PipeCad.CommitTransaction()
+    # modifyStep1
+
     def buildStep2(self):
         aHeight = float(self.textHeight.text)
-        aWidth = float(self.textWidth.text)
+
+        aPx = float(self.textX2.text)
+        aPy = float(self.textY2.text)
+        aPz = float(self.textZ2.text)
+
+        aDy = Direction(self.textDir2.text)
+        aDz = Direction(0, 0, 1)
 
         PipeCad.StartTransaction("Create Step Ladder")
 
@@ -203,19 +291,52 @@ class StepDialog(QDialog):
         aLaddItem = PipeCad.CurrentItem()
         aLaddItem.Category = 7
         aLaddItem.Height = aHeight
-        aLaddItem.Width = aWidth
+        aLaddItem.Width = 500.0
+        aLaddItem.Position = Position(aPx, aPy, aPz)
+        aLaddItem.Orientation = Orientation(aDy, aDz)
 
         PipeCad.CommitTransaction()
     # buildStep2
+
+    def modifyStep2(self):
+        aHeight = float(self.textHeight.text)
+
+        aPx = float(self.textX2.text)
+        aPy = float(self.textY2.text)
+        aPz = float(self.textZ2.text)
+
+        aDy = Direction(self.textDir2.text)
+        aDz = Direction(0, 0, 1)
+
+        PipeCad.StartTransaction("Modify Step Ladder")
+
+        aLaddItem = self.laddItem
+        aLaddItem.Name = self.textName.text
+        aLaddItem.Category = 7
+        aLaddItem.Height = aHeight
+        aLaddItem.Width = 500.0
+        aLaddItem.Position = Position(aPx, aPy, aPz)
+        aLaddItem.Orientation = Orientation(aDy, aDz)
+
+        PipeCad.CommitTransaction()
+    # modifyStep2
 
     def accept(self):
         aIndex = self.tabWidget.currentIndex
         if aIndex == 0:
             # Step ladder
-            self.buildStep1()
+            if self.laddItem is None:
+                self.buildStep1()
+            else:
+                self.modifyStep1()
+            # if
         else:
-            # Step with angle
-            self.buildStep2()
+            # Step with handrail
+            if self.laddItem is None:
+                self.buildStep2()
+            else:
+                self.modifyStep2()
+            # if
         # if
 
         QDialog.accept(self)
@@ -231,11 +352,204 @@ def CreateStep():
 # CreateStep
 
 def CreateOnEquipment():
-    print("ladder on equipment")
+    QMessageBox.warning(PipeCad, "", "Not implement yet!")
 # CreateOnEquipment
 
+
+class PlatformLadderDialog(QDialog):
+    def __init__(self, theParent = None):
+        QDialog.__init__(self, theParent)
+
+        self.laddItem = None
+
+        self.setupUi()
+    # __init__
+
+    def setupUi(self):
+        self.setWindowTitle(QT_TRANSLATE_NOOP("Ladder", "Ladder On Platform"))
+
+        self.verticalLayout = QVBoxLayout(self)
+        self.horizontalLayout = QHBoxLayout()
+        self.formLayout = QFormLayout()
+
+        # Name
+        self.comboName = QComboBox()
+        self.comboName.addItem(QT_TRANSLATE_NOOP("Ladder", "Create"))
+        self.comboName.addItem(QT_TRANSLATE_NOOP("Ladder", "Modify"))
+        self.comboName.activated.connect(self.activateName)
+
+        self.textName = QLineEdit("PLAT-LADD-001")
+
+        self.formLayout.setWidget(0, QFormLayout.LabelRole, self.comboName)
+        self.formLayout.setWidget(0, QFormLayout.FieldRole, self.textName)
+
+        # Height
+        self.labelHeight = QLabel(QT_TRANSLATE_NOOP("Ladder", "Height"))
+        self.textHeight = QLineEdit("5800")
+
+        self.formLayout.setWidget(1, QFormLayout.LabelRole, self.labelHeight)
+        self.formLayout.setWidget(1, QFormLayout.FieldRole, self.textHeight)
+
+        # Length
+        self.labelLength = QLabel(QT_TRANSLATE_NOOP("Ladder", "Length"))
+        self.textLength = QLineEdit("1200")
+
+        self.formLayout.setWidget(2, QFormLayout.LabelRole, self.labelLength)
+        self.formLayout.setWidget(2, QFormLayout.FieldRole, self.textLength)
+
+        # East
+        self.labelPx = QLabel(QT_TRANSLATE_NOOP("Ladder", "East"))
+        self.textPx = QLineEdit("0")
+
+        self.formLayout.setWidget(3, QFormLayout.LabelRole, self.labelPx)
+        self.formLayout.setWidget(3, QFormLayout.FieldRole, self.textPx)
+
+        # North
+        self.labelPy = QLabel(QT_TRANSLATE_NOOP("Ladder", "North"))
+        self.textPy = QLineEdit("0")
+
+        self.formLayout.setWidget(4, QFormLayout.LabelRole, self.labelPy)
+        self.formLayout.setWidget(4, QFormLayout.FieldRole, self.textPy)
+
+        # Up
+        self.labelPz = QLabel(QT_TRANSLATE_NOOP("Ladder", "Up"))
+        self.textPz = QLineEdit("0")
+
+        self.formLayout.setWidget(5, QFormLayout.LabelRole, self.labelPz)
+        self.formLayout.setWidget(5, QFormLayout.FieldRole, self.textPz)
+
+        # Directon
+        self.labelDir = QLabel(QT_TRANSLATE_NOOP("Ladder", "Direction"))
+        self.textDir = QLineEdit("N")
+
+        self.formLayout.setWidget(6, QFormLayout.LabelRole, self.labelDir)
+        self.formLayout.setWidget(6, QFormLayout.FieldRole, self.textDir)
+
+        self.horizontalLayout.addLayout(self.formLayout)
+
+        # Diagram.
+        self.labelDiagram = QLabel()
+        self.labelDiagram.setMinimumWidth(360)
+        self.labelDiagram.setPixmap(QPixmap(":/PipeCad/Resources/platform_ladder.png"))
+
+        self.horizontalLayout.addWidget(self.labelDiagram)
+
+        self.verticalLayout.addLayout(self.horizontalLayout)
+
+        # Button Box
+        self.buttonBox = QDialogButtonBox(QDialogButtonBox.Cancel|QDialogButtonBox.Ok, self)
+
+        self.buttonBox.accepted.connect(self.accept)
+        self.buttonBox.rejected.connect(self.reject)
+
+        self.verticalLayout.addWidget(self.buttonBox)
+
+    # setupUi
+
+    def activateName(self):
+        aIndex = self.comboName.currentIndex
+        if aIndex == 1:
+            aTreeItem = PipeCad.CurrentItem()
+            if aTreeItem.Type != "LADD":
+                QMessageBox.warning(self, "", QT_TRANSLATE_NOOP("Ladder", "Please select LADD to modify!"))
+            else:
+                aPos = aTreeItem.Position
+                aOri = aTreeItem.Orientation
+
+                self.laddItem = aTreeItem
+                self.textName.setText(aTreeItem.Name)
+                self.textHeight.setText(str(aTreeItem.Height))
+                self.textLength.setText(str(aTreeItem.Length))
+                self.textPx.setText(str(aPos.X))
+                self.textPy.setText(str(aPos.Y))
+                self.textPz.setText(str(aPos.Z))
+                self.textDir.setText(aOri.YDirection.string())
+            # if
+        else:
+            self.laddItem = None
+            self.textName.setText("")
+            self.textHeight.setText("5800")
+            self.textLength.setText("1200")
+        # if
+    # activateName
+
+    def createLadder(self):
+        aHeight = float(self.textHeight.text)
+        aLength = float(self.textLength.text)
+        aCategory = 4
+
+        if aHeight > 7200 and aHeight <= 10000:
+            aCategory = 5
+        # if
+
+        aPx = float(self.textPx.text)
+        aPy = float(self.textPy.text)
+        aPz = float(self.textPz.text)
+
+        aDy = Direction(self.textDir.text)
+        aDz = Direction(0, 0, 1)
+
+        PipeCad.StartTransaction("Create Platform Ladder")
+
+        PipeCad.CreateItem("LADD", self.textName.text)
+        aLaddItem = PipeCad.CurrentItem()
+        aLaddItem.Category = aCategory
+        aLaddItem.Height = aHeight
+        aLaddItem.Length = aLength
+        aLaddItem.Width = 700.0
+        aLaddItem.Position = Position(aPx, aPy, aPz)
+        aLaddItem.Orientation = Orientation(aDy, aDz)
+
+        PipeCad.CommitTransaction()
+    # createLadder
+
+    def modifyLadder(self):
+        aHeight = float(self.textHeight.text)
+        aLength = float(self.textLength.text)
+        aCategory = 4
+
+        if aHeight > 7200 and aHeight <= 10000:
+            aCategory = 5
+        # if
+
+        aPx = float(self.textPx.text)
+        aPy = float(self.textPy.text)
+        aPz = float(self.textPz.text)
+
+        aDy = Direction(self.textDir.text)
+        aDz = Direction(0, 0, 1)
+
+        PipeCad.StartTransaction("Modify Platform Ladder")
+
+        aLaddItem = self.laddItem
+        aLaddItem.Name = self.textName.text
+        aLaddItem.Category = aCategory
+        aLaddItem.Height = aHeight
+        aLaddItem.Length = aLength
+        aLaddItem.Width = 700.0
+        aLaddItem.Position = Position(aPx, aPy, aPz)
+        aLaddItem.Orientation = Orientation(aDy, aDz)
+
+        PipeCad.CommitTransaction()
+    # modifyLadder
+
+    def accept(self):
+        if self.laddItem is None:
+            self.createLadder()
+        else:
+            self.modifyLadder()
+        # if
+
+        QDialog.accept(self)
+    # accept
+
+# PlatformLadderDialog
+
+# Singleton Instance.
+aPlatformLadderDlg = PlatformLadderDialog(PipeCad)
+
 def CreateOnPlatform():
-    print("ladder on platform")
+    aPlatformLadderDlg.show()
 # CreateOnPlatform
 
 
