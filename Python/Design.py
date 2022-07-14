@@ -503,3 +503,55 @@ def AddConnected():
     # if
 
 # AddConnected
+
+
+class IncrementsDialog(QDialog):
+    def __init__(self, theParent = None):
+        QDialog.__init__(self, theParent)
+
+        self.setupUi()
+    # __init__
+
+    def setupUi(self):
+        self.setWindowTitle(QT_TRANSLATE_NOOP("Design", "Set Increments"))
+
+        self.verticalLayout = QVBoxLayout(self)
+        self.formLayout = QFormLayout()
+
+        # Linear Increment
+        self.labelLinear = QLabel(QT_TRANSLATE_NOOP("Design", "Linear Increment"))
+        self.textLinear = QLineEdit("50.0")
+
+        self.formLayout.setWidget(0, QFormLayout.LabelRole, self.labelLinear)
+        self.formLayout.setWidget(0, QFormLayout.FieldRole, self.textLinear)
+
+        # Angular Increment
+        self.labelAngular = QLabel(QT_TRANSLATE_NOOP("Design", "Angular Increment"))
+        self.textAngular = QLineEdit("5")
+
+        self.formLayout.setWidget(1, QFormLayout.LabelRole, self.labelAngular)
+        self.formLayout.setWidget(1, QFormLayout.FieldRole, self.textAngular)
+
+        self.verticalLayout.addLayout(self.formLayout)
+
+        # Action Box.
+        self.buttonBox = QDialogButtonBox(QDialogButtonBox.Cancel|QDialogButtonBox.Ok, self)
+
+        self.buttonBox.accepted.connect(self.accept)
+        self.buttonBox.rejected.connect(self.reject)
+
+        self.verticalLayout.addWidget(self.buttonBox)
+
+    # setupUi
+
+# Increments
+
+def SetIncrements():
+    aIncrementsDlg = IncrementsDialog(PipeCad)
+    if aIncrementsDlg.exec() == QDialog.Accepted:
+        aLinearIncrement = float(aIncrementsDlg.textLinear.text)
+        aAngularIncrement = float(aIncrementsDlg.textAngular.text)
+        
+        PipeCad.SetIncrements(aLinearIncrement, aAngularIncrement)
+    # if
+# SetIncrements
