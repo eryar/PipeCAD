@@ -519,15 +519,17 @@ class IncrementsDialog(QDialog):
         self.formLayout = QFormLayout()
 
         # Linear Increment
+        aIncrement = PipeCad.GetLinearIncrement()
         self.labelLinear = QLabel(QT_TRANSLATE_NOOP("Design", "Linear Increment"))
-        self.textLinear = QLineEdit("50.0")
+        self.textLinear = QLineEdit(str(aIncrement))
 
         self.formLayout.setWidget(0, QFormLayout.LabelRole, self.labelLinear)
         self.formLayout.setWidget(0, QFormLayout.FieldRole, self.textLinear)
 
         # Angular Increment
+        aIncrement = PipeCad.GetAngularIncrement()
         self.labelAngular = QLabel(QT_TRANSLATE_NOOP("Design", "Angular Increment"))
-        self.textAngular = QLineEdit("5")
+        self.textAngular = QLineEdit(str(aIncrement))
 
         self.formLayout.setWidget(1, QFormLayout.LabelRole, self.labelAngular)
         self.formLayout.setWidget(1, QFormLayout.FieldRole, self.textAngular)
