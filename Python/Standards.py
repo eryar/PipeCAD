@@ -312,17 +312,17 @@ class StandardDialog(QDialog):
     # exportRecord
 
     def importRecord(self):
-        aDefaultDir = os.getenv(PipeCad.CurrentProject.Code + "BOM")
-        aFileName = QFileDialog.getOpenFileName(self, QT_TRANSLATE_NOOP("PipeCAD", "Import Data"), aDefaultDir, "Excel File (*.xlsx);;CSV File (*.csv)")
-        if len(aFileName) < 1:
-            return
-        # if
-
         aTreeItem = self.treeWidget.currentItem()
         aType = aTreeItem.type()
 
         if aType != 1:
             QMessageBox.warning(self, "", QT_TRANSLATE_NOOP("PipeCAD", "Please select category to import data!"))
+            return
+        # if
+
+        aDefaultDir = os.getenv(PipeCad.CurrentProject.Code + "BOM")
+        aFileName = QFileDialog.getOpenFileName(self, QT_TRANSLATE_NOOP("PipeCAD", "Import Data"), aDefaultDir, "Excel File (*.xlsx);;CSV File (*.csv)")
+        if len(aFileName) < 1:
             return
         # if
 
@@ -332,7 +332,7 @@ class StandardDialog(QDialog):
         
         if aFileName.endswith(".xlsx"):
             aDataFrame = pd.read_excel(aFileName)
-        elif aFileName.endswith(".csv")
+        elif aFileName.endswith(".csv"):
             aDataFrame = pd.read_csv(aFileName)
         # if
 
