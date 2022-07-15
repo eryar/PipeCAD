@@ -22,6 +22,8 @@ from PythonQt.QtSql import *
 
 from pipecad import *
 
+import pandas as pd 
+
 import os
 
 class CategoryDialog(QDialog):
@@ -198,8 +200,8 @@ class StandardDialog(QDialog):
 
         # Action buttons.
         self.horizontalLayout = QHBoxLayout()
-        self.buttonExport = QPushButton("Export")
-        self.buttonImport = QPushButton("Import")
+        self.buttonExport = QPushButton(QT_TRANSLATE_NOOP("PipeCAD", "Export"))
+        self.buttonImport = QPushButton(QT_TRANSLATE_NOOP("PipeCAD", "Import"))
 
         self.buttonExport.clicked.connect(self.exportRecord)
         self.buttonImport.clicked.connect(self.importRecord)
@@ -264,7 +266,43 @@ class StandardDialog(QDialog):
     # deleteRecord
 
     def exportRecord(self):
-        QMessageBox.information(self, "", "export record")
+        aTreeItem = self.treeWidget.currentItem()
+        aDefaultDir = os.getenv(PipeCad.CurrentProject.Code + "BOM") + "/" + aTreeItem.text(0)
+        aFileName = QFileDialog.getSaveFileName(self, QT_TRANSLATE_NOOP("PipeCAD", "Export Data"), aDefaultDir, "Excel File (*.xlsx);;CSV File (*.csv)")
+        if len(aFileName) < 1:
+            return
+        # if
+
+        aTableData = dict()
+
+        aRowCount = self.tableModel.rowCount()
+        aColumnCount = self.tableModel.columnCount()
+
+        for c in range(aColumnCount):
+            aHeaderLabel = str(self.tableModel.headerData(c, Qt.Horizontal))
+            aTableData[aHeaderLabel] = list()
+        # for
+
+        for r in range(aRowCount):
+            aRecord = self.tableModel.record(r)
+
+            aKeys = aTableData.keys()
+            for aKey in aKeys:
+                aValue = aRecord.value(aKey)
+                aTableData[aKey].append(aValue)
+            # for
+        # for
+
+        aDataFrame = pd.DataFrame(aTableData)
+
+        if aFileName.endswith(".xlsx"):
+            aDataFrame.to_excel(aFileName, sheet_name="Component Data", index=False)
+        elif aFileName.endswith(".csv"):
+            aDataFrame.to_csv(aFileName, index=False)
+        # if
+
+        QMessageBox.information(self, "", QT_TRANSLATE_NOOP("PipeCAD", "Export Data Finished!"))
+
     # exportRecord
 
     def importRecord(self):
