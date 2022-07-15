@@ -267,7 +267,8 @@ class StandardDialog(QDialog):
 
     def exportRecord(self):
         aTreeItem = self.treeWidget.currentItem()
-        aDefaultDir = os.getenv(PipeCad.CurrentProject.Code + "BOM") + "/" + aTreeItem.text(0)
+        aItemName = aTreeItem.text(0)
+        aDefaultDir = os.getenv(PipeCad.CurrentProject.Code + "BOM") + "/" + aItemName
         aFileName = QFileDialog.getSaveFileName(self, QT_TRANSLATE_NOOP("PipeCAD", "Export Data"), aDefaultDir, "Excel File (*.xlsx);;CSV File (*.csv)")
         if len(aFileName) < 1:
             return
@@ -280,6 +281,11 @@ class StandardDialog(QDialog):
 
         for c in range(aColumnCount):
             aHeaderLabel = str(self.tableModel.headerData(c, Qt.Horizontal))
+            aLabel = aHeaderLabel.lower()
+            if aLabel in ["id", "pid"]:
+                continue
+            # if
+
             aTableData[aHeaderLabel] = list()
         # for
 
@@ -296,7 +302,7 @@ class StandardDialog(QDialog):
         aDataFrame = pd.DataFrame(aTableData)
 
         if aFileName.endswith(".xlsx"):
-            aDataFrame.to_excel(aFileName, sheet_name="Component Data", index=False)
+            aDataFrame.to_excel(aFileName, sheet_name=aItemName, index=False)
         elif aFileName.endswith(".csv"):
             aDataFrame.to_csv(aFileName, index=False)
         # if
@@ -306,7 +312,55 @@ class StandardDialog(QDialog):
     # exportRecord
 
     def importRecord(self):
-        QMessageBox.information(self, "", "import record")
+        aDefaultDir = os.getenv(PipeCad.CurrentProject.Code + "BOM")
+        aFileName = QFileDialog.getOpenFileName(self, QT_TRANSLATE_NOOP("PipeCAD", "Import Data"), aDefaultDir, "Excel File (*.xlsx);;CSV File (*.csv)")
+        if len(aFileName) < 1:
+            return
+        # if
+
+        aTreeItem = self.treeWidget.currentItem()
+        aType = aTreeItem.type()
+
+        if aType != 1:
+            QMessageBox.warning(self, "", QT_TRANSLATE_NOOP("PipeCAD", "Please select category to import data!"))
+            return
+        # if
+
+        aPid = aTreeItem.data(0, Qt.UserRole)
+
+        aDataFrame = pd.DataFrame()
+        
+        if aFileName.endswith(".xlsx"):
+            aDataFrame = pd.read_excel(aFileName)
+        elif aFileName.endswith(".csv")
+            aDataFrame = pd.read_csv(aFileName)
+        # if
+
+        aColumns = aDataFrame.columns.values.tolist()
+
+        self.database.transaction()
+
+        for aIndex, aRow in aDataFrame.iterrows():
+            aRowCount = self.tableView.model().rowCount()
+            self.tableModel.insertRow(aRowCount)
+
+            aRecord = self.tableModel.record()
+
+            for aColumn in aColumns:
+                aRecord.setValue(aColumn, str(aRow[aColumn]))
+            # for
+
+            aRecord.setValue("pid", aPid)
+
+            self.tableModel.setRecord(aRowCount, aRecord)
+            self.tableModel.submit()
+        # for
+
+        self.database.commit()
+
+        self.currentItemChanged(aTreeItem)
+
+        QMessageBox.information(self, "", QT_TRANSLATE_NOOP("PipeCAD", "Import Data Finished!"))
     # importRecord
 
     def currentItemChanged(self, theCurrentItem):
