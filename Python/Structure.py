@@ -460,6 +460,37 @@ class SectionSpecDialog(QDialog):
 
     # profileChanged
 
+    def setSpcoItem(self, theSpcoItem):
+        if theSpcoItem == None:
+            return
+        # if
+
+        aSeleItem = theSpcoItem.Owner
+        aSpecItem = aSeleItem.Owner
+
+        for i in range(self.comboSpec.count):
+            if self.comboSpec.itemData(i) == aSpecItem:
+                self.comboSpec.setCurrentIndex(i)
+                break
+            # if
+        # for
+
+        for i in range(self.comboType.count):
+            if self.comboType.itemData(i) == aSeleItem:
+                self.comboType.setCurrentIndex(i)
+                break
+            # if
+        # for
+
+        for r in range(self.tableWidget.rowCount):
+            aTableItem = self.tableWidget.item(r, 0)
+            if aTableItem.data(Qt.UserRole) == theSpcoItem:
+                self.tableWidget.setCurrentItem(aTableItem)
+                break
+            # if
+        # for
+    # setSpcoItem
+
 # SectionSpecDialog
 
 class SectionDialog(QDialog):
@@ -467,6 +498,7 @@ class SectionDialog(QDialog):
         QDialog.__init__(self, theParent)
 
         self.spcoItem = None
+        self.sctnItem = None
 
         self.setupUi()
     # __init__
@@ -475,6 +507,21 @@ class SectionDialog(QDialog):
         self.setWindowTitle(QT_TRANSLATE_NOOP("Structure", "Create Section"))
 
         self.verticalLayout = QVBoxLayout(self)
+
+        # Create
+        self.formLayout  = QFormLayout()
+
+        self.comboName = QComboBox()
+        self.comboName.addItem(QT_TRANSLATE_NOOP("Structure", "Create"))
+        self.comboName.addItem(QT_TRANSLATE_NOOP("Structure", "Modify"))
+        self.comboName.activated.connect(self.activateName)
+
+        self.textName = QLineEdit()
+
+        self.formLayout.setWidget(0, QFormLayout.LabelRole, self.comboName)
+        self.formLayout.setWidget(0, QFormLayout.FieldRole, self.textName)
+
+        self.verticalLayout.addLayout(self.formLayout)
 
         self.groupBox = QGroupBox(QT_TRANSLATE_NOOP("Structure", "Specification"))
 
@@ -603,8 +650,56 @@ class SectionDialog(QDialog):
 
     # setupUi
 
+    def activateName(self):
+        aIndex = self.comboName.currentIndex
+        if aIndex == 0:
+            self.setWindowTitle(QT_TRANSLATE_NOOP("Structure", "Create Section"))
+            self.tabWidget.addTab(self.tabPointVector, QT_TRANSLATE_NOOP("Structure", "Point and Vector"))
+            self.sctnItem = None
+
+            self.textX1.setText("0")
+            self.textY1.setText("0")
+            self.textZ1.setText("0")
+
+            self.textX2.setText("0")
+            self.textY2.setText("0")
+            self.textZ2.setText("0")
+        else:
+            self.setWindowTitle(QT_TRANSLATE_NOOP("Structure", "Modify Section"))
+            self.tabWidget.removeTab(1)
+
+            aTreeItem = PipeCad.CurrentItem()
+            if aTreeItem.Type == "SCTN":
+                self.sctnItem = aTreeItem
+                self.spcoItem = aTreeItem.Spref
+
+                aPs = aTreeItem.StartPosition
+                aPe = aTreeItem.EndPosition
+
+                self.textName.setText(aTreeItem.Name)
+
+                if aTreeItem.Spref != None and self.spcoItem.Catref != None:
+                    self.textSpec.setText(aTreeItem.Spref.Catref.Name)
+                # if
+
+                self.textX1.setText(str(aPs.X))
+                self.textY1.setText(str(aPs.Y))
+                self.textZ1.setText(str(aPs.Z))
+
+                self.textX2.setText(str(aPe.X))
+                self.textY2.setText(str(aPe.Y))
+                self.textZ2.setText(str(aPe.Z))
+            else:
+                self.sctnItem = None
+
+                QMessageBox.warning(self, "", QT_TRANSLATE_NOOP("Structure", "Please select SCTN to modify!"))
+            # if
+        # if
+    # activateName
+
     def selectSpec(self):
         aSpecDlg = SectionSpecDialog(self)
+        aSpecDlg.setSpcoItem(self.spcoItem)
         if aSpecDlg.exec() != QDialog.Accepted:
             return
         # if
@@ -633,7 +728,29 @@ class SectionDialog(QDialog):
         self.textJline.setText(aSpecDlg.comboJline.currentText)
     # selectSpec
 
-    def accept(self):
+    def modifySection(self):
+        aX = float(self.textX1.text)
+        aY = float(self.textY1.text)
+        aZ = float(self.textZ1.text)
+
+        aPs = Position(aX, aY, aZ)
+
+        aX = float(self.textX2.text)
+        aY = float(self.textY2.text)
+        aZ = float(self.textZ2.text)
+
+        aPe = Position(aX, aY, aZ)
+
+        PipeCad.StartTransaction("Modify Section")
+        aSctnItem = self.sctnItem
+        aSctnItem.StartPosition = aPs
+        aSctnItem.EndPosition = aPe
+        aSctnItem.Spref = self.spcoItem
+
+        PipeCad.CommitTransaction()
+    # modifySection
+
+    def createSection(self):
         aIndex = self.tabWidget.currentIndex
         if aIndex == 0:
             # 2 Points
@@ -676,6 +793,15 @@ class SectionDialog(QDialog):
             aSctnItem.Spref = self.spcoItem
 
             PipeCad.CommitTransaction()
+        # if
+    # createSection
+
+    def accept(self):
+
+        if self.sctnItem == None:
+            self.createSection()
+        else:
+            self.modifySection()
         # if
 
         QDialog.accept(self)
