@@ -85,17 +85,13 @@ class LoginDialog(QDialog):
         self.btnProjectNext.setIconSize( QSize( 32 , 32 ) )
         self.btnProjectNext.setStyleSheet("border:none;")
         self.hBoxLayoutProjects.addWidget(self.btnProjectNext)
-                
-        aFont = QFont("Times", 12)
 
         self.buttonCreate = QPushButton(QT_TRANSLATE_NOOP("Login", "Create New Project"))        
         self.labelUsername = QLabel(QT_TRANSLATE_NOOP("Login", "Username"))
-        self.labelUsername.setFont(aFont)
         self.comboBoxUser = QComboBox()
         self.comboBoxUser.setEditable(True)
         
         self.labelPassword = QLabel(QT_TRANSLATE_NOOP("Login", "Password"))
-        self.labelPassword.setFont(aFont)
         self.lineEditPassword = QLineEdit( self )
         self.lineEditPassword.setEchoMode(QLineEdit.Password)
         
@@ -104,7 +100,6 @@ class LoginDialog(QDialog):
         self.buttonChange = QPushButton(QT_TRANSLATE_NOOP("Login", "Change"))
         
         self.labelMdb = QLabel(QT_TRANSLATE_NOOP("Login", "MDB"))
-        self.labelMdb.setFont(aFont)
         self.comboBoxMdb = QComboBox()
         self.comboBoxMdb.setEditable(True)
         
