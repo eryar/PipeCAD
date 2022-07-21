@@ -557,3 +557,136 @@ def SetIncrements():
         PipeCad.SetIncrements(aLinearIncrement, aAngularIncrement)
     # if
 # SetIncrements
+
+class IncludeDialog(QDialog):
+    def __init__(self, theParent = None):
+        QDialog.__init__(self, theParent)
+
+        self.targetItem = None
+
+        self.setupUi()
+    # __init__
+
+    def setupUi(self):
+        self.setWindowTitle(QT_TRANSLATE_NOOP("Design", "Include"))
+
+        self.verticalLayout = QVBoxLayout(self)
+        self.formLayout = QFormLayout()
+
+        self.buttonCE = QPushButton(QT_TRANSLATE_NOOP("Design", "CE"))
+        self.buttonCE.clicked.connect(self.setTargetItem)
+
+        self.labelCE = QLabel("")
+
+        self.formLayout.setWidget(0, QFormLayout.LabelRole, self.buttonCE)
+        self.formLayout.setWidget(0, QFormLayout.FieldRole, self.labelCE)
+
+        self.verticalLayout.addLayout(self.formLayout)
+
+        self.tableWidget = QTableWidget()
+        self.tableWidget.setColumnCount(1)
+        self.tableWidget.setHorizontalHeaderLabels([QT_TRANSLATE_NOOP("Design", "Included Members")])
+        self.tableWidget.setEditTriggers(QAbstractItemView.NoEditTriggers)
+        self.tableWidget.setAlternatingRowColors(True)
+        self.tableWidget.setSelectionBehavior(QAbstractItemView.SelectRows)
+        self.tableWidget.setSelectionMode(QAbstractItemView.SingleSelection)
+        self.tableWidget.horizontalHeader().setStretchLastSection(True)
+        self.tableWidget.verticalHeader().setMinimumSectionSize(18)
+        self.tableWidget.verticalHeader().setDefaultSectionSize(18)
+
+        self.verticalLayout.addWidget(self.tableWidget)
+
+        self.horizontalLayout = QHBoxLayout()
+        self.buttonInclude = QPushButton(QT_TRANSLATE_NOOP("Design", "Include"))
+        self.buttonInclude.clicked.connect(self.includeItem)
+
+        self.comboInclude = QComboBox()
+        self.comboInclude.addItem(QT_TRANSLATE_NOOP("Design", "CE"))
+        self.comboInclude.addItem(QT_TRANSLATE_NOOP("Design", "CE Members"))
+
+        self.comboPosition = QComboBox()
+        self.comboPosition.addItem(QT_TRANSLATE_NOOP("Design", "After Item"))
+        self.comboPosition.addItem(QT_TRANSLATE_NOOP("Design", "Before Item"))
+
+        self.horizontalLayout.addWidget(self.buttonInclude)
+        self.horizontalLayout.addWidget(self.comboInclude)
+        self.horizontalLayout.addWidget(self.comboPosition)
+
+        self.verticalLayout.addLayout(self.horizontalLayout)
+    # setupUi
+
+    def setTargetItem(self):
+        aTreeItem = PipeCad.CurrentItem()
+        aName = aTreeItem.Name
+        if len(aName) < 1:
+            aName = aTreeItem.RefNo
+        # if
+
+        self.labelCE.setText(aName)
+        self.targetItem = aTreeItem
+
+        self.updateTable()
+
+    # setTargetItem
+
+    def updateTable(self):
+        if self.targetItem is None:
+            return
+        # if
+
+        aMemberList = self.targetItem.Member
+        self.tableWidget.setRowCount(len(aMemberList))
+
+        for i in range(len(aMemberList)):
+            aTreeItem = aMemberList[i]
+            aName = aTreeItem.Name
+            if len(aName) < 1:
+                aName = aTreeItem.Type + " " + str(aTreeItem.Sequence + 1)
+            # if
+
+            aTableItem = QTableWidgetItem(aName)
+            aTableItem.setData(Qt.UserRole, aTreeItem)
+
+            self.tableWidget.setItem(i, 0, aTableItem)
+        # for
+    # updateTable
+
+    def includeItem(self):
+        if self.targetItem is None:
+            return
+        # if
+
+        aPi = self.comboPosition.currentIndex
+
+        aRow = self.tableWidget.currentRow()
+        if aRow < 0:
+            aRow = 0
+        else:
+            if aPi == 0:
+                aRow = aRow + 1
+            # if
+        # if
+
+        aTreeItem = PipeCad.CurrentItem()
+
+        PipeCad.SetCurrentItem(self.targetItem)
+
+        PipeCad.IncludeItem(aTreeItem, aRow)
+
+        self.updateTable()
+    # includeItem
+
+# IncludeDialog
+
+
+# Singleton Instance.
+aIncludeDlg = IncludeDialog(PipeCad)
+
+def Include():
+    aIncludeDlg.setTargetItem()
+    aIncludeDlg.show()
+# Include
+
+def Reorder():
+    print("order")
+# Reorder
