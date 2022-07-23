@@ -1518,6 +1518,13 @@ class PostDialog(QDialog):
         self.verticalLayout = QVBoxLayout(self)
         self.formLayout = QFormLayout()
 
+        # Height
+        self.labelHeight = QLabel(QT_TRANSLATE_NOOP("Structure", "Height"))
+        self.textHeight = QLineEdit("1200")
+
+        self.formLayout.setWidget(0, QFormLayout.LabelRole, self.labelHeight)
+        self.formLayout.setWidget(0, QFormLayout.FieldRole, self.textHeight)
+
         # Point
         self.labelPx = QLabel("X")
         self.textPx = QLineEdit("0")
@@ -1528,14 +1535,14 @@ class PostDialog(QDialog):
         self.labelPz = QLabel("Z")
         self.textPz = QLineEdit("0")
 
-        self.formLayout.setWidget(0, QFormLayout.LabelRole, self.labelPx)
-        self.formLayout.setWidget(0, QFormLayout.FieldRole, self.textPx)
+        self.formLayout.setWidget(1, QFormLayout.LabelRole, self.labelPx)
+        self.formLayout.setWidget(1, QFormLayout.FieldRole, self.textPx)
 
-        self.formLayout.setWidget(1, QFormLayout.LabelRole, self.labelPy)
-        self.formLayout.setWidget(1, QFormLayout.FieldRole, self.textPy)
+        self.formLayout.setWidget(2, QFormLayout.LabelRole, self.labelPy)
+        self.formLayout.setWidget(2, QFormLayout.FieldRole, self.textPy)
 
-        self.formLayout.setWidget(2, QFormLayout.LabelRole, self.labelPz)
-        self.formLayout.setWidget(2, QFormLayout.FieldRole, self.textPz)
+        self.formLayout.setWidget(3, QFormLayout.LabelRole, self.labelPz)
+        self.formLayout.setWidget(3, QFormLayout.FieldRole, self.textPz)
 
         self.verticalLayout.addLayout(self.formLayout)
 
@@ -1572,6 +1579,9 @@ class PostDialog(QDialog):
         aPy = float(self.textPy.text)
         aPz = float(self.textPz.text)
 
+        aHeight = float(self.textHeight.text)
+        aHh = aHeight * 0.5
+
         PipeCad.StartTransaction("Create Post")
 
         PipeCad.CreateItem("SUBS")
@@ -1581,16 +1591,16 @@ class PostDialog(QDialog):
         PipeCad.CreateItem("CYLI")
         aTreeItem = PipeCad.CurrentItem()
         aTreeItem.Diameter = 38
-        aTreeItem.Height = 1070
+        aTreeItem.Height = aHeight
         aTreeItem.Color = 122
-        aTreeItem.Position = Position(0, 0, 535, aSubsItem)
+        aTreeItem.Position = Position(0, 0, aHh, aSubsItem)
 
         PipeCad.CreateItem("DISH")
         aTreeItem = PipeCad.CurrentItem()
         aTreeItem.Diameter = 76
         aTreeItem.Height = 38
         aTreeItem.Color = 122
-        aTreeItem.Position = Position(0, 0, 1070, aSubsItem)
+        aTreeItem.Position = Position(0, 0, aHeight, aSubsItem)
         aTreeItem.Orientation = Orientation(90, 0, 0, aSubsItem)
 
         PipeCad.CreateItem("DISH")
@@ -1598,7 +1608,7 @@ class PostDialog(QDialog):
         aTreeItem.Diameter = 76
         aTreeItem.Height = 38
         aTreeItem.Color = 122
-        aTreeItem.Position = Position(0, 0, 1070, aSubsItem)
+        aTreeItem.Position = Position(0, 0, aHeight, aSubsItem)
         aTreeItem.Orientation = Orientation(-90, 0, 0, aSubsItem)
 
         PipeCad.CreateItem("DISH")
@@ -1606,7 +1616,7 @@ class PostDialog(QDialog):
         aTreeItem.Diameter = 76
         aTreeItem.Height = 38
         aTreeItem.Color = 122
-        aTreeItem.Position = Position(0, 0, 535, aSubsItem)
+        aTreeItem.Position = Position(0, 0, aHh, aSubsItem)
         aTreeItem.Orientation = Orientation(90, 0, 0, aSubsItem)
 
         PipeCad.CreateItem("DISH")
@@ -1614,7 +1624,7 @@ class PostDialog(QDialog):
         aTreeItem.Diameter = 76
         aTreeItem.Height = 38
         aTreeItem.Color = 122
-        aTreeItem.Position = Position(0, 0, 535, aSubsItem)
+        aTreeItem.Position = Position(0, 0, aHh, aSubsItem)
         aTreeItem.Orientation = Orientation(-90, 0, 0, aSubsItem)
 
         PipeCad.CreateItem("BOX")
@@ -1678,6 +1688,12 @@ class HandrailDialog(QDialog):
 
         self.formLayout.setWidget(2, QFormLayout.LabelRole, self.labelPosts)
         self.formLayout.setWidget(2, QFormLayout.FieldRole, self.checkPosts)
+
+        self.labelHeight = QLabel(QT_TRANSLATE_NOOP("Structure", "Post Height"))
+        self.textHeight = QLineEdit("1200")
+
+        self.formLayout.setWidget(3, QFormLayout.LabelRole, self.labelHeight)
+        self.formLayout.setWidget(3, QFormLayout.FieldRole, self.textHeight)
 
         self.verticalLayout.addLayout(self.formLayout)
 
@@ -1747,6 +1763,9 @@ class HandrailDialog(QDialog):
         aDz = Direction(0, 0, 1)
         aDn = Direction(aP1, aP2)
 
+        aHeight = float(self.textHeight.text)
+        aHh = aHeight * 0.5
+
         PipeCad.RemoveAid(self.aidNumber)
 
         # Post distance interval: 1000~1500
@@ -1758,7 +1777,7 @@ class HandrailDialog(QDialog):
 
             for i in range(1, aPostSize + 1):
                 aPi = aP1.Offset(aDn, aInterval * i)
-                aPj = aPi.Offset(aDz, -1070)
+                aPj = aPi.Offset(aDz, -aHeight)
 
                 PipeCad.AddAidLine(aPi, aPj, self.aidNumber)
             # for
@@ -1766,8 +1785,8 @@ class HandrailDialog(QDialog):
 
         PipeCad.AddAidLine(aP1, aP2, self.aidNumber)
 
-        aP1.Z = aP1.Z - 535
-        aP2.Z = aP2.Z - 535
+        aP1.Z = aP1.Z - aHh
+        aP2.Z = aP2.Z - aHh
 
         PipeCad.AddAidLine(aP1, aP2, self.aidNumber)
 
@@ -1790,6 +1809,9 @@ class HandrailDialog(QDialog):
         aDir = Direction(aP1, aP2)
         aOri = Orientation(aDir.Orthogonal(), aDir)
 
+        aHeight = float(self.textHeight.text)
+        aHh = aHeight * 0.5
+
         PipeCad.StartTransaction("Create Handrail")
 
         # Post distance interval: 1000~1500
@@ -1801,8 +1823,8 @@ class HandrailDialog(QDialog):
 
             for i in range(1, aPostSize + 1):
                 aPi = aP1.Offset(aDir, aInterval * i)
-                aPk = aPi.Offset(aDz, -535)
-                aPj = aPi.Offset(aDz, -1070)
+                aPk = aPi.Offset(aDz, -aHh)
+                aPj = aPi.Offset(aDz, -aHeight)
 
                 PipeCad.CreateItem("SUBS")
                 aSubsItem = PipeCad.CurrentItem()
@@ -1811,16 +1833,16 @@ class HandrailDialog(QDialog):
                 PipeCad.CreateItem("CYLI")
                 aTreeItem = PipeCad.CurrentItem()
                 aTreeItem.Diameter = 38
-                aTreeItem.Height = 1070
+                aTreeItem.Height = aHeight
                 aTreeItem.Color = 122
-                aTreeItem.Position = Position(0, 0, 535, aSubsItem)
+                aTreeItem.Position = Position(0, 0, aHh, aSubsItem)
 
                 PipeCad.CreateItem("DISH")
                 aTreeItem = PipeCad.CurrentItem()
                 aTreeItem.Diameter = 76
                 aTreeItem.Height = 38
                 aTreeItem.Color = 122
-                aTreeItem.Position = Position(0, 0, 1070, aSubsItem)
+                aTreeItem.Position = Position(0, 0, aHeight, aSubsItem)
                 aTreeItem.Orientation = Orientation(90, 0, 0, aSubsItem)
 
                 PipeCad.CreateItem("DISH")
@@ -1828,7 +1850,7 @@ class HandrailDialog(QDialog):
                 aTreeItem.Diameter = 76
                 aTreeItem.Height = 38
                 aTreeItem.Color = 122
-                aTreeItem.Position = Position(0, 0, 1070, aSubsItem)
+                aTreeItem.Position = Position(0, 0, aHeight, aSubsItem)
                 aTreeItem.Orientation = Orientation(-90, 0, 0, aSubsItem)
 
                 PipeCad.CreateItem("DISH")
@@ -1836,7 +1858,7 @@ class HandrailDialog(QDialog):
                 aTreeItem.Diameter = 76
                 aTreeItem.Height = 38
                 aTreeItem.Color = 122
-                aTreeItem.Position = Position(0, 0, 535, aSubsItem)
+                aTreeItem.Position = Position(0, 0, aHh, aSubsItem)
                 aTreeItem.Orientation = Orientation(90, 0, 0, aSubsItem)
 
                 PipeCad.CreateItem("DISH")
@@ -1844,7 +1866,7 @@ class HandrailDialog(QDialog):
                 aTreeItem.Diameter = 76
                 aTreeItem.Height = 38
                 aTreeItem.Color = 122
-                aTreeItem.Position = Position(0, 0, 535, aSubsItem)
+                aTreeItem.Position = Position(0, 0, aHh, aSubsItem)
                 aTreeItem.Orientation = Orientation(-90, 0, 0, aSubsItem)
 
                 PipeCad.CreateItem("BOX")
@@ -1874,7 +1896,7 @@ class HandrailDialog(QDialog):
         aCyliItem.Orientation = aOri
         aCyliItem.Position = aPos
 
-        aPos.Z = aPos.Z - 535
+        aPos.Z = aPos.Z - aHh
 
         PipeCad.CreateItem("CYLI")
         aCyliItem = PipeCad.CurrentItem()
