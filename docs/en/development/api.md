@@ -9,7 +9,20 @@ You do not have to be a professional programmer to start to learn Python, althou
 
 PipeCAD make use of a Graphical User Interface (GUI) to drive the software. The interfaces provided with your PipeCAD software are designed to apply to a wide range of situations and business needs. However, as you become more experienced with PipeCAD you may wish to design an interface that is more closely related to your requirements.
 Qt has been specifically introduced for writing and customising the Forms and Menus for PipeCAD. 
-Before you begin customising a GUI, you must have a good working knowledge of PipeCAD.
+Before you begin customising a GUI, you must have a good working knowledge of PipeCAD and Qt.
+
+### Simple Widget
+You define a widget using following python code, input the code to the Python Console:
+
+```python
+from PythonQt.QtCore import *
+from PythonQt.QtGui import *
+
+aButton = QPushButton("Hello World")
+aButton.clicked.connect(lambda x: print("Hello World"))
+aButton.show()
+```
+The example code defines a small button labelled "Hello World", and connec the button clicked to a lambda function to show "Hello World" in the console.
 
 ## Serious Warning About Software Customization
 
@@ -26,7 +39,7 @@ Position point in 3D space.
 
 **Property**
 
-| Name | Type | Description |
+| Name | Type | Purpose |
 | :--- | :--- | :--- |
 | X | double | The X component |
 | Y | double | The Y component |
@@ -35,7 +48,7 @@ Position point in 3D space.
 
 **Methods**
 
-| Name | Result | Description |
+| Name | Result | Purpose |
 | :--- | :--- | :--- |
 | Offset(Direction theDir, double theOffset) | Position | Returns a position offset by the supplied length in the supplied direction. |
 | Distance(Position thePosition) | Position | Returns the distance between two positions. |
@@ -45,7 +58,7 @@ Describes a unit vector in 3D space. This unit vector is also called "Direction"
 
 **Property**
 
-| Name | Type | Description |
+| Name | Type | Purpose |
 | :--- | :--- | :--- |
 | X | double | The X component |
 | Y | double | The Y component |
@@ -54,7 +67,7 @@ Describes a unit vector in 3D space. This unit vector is also called "Direction"
 
 **Methods**
 
-| Name | Result | Description |
+| Name | Result | Purpose |
 | :--- | :--- | :--- |
 | Reversed() | Direction | Reversed the direction and return the opposite direction. |
 | IsParallel(Direction theDir, double theTolerance) | bool | Returns True if the supplied direction is parallel according to tolerance supplied, false otherwise. |
@@ -64,7 +77,7 @@ This defines the orientation of a frame of reference (i.e. the directions of the
 
 **Property**
 
-| Name | Type | Description |
+| Name | Type | Purpose |
 | :--- | :--- | :--- |
 | Alpha | double | The Alpha component |
 | Beta | double | The Beta component |
@@ -75,11 +88,11 @@ This defines the orientation of a frame of reference (i.e. the directions of the
 | Origin | TreeItem | The TreeItem that is the origin |
 
 ## LinkPoint
-LinkPoint is P-Point for piping component.
+LinkPoint is P-Point for piping component and equipment primitives.
 
 **Property**
 
-| Name | Type | Description |
+| Name | Type | Purpose |
 | :--- | :--- | :--- |
 | Key | string | P-Point key, such as P1 |
 | Bore | string | P-Point bore |
@@ -91,7 +104,7 @@ LinkPoint is P-Point for piping component.
 
 **Property**
 
-| Name | Type | Description |
+| Name | Type | Purpose |
 | :--- | :--- | :--- |
 | RefNo | string | Reference number |
 | Type | string | Item type |
@@ -104,7 +117,7 @@ Project data.
 
 **Property**
 
-| Name | Type | Description |
+| Name | Type | Purpose |
 | :--- | :--- | :--- |
 | Name | string | Project name |
 | Evar | string | Project environment variable, e.g. SAM000 |
@@ -123,7 +136,7 @@ When a user login a project will create a session.
 
 **Property**
 
-| Name | Type | Description |
+| Name | Type | Purpose |
 | :--- | :--- | :--- |
 | Id | int | Session ID |
 | Name | string | Session name |
@@ -139,7 +152,7 @@ The Multiple Databases(MDB) can contain database.
 
 **Property**
 
-| Name | Type | Description |
+| Name | Type | Purpose |
 | :--- | :--- | :--- |
 | Name | string | MDB name |
 | Description | string | MDB description |
@@ -150,7 +163,7 @@ User can login project.
 
 **Property**
 
-| Name | Type | Description |
+| Name | Type | Purpose |
 | :--- | :--- | :--- |
 | Name | string | User name |
 | Description | string | User description |
@@ -163,7 +176,7 @@ PipeCad is a core object of PipeCAD, the PipeCad object is a mechanism for provi
 
 **Property**
 
-| Name | Type | Description |
+| Name | Type | Purpose |
 | :--- | :--- | :--- |
 | Projects | list | The project list by environment variables |
 | CurrentProject | Project | The login project |
@@ -171,7 +184,7 @@ PipeCad is a core object of PipeCAD, the PipeCad object is a mechanism for provi
 
 **Methods**
 
-| Name  | Description |
+| Name  | Purpose |
 | :---  | :--- |
 | About | Show about dialog|
 | GetVersion | Get PipeCAD version string |
@@ -198,7 +211,7 @@ PipeCad is a core object of PipeCAD, the PipeCad object is a mechanism for provi
 | CreateDb | Create DB in Admin module |
 | CollectItem | Collect items by supplied type |
 | SearchItem | Search items by supplied key and type |
-| IncludeItem | Include the item into current item |
+| IncludeItem | Include the supplied item into current item |
 | Translate | Translate the current item |
 | Rotate | Rotate the current item |
 | PickItem | Pick item in the 3d viewer |
@@ -253,7 +266,7 @@ PipeCad.AddAidLine(Position theStartPoint, Position theEndPoint, int theNumber)
 
 **Parameter List**
 
-| Parameter | Type | Description |
+| Parameter | Type | Purpose |
 | :--- | :--- | :--- |
 | theStartPoint | Position | The aid line start point. |
 | theEndPoint | Position | The aid line end point. |
@@ -268,7 +281,7 @@ PipeCad.AddAidText(Position thePoint, QString theText, int theNumber)
 
 **Parameter List**
 
-| Parameter | Type | Description |
+| Parameter | Type | Purpose |
 | :--- | :--- | :--- |
 | thePoint | Position | The aid text point. |
 | theText | string | The aid text. |
@@ -283,7 +296,7 @@ PipeCad.AddAidAxis(LinkPoint theAxis, int theNumber)
 
 **Parameter List**
 
-| Parameter | Type | Description |
+| Parameter | Type | Purpose |
 | :--- | :--- | :--- |
 | theAxis | LinkPoint | The aid axis point and direction. |
 | theNumber | int | The aid axis group number. Design aids can be grouped together by using the number. |
@@ -297,7 +310,7 @@ PipeCad.AddAidArrow(Position thePoint, Direction theDir, double theHeight, doubl
 
 **Parameter List**
 
-| Parameter | Type | Description |
+| Parameter | Type | Purpose |
 | :--- | :--- | :--- |
 | thePoint | Position | The aid arrow datum position. |
 | theDir | Direction | The aid arrow direction. |
@@ -321,7 +334,7 @@ PipeCad.AddAidCylinder(Position thePoint, Direction theDir, double theHeight, do
 
 **Parameter List**
 
-| Parameter | Type | Description |
+| Parameter | Type | Purpose |
 | :--- | :--- | :--- |
 | thePoint | Position | The aid cylinder datum position. |
 | theDir | Direction | The aid cylinder direction. |
@@ -339,12 +352,12 @@ PipeCad.AddAidCylinder(aPosition, aTagDirection, 100, 2, self.tagId)
 Add aid polygon to 3d viewer to help you with plate design construction.
 
 ```python
-   PipeCad.AddAidPolygon(list thePointList, int theNumber)
+PipeCad.AddAidPolygon(list thePointList, int theNumber)
 ```
 
 **Parameter List**
 
-| Parameter | Type | Description |
+| Parameter | Type | Purpose |
 | :--- | :--- | :--- |
 | thePointList | list | The aid polygon point list. |
 | theNumber | int | The aid axis group number. Design aids can be grouped together by using the number. |
@@ -352,13 +365,14 @@ Add aid polygon to 3d viewer to help you with plate design construction.
 **Example**
 
 ```python
-   aPointList = list()
-   
-   aPoint = Position(aX, aY, aZ)
-   aPointList.append(aPoint)
-   
-   PipeCad.AddAidPolygon(aPointList, self.tagId)
-   PipeCad.UpdateViewer()
+aPointList = list()
+
+# Add some points to the point list.
+aPoint = Position(aX, aY, aZ)
+aPointList.append(aPoint)
+
+PipeCad.AddAidPolygon(aPointList, self.tagId)
+PipeCad.UpdateViewer()
 ```
 
 ## PipeCad.NextAidNumber
@@ -381,7 +395,7 @@ PipeCad.RemoveAid(int theNumber)
 
 **Parameter List**
 
-| Parameter | Type | Description |
+| Parameter | Type | Purpose |
 | :--- | :--- | :--- |
 | theNumber | int | The aid group number. Design aids can be grouped together by using the number. |
 
@@ -392,30 +406,294 @@ Clear all aid items from 3d view.
 PipeCad.ClearAid()
 ```
 
+## PipeCad.CurrentItem
+At the user level there is a concept of current item. Most PipeCAD commands act on the current item. This is often refered to as the **CE**. There is an extensive set of commands to navigate around the database changing the **CE**.
+
+```python
+CE = PipeCad.CurrentItem()
+```
+
+## PipeCad.SetCurrentItem
+Change the current item to the supplied item or name.
+
+```python
+PipeCad.SetCurrentItem(string theName)
+PipeCad.SetCurrentItem(TreeItem theTreeItem)
+```
+
+**Parameter List**
+
+| Parameter | Type | Purpose |
+| :--- | :--- | :--- |
+| theName | string | Set current item by supplied name |
+| theTreeItem | TreeItem | Set current item by supplied item |
+
+**Example**
+
+```python
+CE = PipeCad.CurrentItem()
+PipeCad.SetCurrentItem("/PIPE")
+PipeCad.SetCurrentItem(CE)
+```
+
+## PipeCad.GetItem
+Get item by supplied name.
+
+```python
+PipeCad.GetItem(string theName)
+```
+
+**Parameter List**
+
+| Parameter | Type | Purpose |
+| :--- | :--- | :--- |
+| theName | string | Get item by supplied name |
+
+**Return**
+
+Return the item by supplied name. If there is no named item, return None.
+
+**Example**
+
+```python
+aCatref = PipeCad.GetItem("/AAZFBD0TT")
+```
+
+## PipeCad.StartTransaction
+Start transaction to combine the following command to one.
+
+```python
+PipeCad.StartTransaction(string theText)
+```
+
+**Parameter List**
+
+| Parameter | Type | Purpose |
+| :--- | :--- | :--- |
+| theText | string | Transaction description text |
+
+## PipeCad.CommitTransaction
+Commit the transcation.
+
+```python
+PipeCad.CommitTransaction()
+```
+
+**Example**
+
+```python
+PipeCad.StartTransaction("Create Site")
+
+PipeCad.CreateItem("SITE")
+aSiteItem = PipeCad.CurrentItem()
+aSiteItem.Name = "PIPE-SITE"
+aSiteItem.Purpose = "PIPE"
+
+PipeCad.CommitTransaction()
+```
+
+## PipeCad.CreateItem
+Create a tree item by supplied type and optional name, and set current item to the new item.
+
+```python
+PipeCad.CreateItem(string theType, string theName)
+```
+
+**Parameter List**
+
+| Parameter | Type | Purpose |
+| :--- | :--- | :--- |
+| theType | string | Tree item type, e.g SITE, ZONE |
+| theName | string | Tree item name, optional |
+
+## PipeCad.DeleteItem
+Delete the current selected item, the item type parameter is used to confirm the type.
+
+```python
+PipeCad.DeleteItem(string theType)
+```
+
+**Parameter List**
+
+| Parameter | Type | Purpose |
+| :--- | :--- | :--- |
+| theType | string | Tree item type, e.g SITE, ZONE |
+
+## PipeCad.CreateTeam
+Create team item in Admin module.
+
+```python
+PipeCad.CreateTeam(string theName, string theDescription)
+```
+
+**Parameter List**
+
+| Parameter | Type | Purpose |
+| :--- | :--- | :--- |
+| theName | string | The name of the team, up to ??? symbols |
+| theDescription | string | The team description, up to ??? characters |
+
+**Output**
+
+PipeCad will create Team in /*T world hierarchy.
+
+**Example**
+```python
+PipeCad.CreateTeam("PIPE", "Team for Piping Discipline" )
+```
+
+## PipeCad.CreateUser
+Create user item in Admin module.
+
+```python
+PipeCad.CreateUser(string theName, string theDescription, string thePassword, string theSecurity, list theTeamList)
+```
+
+**Parameter List**
+
+| Parameter | Type | Purpose |
+| :--- | :--- | :--- |
+| theName | string | The name of the user |
+| theDescription | string | The user description |
+| thePassword | string | The user password |
+| theSecurity | string | The security of the user, e.g "Free, General" |
+| theTeamList | list | The team list that user belong to |
+
+## PipeCad.CreateMdb
+Create MDB item in Admin module.
+
+```python
+PipeCad.CreateMdb(string theName, string theDescription)
+```
+
+**Parameter List**
+
+| Parameter | Type | Purpose |
+| :--- | :--- | :--- |
+| theName | string | The name of the MDB |
+| theDescription | string | The MDB description |
+
+## PipeCad.CreateDb
+Create DB item in Admin module.
+
+```python
+PipeCad.CreateDb(string theName, string theType, int theNumber, string theDescription)
+```
+
+**Parameter List**
+
+| Parameter | Type | Purpose |
+| :--- | :--- | :--- |
+| theName | string | The Database name, its format is TeamName/DBName, e.g. /PIPE/DESI |
+| theType | string | Database type from the list: DESI, PADD, CATA |
+| theNumber| INT | Database nubmber ( in range from 1 to 9999 ) |
+| theDescription| STRING | The database description, up to ??? characters |
+
+**Output**
+
+PipeCad will create Database in proper Team hierarchy.
+
+**Example**
+
+```python
+PipeCad.CreateDb("PIPE/DESI-1-XYZ-001", "DESI", 2000, "Database for module 1-XYZ-001 - Piping Discipline" )
+```
+
+## PipeCad.CollectItem
+Collect all items with required type (for ex. Sites) in MDB.
+
+```python
+PipeCad.CollectItem(string theType, TreeItem theParentItem)
+```
+
+**Parameter List**
+
+| Parameter | Type | Purpose |
+| :--- | :--- | :--- |
+| theType | string | The item type, e.g "SITE", "ZONE", .etc |
+| theParentItem | TreeItem | Collect item in parent item, if there is no parent item, will collect all items in MDB |
+
+**Example**
+
+```python
+aSiteItems = PipeCad.CollectItem("SITE")
+```
+
+## PipeCad.SearchItem
+Search items by supplied key and type.
+
+```python
+PipeCad.SearchItem(string theKey, string theType, TreeItem theParentItem)
+```
+
+**Parameter List**
+
+| Parameter | Type | Purpose |
+| :--- | :--- | :--- |
+| theKey | string | Search the keyword in item name |
+| theType | string | The search item type, if there is no type, will return all type items |
+| theParentItem | TreeItem | Search item in parent item, if there is no parent item, will collect all items in MDB |
+
+**Example**
+
+```python
+aPipeItems = PipeCad.SearchItem("PIPE-01", "PIPE")
+```
+
+## PipeCad.IncludeItem
+Include the item into current item.
+
+```python
+PipeCad.IncludeItem(TreeItem theTreeItem, int thePosition)
+```
+
+**Parameter List**
+
+| Parameter | Type | Purpose |
+| :--- | :--- | :--- |
+| theTreeItem | TreeItem | The tree item will be included into current item |
+| thePosition | int | The position in current item member list |
+
+## PipeCad.Translate
+Translate the current item by a vector.
+
+```python
+PipeCad.Translate(double theDx, doubel theDy, double theDz)
+PipeCad.Translate(Position thePos, Direction* theDir, double theOffset)
+```
+
+**Parameter List**
+
+| Parameter | Type | Purpose |
+| :--- | :--- | :--- |
+| theDx | double | The translate vector's x component |
+| theDy | double | The translate vector's y component |
+| theDz | double | The translate vector's z component |
+| thePos | Position | The translate start position |
+| theDir | Direction | The translate along direction |
+| theOffset | double | The translate distance along the direction |
+
+## PipeCad.Roate
+Rotate the current item. If there is no theAxis, will roate about the current Z axis.
+
+```python
+PipeCad.Rotate(LinkPoint theAxis, double theAngle)
+PipeCad.Roate(theAngle)
+```
+
+**Parameter List**
+
+| Parameter | Type | Purpose |
+| :--- | :--- | :--- |
+| theAxis | LinkPoint | The rotation position and axis |
+| theAngle | double | The ratate angle in degree |
+
 ## PipeCad.addDockWidget
 
 ```python
     PipeCad.addDockWidget(Qt.RightDockWidgetArea, self.dockWidget)
 ```
-## PipeCad.CollectItem
-Collect all items with required type (for ex. Sites) in mdb
-```python
-    aDbItems = PipeCad.CollectItem("SITE")
-```
-## PipeCad.CommitTransaction
-```python
-    PipeCad.CommitTransaction()
-```
-## PipeCad.CreateItem
 
-```python
-    PipeCad.CreateItem("SITE", SiteName)
-```
-## PipeCad.CurrentItem
-Get current element
-```python
-    aItem = PipeCad.CurrentItem()
-```
 ## PipeCad.currentItemChanged.connect
 
 ```python
@@ -431,16 +709,7 @@ Get current project
 ```python
     CurProject = PipeCad.CurrentProject
 ```
-## PipeCad.DeleteItem
-Delete required element
-```python
-    PipeCad.DeleteItem("TEAM")
-```
-## PipeCad.GetItem
-Goto to required element
-```python
-    aCatref = PipeCad.GetItem("/AAZFBD0TT")
-```
+
 ## PipeCad.Login
 
 ```python
@@ -461,78 +730,15 @@ Getting list of projects
 ```python
     PipeCad.removeDockWidget(self.dockWidget)
 ```
-## PipeCad.Rotate
 
-```python
-    PipeCad.Rotate(self.currentItem.ArrivePoint, aAngle)
-```
-## PipeCad.SaveWork
-Save of current session changes 
-```python
-    PipeCad.SaveWork()
-```
 ## PipeCad.setCentralWidget
 
 ```python
     PipeCad.setCentralWidget(aMain)
-```
-## PipeCad.SetCurrentItem
-
-Syntax:
-```python
-    PipeCad.SetCurrentItem(aItem.data(Qt.UserRole))
 ```
 
 ## PipeCad.SetIndicator
 
 ```python
     PipeCad.SetIndicator(self.textPassword)
-```
-## PipeCad.StartTransaction
-
-```python
-    PipeCad.StartTransaction("Create Team")
-```
-## PipeCad.Translate
-
-```python
-    PipeCad.Translate(aPs, aDir, aOffset)
-```
-## PipeCad.Update
-
-```python
-    PipeCad.Update()
-```
-
-## PipeCad.CreateDb( Team/Name, Type, Number, Description )
-### Input
-|Name|Type|Purpose|
-|----|----|-------|
-|Team|STRING|Owning Team|
-|Name|STRING|The name of the database, up to ??? symbols|
-|Type|STRING|Database type from the list: DESI, PADD, CATA|
-|Number|INT|Database nubmber ( in range from 1 to ???? )|
-|Description|STRING|The database description, up to ??? characters|
-
-### Output
-PipeCad will create Database in proper Team hierarchy.
-
-## Example
-```python
-    PipeCad.CreateDb("PIPE/DESI-1-XYZ-001", "DESI", 2000, "Database for module 1-XYZ-001 - Piping Discipline" )
-```
-
-## PipeCad.CreateTeam( Name, Description )
-### Input
-|Name|Type|Purpose|
-|----|----|-------|
-|Name|STRING|The name of the team, up to ??? symbols|
-|Description|STRING|The database description, up to ??? characters|
-
-### Output
-PipeCad will create Team in /*T world hierarchy.
-
-### Example
-```python
-    PipeCad.CreateTeam("PIPE", "Team for Piping Discipline" )
 ```
