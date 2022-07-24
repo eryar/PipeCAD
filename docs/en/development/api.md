@@ -182,6 +182,27 @@ PipeCad is a core object of PipeCAD, the PipeCad object is a mechanism for provi
 | CurrentProject | Project | The login project |
 | CurrentSession | Session | The current session |
 
+## PipeCad.Projects
+The project list by environment variables.
+
+```python
+aProjectsList = PipeCad.Projects
+```
+
+## PipeCad.CurrentProject
+The login project.
+
+```python
+aCurrentProject = PipeCad.CurrentProject
+```
+
+## PipeCad.CurrentSession
+The current session.
+
+```python
+aCurrentSession = PipeCad.CurrentSession
+```
+
 **Methods**
 
 | Name  | Purpose |
@@ -232,6 +253,13 @@ PipeCad is a core object of PipeCAD, the PipeCad object is a mechanism for provi
 | AddProjectItem | Add item that will be projected to 2d drawing |
 | ProjectPoint | Project the point to 2d point |
 | ProjectDXF | Project items to 2d drawing |
+
+
+**Signals**
+
+| Name  | Purpose |
+| :---  | :--- |
+| currentItemChanged | This signal is sent when the current item changed |
 
 ## PipeCad.About
 Show about dialog.
@@ -674,7 +702,7 @@ PipeCad.Translate(Position thePos, Direction* theDir, double theOffset)
 | theOffset | double | The translate distance along the direction |
 
 ## PipeCad.Roate
-Rotate the current item. If there is no theAxis, will roate about the current Z axis.
+Rotate the current item. If there is no theAxis, will roate about the current item Z axis.
 
 ```python
 PipeCad.Rotate(LinkPoint theAxis, double theAngle)
@@ -694,20 +722,15 @@ PipeCad.Roate(theAngle)
     PipeCad.addDockWidget(Qt.RightDockWidgetArea, self.dockWidget)
 ```
 
-## PipeCad.currentItemChanged.connect
+## PipeCad.currentItemChanged
+This signal is sent when the current item changed. You can connect this signal to your own slot function.
 
 ```python
-    PipeCad.currentItemChanged.connect(self.currentItemChanged)
-```
-## PipeCad.currentItemChanged.disconnect
+# Connect currentItemChanged signal to a slot function.
+PipeCad.currentItemChanged.connect(self.currentItemChanged)
 
-```python
-    PipeCad.currentItemChanged.disconnect()
-```
-## PipeCad.CurrentProject
-Get current project
-```python
-    CurProject = PipeCad.CurrentProject
+# Disconnect the signal.
+PipeCad.currentItemChanged.disconnect()
 ```
 
 ## PipeCad.Login
@@ -720,11 +743,7 @@ Get current project
 ```python
     aPickItem = PipeCad.PickItem()
 ```
-## PipeCad.Projects
-Getting list of projects
-```python
-    ProjectsList = PipeCad.Projects
-```
+
 ## PipeCad.removeDockWidget
 
 ```python
