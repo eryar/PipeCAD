@@ -33,6 +33,7 @@ To minimise this risk, it is most important that your in-house customisation pol
 Remember that PipeCAD can give you full technical support only for products over which it has control. We cannot guarantee to solve problems caused by software which you have written yourself.
 
 # Object Type Details
+In order to distinguish from Qt, all property and methods name of PipeCAD start with a capital letter.
 
 ## Position
 Position point in 3D space.
@@ -253,7 +254,6 @@ aCurrentSession = PipeCad.CurrentSession
 | AddProjectItem | Add item that will be projected to 2d drawing |
 | ProjectPoint | Project the point to 2d point |
 | ProjectDXF | Project items to 2d drawing |
-
 
 **Signals**
 
@@ -733,15 +733,97 @@ PipeCad.currentItemChanged.connect(self.currentItemChanged)
 PipeCad.currentItemChanged.disconnect()
 ```
 
-## PipeCad.Login
-
-```python
-    PipeCad.Login()
-```
 ## PipeCad.PickItem
+Pick item in the 3d viewer.
 
 ```python
-    aPickItem = PipeCad.PickItem()
+aPickItem = PipeCad.PickItem()
+```
+
+## PipeCad.PickPoint
+Pick point in the 3d viewer.
+
+```python
+aPickPoint = PipeCad.PickPoint(int theMode)
+```
+
+**Parameter List**
+
+| Parameter | Type | Purpose |
+| :--- | :--- | :--- |
+| theMode | int | The pick point mode, 1 is pick point; 0 is pick item |
+
+## PipeCad.LookAt
+Zoom 3d viewer by supplied item.
+
+```python
+PipeCad.LookAt(TreeItem theTreeItem)
+```
+
+**Parameter List**
+
+| Parameter | Type | Purpose |
+| :--- | :--- | :--- |
+| theTreeItem | TreeItem | The item zoomed to |
+
+## PipeCad.Display
+Display the selected item. If in Design module will add the selected to 3d viewer; If in Paragon module, will display the SComponent.
+
+```python
+PipeCad.Display(TreeItem theTreeItem)
+```
+
+**Parameter List**
+
+| Parameter | Type | Purpose |
+| :--- | :--- | :--- |
+| theTreeItem | TreeItem | The item will add to 3d viewer |
+
+## PipeCad.DisplayOnly
+Only display the selected item, other items will be removed from the 3d viewer.
+
+```python
+PipeCad.DisplayOnly(TreeItem theTreeItem)
+```
+
+**Parameter List**
+
+| Parameter | Type | Purpose |
+| :--- | :--- | :--- |
+| theTreeItem | TreeItem | The item will add to 3d viewer |
+
+## PipeCad.DisplayConnected
+Display the items connected with the current item.
+
+```python
+PipeCad.DisplayConnected()
+```
+
+## PipeCad.Remove
+Remove the selected items from 3d viewer.
+
+```python
+PipeCad.Remove(TreeItem theTreeItem)
+```
+
+**Parameter List**
+
+| Parameter | Type | Purpose |
+| :--- | :--- | :--- |
+| theTreeItem | TreeItem | The item will remove from 3d viewer |
+
+## PipeCad.Clear
+Clear all items from 3d viewer.
+
+```python
+PipeCad.Clear()
+```
+
+## PipeCad.UpdateViewer
+Update 3d viewer.
+
+```python
+PipeCad.UpdateViewer()
 ```
 
 ## PipeCad.removeDockWidget
@@ -757,7 +839,114 @@ PipeCad.currentItemChanged.disconnect()
 ```
 
 ## PipeCad.SetIndicator
+Set indicator for line edit.
 
 ```python
-    PipeCad.SetIndicator(self.textPassword)
+PipeCad.SetIndicator(QWidget theWidget)
 ```
+
+**Parameter List**
+
+| Parameter | Type | Purpose |
+| :--- | :--- | :--- |
+| theWidget | QWidget | The QLineEdit widget |
+
+## PipeCad.Login
+Login PipeCAD.
+
+```python
+PipeCad.Login()
+```
+
+## PipeCad.GetLinearIncrement
+Get linear increment for Model Editor.
+
+```python
+PipeCad.GetLinearIncrement()
+```
+**Return**
+
+Return the linear increment of the Model Editor.
+
+## PipeCad.GetAngularIncrement
+Get angular increment for Model Editor.
+
+```python
+PipeCad.GetAngularIncrement()
+```
+**Return**
+
+Return the angular increment of the Model Editor.
+
+## PipeCad.SetIncrements
+Set linear and angular increment for Model Editor.
+
+```python
+PipeCad.SetIncrements(double theLinearIncrement, double theAngularIncrement)
+```
+
+**Parameter List**
+
+| Parameter | Type | Purpose |
+| :--- | :--- | :--- |
+| theLinearIncrement | double | The linear increment |
+| theAngularIncrement | double | The angular increment |
+
+## PipeCad.SetProjector
+Set projector to produce 2D drawing.
+
+```python
+PipeCad.SetProjector(Position theDatum, Direction theDn, Direction theDx, double theScale)
+```
+
+**Parameter List**
+
+| Parameter | Type | Purpose |
+| :--- | :--- | :--- |
+| theDatum | Position | The project plane datum point |
+| theDn | Direction | The project plane normal direction |
+| theDx | Direction | The project plane x direction |
+| theScale | double | The project scale, default is 1.0 |
+
+## PipeCad.AddProjectItem
+Add item that will be projected to 2d drawing.
+
+```python
+PipeCad.AddProjectItem(TreeItem theTreeItem)
+```
+
+**Parameter List**
+
+| Parameter | Type | Purpose |
+| :--- | :--- | :--- |
+| theTreeItem | TreeItem | The tree item to be projected |
+
+## PipeCad.ProjectPoint
+Project the point to 2d point.
+
+```python
+PipeCad.ProjectPoint(Position thePoint)
+```
+
+**Parameter List**
+
+| Parameter | Type | Purpose |
+| :--- | :--- | :--- |
+| thePoint | Position | The point to be projected |
+
+**Return**
+
+Return the 2d point that projected to the plane.
+
+## PipeCad.ProjectDXF
+Project items to 2d DXF drawing.
+
+```python
+PipeCad.ProjectDXF(string theFileName);
+```
+
+**Parameter List**
+
+| Parameter | Type | Purpose |
+| :--- | :--- | :--- |
+| theFileName | string | The output drawing DXF file name |
