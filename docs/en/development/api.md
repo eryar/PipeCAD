@@ -99,8 +99,77 @@ LinkPoint is P-Point for piping component.
 | Owner | TreeItem | Parent item |
 | Member | list | Member list |
 
+## Project
+Project data.
+
+**Property**
+
+| Name | Type | Description |
+| :--- | :--- | :--- |
+| Name | string | Project name |
+| Evar | string | Project environment variable, e.g. SAM000 |
+| Path | string | Project directory path |
+| Code | string | Project code, 3 characters, e.g. SAM |
+| Number | string | Project number |
+| Message | string | Project message, information about the project |
+| Description | string | Project description |
+| CurrentSession | Session | Project current session |
+| MdbList | list | Project MDB list |
+| UserList | list | Project User list |
+| Sessions | list | Return list of all sessions of the project |
+
+## Session
+When a user login a project will create a session.
+
+**Property**
+
+| Name | Type | Description |
+| :--- | :--- | :--- |
+| Id | int | Session ID |
+| Name | string | Session name |
+| Login | string | User's login ID |
+| Host | string | ID of the Machine running the session |
+| Entered | string | Time of entering the session |
+| Module | string | User's login module |
+| MDB | MDB | The current MDB of the SESSION |
+| User | User | The user of this SESSION object |
+
+## MDB
+The Multiple Databases(MDB) can contain database.
+
+**Property**
+
+| Name | Type | Description |
+| :--- | :--- | :--- |
+| Name | string | MDB name |
+| Description | string | MDB description |
+| RefNo | string | String containing Database reference number |
+
+## User
+User can login project.
+
+**Property**
+
+| Name | Type | Description |
+| :--- | :--- | :--- |
+| Name | string | User name |
+| Description | string | User description |
+| Access | string | User access rights(FREE, GENERAL) |
+| RefNo | string | STRING containing Database reference number |
+| Password | string | User password |
+
 # PipeCad API
 PipeCad is a core object of PipeCAD, the PipeCad object is a mechanism for providing methods which are not specific to the standard objects, such as TreeItem, QWidget etc.
+
+**Property**
+
+| Name | Type | Description |
+| :--- | :--- | :--- |
+| Projects | list | The project list by environment variables |
+| CurrentProject | Project | The login project |
+| CurrentSession | Session | The current session |
+
+**Methods**
 
 | Name  | Description |
 | :---  | :--- |
@@ -116,6 +185,40 @@ PipeCad is a core object of PipeCAD, the PipeCad object is a mechanism for provi
 | NextAidNumber | Generate next available aid number |
 | RemoveAid | Remove the aid items by supplied aid number from 3d view |
 | ClearAid | Clear all aid items from 3d view |
+| CurrentItem | Get current selected item |
+| SetCurrentItem | Set current item |
+| GetItem | Get item by name |
+| StartTransaction | Start transaction to combine the following command to one |
+| CommitTransaction | Commit transaction |
+| CreateItem | Create a supplied type item |
+| DeleteItem | Delete selected item |
+| CreateTeam | Create team in Admin module |
+| CreateUser | Create user in Admin module |
+| CreateMdb | Creeate MDB in Admin module |
+| CreateDb | Create DB in Admin module |
+| CollectItem | Collect items by supplied type |
+| SearchItem | Search items by supplied key and type |
+| IncludeItem | Include the item into current item |
+| Translate | Translate the current item |
+| Rotate | Rotate the current item |
+| PickItem | Pick item in the 3d viewer |
+| PickPoint | Pick point in the 3d viewer |
+| LookAt | Zoom 3d viewer by supplied item |
+| Display | Display the selected item |
+| DisplayOnly | Only display the selected item |
+| DisplayConnected | Display the items connected with the current item |
+| Remove | Remove the selected items from 3d viewer |
+| Clear | Clear all items from 3d viewer |
+| UpdateViewer | Update 3d viewer |
+| SetIndicator | Set indicator for line edit |
+| Login | Login PipeCAD |
+| GetLinearIncrement | Get linear increment for Model Editor |
+| GetAngularIncrement | Get angular increment for Model Editor |
+| SetIncrements | Set linear and angular increment for Model Editor |
+| SetProjector | Set projector to produce 2D drawing |
+| AddProjectItem | Add item that will be projected to 2d drawing |
+| ProjectPoint | Project the point to 2d point |
+| ProjectDXF | Project items to 2d drawing |
 
 ## PipeCad.About
 Show about dialog.
@@ -168,6 +271,7 @@ PipeCad.AddAidText(Position thePoint, QString theText, int theNumber)
 | Parameter | Type | Description |
 | :--- | :--- | :--- |
 | thePoint | Position | The aid text point. |
+| theText | string | The aid text. |
 | theNumber | int | The aid text group number. Design aids can be grouped together by using the number. |
 
 ## PipeCad.AddAidAxis
