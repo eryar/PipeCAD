@@ -74,6 +74,31 @@ This defines the orientation of a frame of reference (i.e. the directions of the
 | ZDirection | Direction | Return Z axis direction of the ORIENTATION as a DIRECTION. |
 | Origin | TreeItem | The TreeItem that is the origin |
 
+## LinkPoint
+LinkPoint is P-Point for piping component.
+
+**Property**
+
+| Name | Type | Description |
+| :--- | :--- | :--- |
+| Key | string | P-Point key, such as P1 |
+| Bore | string | P-Point bore |
+| Type | string | P-Point connection type |
+| Position | Position | P-Point position |
+| Direction | Direction | P-Point direction |
+
+## TreeItem
+
+**Property**
+
+| Name | Type | Description |
+| :--- | :--- | :--- |
+| RefNo | string | Reference number |
+| Type | string | Item type |
+| Name | string | Item name |
+| Owner | TreeItem | Parent item |
+| Member | list | Member list |
+
 # PipeCad API
 PipeCad is a core object of PipeCAD, the PipeCad object is a mechanism for providing methods which are not specific to the standard objects, such as TreeItem, QWidget etc.
 
@@ -89,17 +114,17 @@ PipeCad is a core object of PipeCAD, the PipeCad object is a mechanism for provi
 | AddAidCylinder | Add aid cylinder to 3d viewer |
 | AddAidPolygon | Add aid polygon to 3d viewer |
 | NextAidNumber | Generate next available aid number |
-| RemoveAid | Remove the aid item by supplied number |
-| ClearAid | Clear all aid item |
+| RemoveAid | Remove the aid items by supplied aid number from 3d view |
+| ClearAid | Clear all aid items from 3d view |
 
-## About
+## PipeCad.About
 Show about dialog.
 
 ```python
    PipeCad.About()
 ```
 
-## GetVersion
+## PipeCad.GetVersion
 Get PipeCAD version string.
 
 ```python
@@ -107,16 +132,16 @@ Get PipeCAD version string.
 ```
 
 **Return**
-string.
+The PipeCAD version string.
 
-## SaveWork
+## PipeCad.SaveWork
 Save the modification to database. It is good practice to use this function on a regular basis during a long session to ensure maximum data security.
 
 ```python
    PipeCad.SaveWork()
 ```
 
-## AddAidLine
+## PipeCad.AddAidLine
 Add aid line to 3d viewer to help you with design construction.
 
 ```python
@@ -130,9 +155,6 @@ Add aid line to 3d viewer to help you with design construction.
 | theStartPoint | Position | The aid line start point. |
 | theEndPoint | Position | The aid line end point. |
 | theNumber | int | The aid line group number. Design aids can be grouped together by using the number. |
-
-**Return**
-None.
 
 ## PipeCad.AddAidText
 Add aid text to 3d viewer.
@@ -148,18 +170,128 @@ Add aid text to 3d viewer.
 | thePoint | Position | The aid text point. |
 | theNumber | int | The aid text group number. Design aids can be grouped together by using the number. |
 
+## PipeCad.AddAidAxis
+Add aid axis to 3d viewer, the axis use LinkPoint to get axis position and direction.
+
+```python
+   PipeCad.AddAidAxis(LinkPoint theAxis, int theNumber)
+```
+
+**Parameter List**
+
+| Parameter | Type | Description |
+| :--- | :--- | :--- |
+| theAxis | LinkPoint | The aid axis point and direction. |
+| theNumber | int | The aid axis group number. Design aids can be grouped together by using the number. |
+
+## PipeCad.AddAidArrow
+Add aid arrow to 3d viewer.
+
+```python
+   PipeCad.AddAidArrow(Position thePoint, Direction theDir, double theHeight, double theTubeRadius, double theProportion, int theNumber)
+```
+
+**Parameter List**
+
+| Parameter | Type | Description |
+| :--- | :--- | :--- |
+| thePoint | Position | The aid arrow datum position. |
+| theDir | Direction | The aid arrow direction. |
+| theHeight | double | The aid arrow total length. |
+| theTubeRadius | double | The aid arrow tube radius. |
+| theProportion | double | The aid arrow length proportion of total length. |
+| theNumber | int | The aid axis group number. Design aids can be grouped together by using the number. |
+
+** Example **
+
+```python
+   PipeCad.AddAidArrow(aPosition, aTagDirection, 100, 2, 0.3, self.tagId)
+```
+
+## PipeCad.AddAidCylinder
+Add aid cylinder to 3d viewer.
+
+```python
+   PipeCad.AddAidCylinder(Position thePoint, Direction theDir, double theHeight, double theRadius, int theNumber)
+```
+
+**Parameter List**
+
+| Parameter | Type | Description |
+| :--- | :--- | :--- |
+| thePoint | Position | The aid cylinder datum position. |
+| theDir | Direction | The aid cylinder direction. |
+| theHeight | double | The aid cylinder height. |
+| theRadius | double | The aid cylinder radius. |
+| theNumber | int | The aid axis group number. Design aids can be grouped together by using the number. |
+
+** Example **
+
+```python
+   PipeCad.AddAidCylinder(aPosition, aTagDirection, 100, 2, self.tagId)
+```
+
+## PipeCad.AddAidPolygon
+Add aid polygon to 3d viewer to help you with plate design construction.
+
+```python
+   PipeCad.AddAidPolygon(list thePointList, int theNumber)
+```
+
+**Parameter List**
+
+| Parameter | Type | Description |
+| :--- | :--- | :--- |
+| thePointList | list | The aid polygon point list. |
+| theNumber | int | The aid axis group number. Design aids can be grouped together by using the number. |
+
+** Example **
+
+```python
+   aPointList = list()
+   
+   aPoint = Position(aX, aY, aZ)
+   aPointList.append(aPoint)
+   
+   PipeCad.AddAidPolygon(aPointList, self.tagId)
+   PipeCad.UpdateViewer()
+```
+
+## PipeCad.NextAidNumber
+Generate next available aid number.
+
+```python
+   aAidNumber = PipeCad.NextAidNumber()
+```
+
 **Return**
-None.
+
+The next available aid number.
+
+## PipeCad.RemoveAid
+Remove the aid items by supplied aid number from 3d view.
+
+```python
+    PipeCad.RemoveAid(int theNumber)
+```
+
+**Parameter List**
+
+| Parameter | Type | Description |
+| :--- | :--- | :--- |
+| theNumber | int | The aid group number. Design aids can be grouped together by using the number. |
+
+## PipeCad.ClearAid
+Clear all aid items from 3d view.
+
+```python
+    PipeCad.ClearAid()
+```
 
 ## PipeCad.addDockWidget
 
 ```python
     PipeCad.addDockWidget(Qt.RightDockWidgetArea, self.dockWidget)
-```
-## PipeCad.ClearAid
-Remmove aid lines from 3d view
-```python
-    PipeCad.ClearAid()
 ```
 ## PipeCad.CollectItem
 Collect all items with required type (for ex. Sites) in mdb
