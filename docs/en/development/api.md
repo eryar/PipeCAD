@@ -121,14 +121,14 @@ PipeCad is a core object of PipeCAD, the PipeCad object is a mechanism for provi
 Show about dialog.
 
 ```python
-   PipeCad.About()
+PipeCad.About()
 ```
 
 ## PipeCad.GetVersion
 Get PipeCAD version string.
 
 ```python
-   PipeCad.GetVersion()
+PipeCad.GetVersion()
 ```
 
 **Return**
@@ -138,14 +138,14 @@ The PipeCAD version string.
 Save the modification to database. It is good practice to use this function on a regular basis during a long session to ensure maximum data security.
 
 ```python
-   PipeCad.SaveWork()
+PipeCad.SaveWork()
 ```
 
 ## PipeCad.AddAidLine
 Add aid line to 3d viewer to help you with design construction.
 
 ```python
-   PipeCad.AddAidLine(Position theStartPoint, Position theEndPoint, int theNumber)
+PipeCad.AddAidLine(Position theStartPoint, Position theEndPoint, int theNumber)
 ```
 
 **Parameter List**
@@ -160,7 +160,7 @@ Add aid line to 3d viewer to help you with design construction.
 Add aid text to 3d viewer.
 
 ```python
-   PipeCad.AddAidText(Position thePoint, QString theText, int theNumber)
+PipeCad.AddAidText(Position thePoint, QString theText, int theNumber)
 ```
 
 **Parameter List**
@@ -174,7 +174,7 @@ Add aid text to 3d viewer.
 Add aid axis to 3d viewer, the axis use LinkPoint to get axis position and direction.
 
 ```python
-   PipeCad.AddAidAxis(LinkPoint theAxis, int theNumber)
+PipeCad.AddAidAxis(LinkPoint theAxis, int theNumber)
 ```
 
 **Parameter List**
@@ -188,7 +188,7 @@ Add aid axis to 3d viewer, the axis use LinkPoint to get axis position and direc
 Add aid arrow to 3d viewer.
 
 ```python
-   PipeCad.AddAidArrow(Position thePoint, Direction theDir, double theHeight, double theTubeRadius, double theProportion, int theNumber)
+PipeCad.AddAidArrow(Position thePoint, Direction theDir, double theHeight, double theTubeRadius, double theProportion, int theNumber)
 ```
 
 **Parameter List**
@@ -202,17 +202,17 @@ Add aid arrow to 3d viewer.
 | theProportion | double | The aid arrow length proportion of total length. |
 | theNumber | int | The aid axis group number. Design aids can be grouped together by using the number. |
 
-** Example **
+**Example**
 
 ```python
-   PipeCad.AddAidArrow(aPosition, aTagDirection, 100, 2, 0.3, self.tagId)
+PipeCad.AddAidArrow(aPosition, aTagDirection, 100, 2, 0.3, self.tagId)
 ```
 
 ## PipeCad.AddAidCylinder
 Add aid cylinder to 3d viewer.
 
 ```python
-   PipeCad.AddAidCylinder(Position thePoint, Direction theDir, double theHeight, double theRadius, int theNumber)
+PipeCad.AddAidCylinder(Position thePoint, Direction theDir, double theHeight, double theRadius, int theNumber)
 ```
 
 **Parameter List**
@@ -225,10 +225,10 @@ Add aid cylinder to 3d viewer.
 | theRadius | double | The aid cylinder radius. |
 | theNumber | int | The aid axis group number. Design aids can be grouped together by using the number. |
 
-** Example **
+**Example**
 
 ```python
-   PipeCad.AddAidCylinder(aPosition, aTagDirection, 100, 2, self.tagId)
+PipeCad.AddAidCylinder(aPosition, aTagDirection, 100, 2, self.tagId)
 ```
 
 ## PipeCad.AddAidPolygon
@@ -245,7 +245,7 @@ Add aid polygon to 3d viewer to help you with plate design construction.
 | thePointList | list | The aid polygon point list. |
 | theNumber | int | The aid axis group number. Design aids can be grouped together by using the number. |
 
-** Example **
+**Example**
 
 ```python
    aPointList = list()
@@ -261,7 +261,7 @@ Add aid polygon to 3d viewer to help you with plate design construction.
 Generate next available aid number.
 
 ```python
-   aAidNumber = PipeCad.NextAidNumber()
+aAidNumber = PipeCad.NextAidNumber()
 ```
 
 **Return**
@@ -272,7 +272,7 @@ The next available aid number.
 Remove the aid items by supplied aid number from 3d view.
 
 ```python
-    PipeCad.RemoveAid(int theNumber)
+PipeCad.RemoveAid(int theNumber)
 ```
 
 **Parameter List**
@@ -285,7 +285,7 @@ Remove the aid items by supplied aid number from 3d view.
 Clear all aid items from 3d view.
 
 ```python
-    PipeCad.ClearAid()
+PipeCad.ClearAid()
 ```
 
 ## PipeCad.addDockWidget
