@@ -687,6 +687,153 @@ def Include():
     aIncludeDlg.show()
 # Include
 
+
+class ReorderDialog(QDialog):
+    def __init__(self, theParent = None):
+        QDialog.__init__(self, theParent)
+
+        self.reorderItem = None
+
+        self.setupUi()
+    # __init__
+
+    def setupUi(self):
+        self.setWindowTitle(QT_TRANSLATE_NOOP("Design", "Reorder"))
+
+        self.verticalLayout = QVBoxLayout(self)
+        self.formLayout = QFormLayout()
+
+        # Name
+        self.buttonCE = QPushButton(QT_TRANSLATE_NOOP("Design", "CE"))
+        self.buttonCE.clicked.connect(self.setReorderItem)
+
+        self.labelCE = QLabel()
+
+        self.formLayout.setWidget(0, QFormLayout.LabelRole, self.buttonCE)
+        self.formLayout.setWidget(0, QFormLayout.FieldRole, self.labelCE)
+
+        # Reorder
+        self.labelOrder = QLabel(QT_TRANSLATE_NOOP("Design", "Reorder"))
+        self.checkOrder = QCheckBox(QT_TRANSLATE_NOOP("Design", "Before"))
+
+        self.formLayout.setWidget(1, QFormLayout.LabelRole, self.labelOrder)
+        self.formLayout.setWidget(1, QFormLayout.FieldRole, self.checkOrder)
+
+        self.verticalLayout.addLayout(self.formLayout)
+
+        # Member table.
+        self.tableSource = QTableWidget()
+        self.tableSource.setColumnCount(1)
+        self.tableSource.setHorizontalHeaderLabels([QT_TRANSLATE_NOOP("Design", "Source")])
+        self.tableSource.setEditTriggers(QAbstractItemView.NoEditTriggers)
+        self.tableSource.setAlternatingRowColors(True)
+        self.tableSource.setSelectionBehavior(QAbstractItemView.SelectRows)
+        self.tableSource.setSelectionMode(QAbstractItemView.SingleSelection)
+        self.tableSource.horizontalHeader().setStretchLastSection(True)
+        self.tableSource.verticalHeader().setMinimumSectionSize(18)
+        self.tableSource.verticalHeader().setDefaultSectionSize(18)
+
+        self.tableTarget = QTableWidget()
+        self.tableTarget.setColumnCount(1)
+        self.tableTarget.setHorizontalHeaderLabels([QT_TRANSLATE_NOOP("Design", "Target")])
+        self.tableTarget.setEditTriggers(QAbstractItemView.NoEditTriggers)
+        self.tableTarget.setAlternatingRowColors(True)
+        self.tableTarget.setSelectionBehavior(QAbstractItemView.SelectRows)
+        self.tableTarget.setSelectionMode(QAbstractItemView.SingleSelection)
+        self.tableTarget.horizontalHeader().setStretchLastSection(True)
+        self.tableTarget.verticalHeader().setMinimumSectionSize(18)
+        self.tableTarget.verticalHeader().setDefaultSectionSize(18)
+
+        self.horizontalLayout = QHBoxLayout()
+        self.horizontalLayout.addWidget(self.tableSource)
+        self.horizontalLayout.addWidget(self.tableTarget)
+
+        self.verticalLayout.addLayout(self.horizontalLayout)
+
+        # Button Box.
+        self.buttonBox = QDialogButtonBox(QDialogButtonBox.Cancel|QDialogButtonBox.Ok, self)
+
+        self.buttonBox.accepted.connect(self.accept)
+        self.buttonBox.rejected.connect(self.reject)
+
+        self.verticalLayout.addWidget(self.buttonBox)
+    # setupUi
+
+    def setReorderItem(self):
+        aTreeItem = PipeCad.CurrentItem()
+        aName = aTreeItem.Name
+        if len(aName) < 1:
+            aName = aTreeItem.RefNo
+        # if
+
+        self.labelCE.setText(aName)
+        self.reorderItem = aTreeItem
+
+        self.updateTable()
+    # setReorderItem
+
+    def updateTable(self):
+        if self.reorderItem is None:
+            return
+        # if
+
+        aMember = self.reorderItem.Member
+        aCount = len(aMember)
+
+        self.tableSource.setRowCount(aCount)
+        self.tableTarget.setRowCount(aCount)
+
+        for i in range(aCount):
+            aTreeItem = aMember[i]
+            aName = aTreeItem.Name
+            if len(aName) < 1:
+                aName = aTreeItem.Type + " " + str(aTreeItem.Sequence + 1)
+            # if
+
+            aTableItem = QTableWidgetItem(aName)
+            aTableItem.setData(Qt.UserRole, aTreeItem)
+            self.tableSource.setItem(i, 0, aTableItem)
+
+            aTableItem = QTableWidgetItem(aName)
+            aTableItem.setData(Qt.UserRole, aTreeItem)
+            self.tableTarget.setItem(i, 0, aTableItem)
+        # for
+    # updateTable
+
+    def accept(self):
+        aTableItemSource = self.tableSource.currentItem()
+        aTableItemTarget = self.tableTarget.currentItem()
+
+        if aTableItemSource is None or aTableItemTarget is None:
+            QMessageBox.warning(self, "", QT_TRANSLATE_NOOP("Design", "Please select source item and target item!"))
+            return
+        # if
+
+        aSourceItem = aTableItemSource.data(Qt.UserRole)
+        aTargetItem = aTableItemTarget.data(Qt.UserRole)
+
+        if aSourceItem == aTargetItem:
+            QMessageBox.warning(self, "", QT_TRANSLATE_NOOP("Design", "You cannot reorder an item before/after itself!"))
+            return
+        # if
+
+        aTargetRow = aTargetItem.Sequence + 1
+        if self.checkOrder.checked:
+            aTargetRow = aTargetItem.Sequence
+        # if
+
+        PipeCad.ReorderItem(aSourceItem, aTargetRow)
+
+        self.updateTable()
+    # accept
+
+# ReorderDialog
+
+
+# Singleton Instance.
+aReorderDlg = ReorderDialog(PipeCad)
+
 def Reorder():
-    print("order")
+    aReorderDlg.setReorderItem()
+    aReorderDlg.show()
 # Reorder
