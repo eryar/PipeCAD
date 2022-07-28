@@ -928,8 +928,175 @@ def CreateRectangularTorus():
     aRectangularTorusDlg.show()
 # CreateCircularTorus
 
+
+class ExtrusionDialog(QDialog):
+    def __init__(self, theParent = None):
+        QDialog.__init__(self, theParent)
+
+        self.aidNumber = PipeCad.NextAidNumber()
+
+        self.setupUi()
+    # __init__
+
+    def setupUi(self):
+        self.setWindowTitle(QT_TRANSLATE_NOOP("Primitive", "Create Extrusion"))
+
+        self.verticalLayout = QVBoxLayout(self)
+        self.formLayout = QFormLayout()
+
+        # Name
+        self.labelName = QLabel(QT_TRANSLATE_NOOP("Primitive", "Name"))
+        self.textName = QLineEdit()
+
+        self.formLayout.setWidget(0, QFormLayout.LabelRole, self.labelName)
+        self.formLayout.setWidget(0, QFormLayout.FieldRole, self.textName)
+
+        # Thickness
+        self.labelThickness = QLabel(QT_TRANSLATE_NOOP("Primitive", "Thickness"))
+        self.textThickness = QLineEdit("10")
+
+        self.formLayout.setWidget(1, QFormLayout.LabelRole, self.labelThickness)
+        self.formLayout.setWidget(1, QFormLayout.FieldRole, self.textThickness)
+
+        self.verticalLayout.addLayout(self.formLayout)
+
+        # Polyline vertex.
+        self.tableWidget = QTableWidget()
+        self.tableWidget.setColumnCount(4)
+        self.tableWidget.setHorizontalHeaderLabels(["X", "Y", "Z", "Radius"])
+        self.tableWidget.setAlternatingRowColors(True)
+        self.tableWidget.setSelectionMode(QAbstractItemView.SingleSelection)
+        self.tableWidget.horizontalHeader().setStretchLastSection(True)
+        self.tableWidget.horizontalHeader().setDefaultSectionSize(68)
+        self.tableWidget.verticalHeader().setMinimumSectionSize(16)
+        self.tableWidget.verticalHeader().setDefaultSectionSize(18)
+
+        self.verticalLayout.addWidget(self.tableWidget)
+
+        # Action box.
+        self.horizontalLayout = QHBoxLayout()
+
+        # Add, Remove
+        self.buttonAdd = QPushButton(QT_TRANSLATE_NOOP("Primitive", "Add"))
+        self.buttonAdd.clicked.connect(self.addVertex)
+
+        self.buttonRemove = QPushButton(QT_TRANSLATE_NOOP("Primitive", "Remove"))
+        self.buttonRemove.clicked.connect(self.removeVertex)
+
+        self.buttonPreview = QPushButton(QT_TRANSLATE_NOOP("Primitive", "Preview"))
+        self.buttonPreview.clicked.connect(self.previewLoop)
+
+        self.horizontalLayout.addWidget(self.buttonAdd)
+        self.horizontalLayout.addWidget(self.buttonRemove)
+        self.horizontalLayout.addWidget(self.buttonPreview)
+
+        self.buttonBox = QDialogButtonBox(QDialogButtonBox.Cancel|QDialogButtonBox.Ok, self)
+
+        self.buttonBox.accepted.connect(self.accept)
+        self.buttonBox.rejected.connect(self.reject)
+
+        self.horizontalLayout.addWidget(self.buttonBox)
+
+        self.verticalLayout.addLayout(self.horizontalLayout)
+    # setupUi
+
+    def addVertex(self):
+        aRow = self.tableWidget.currentRow()
+        if aRow == -1:
+            aRow = self.tableWidget.rowCount
+        else:
+            aRow = aRow + 1
+        # if
+
+        self.tableWidget.insertRow(aRow)
+        self.tableWidget.setItem(aRow, 0, QTableWidgetItem("0"))
+        self.tableWidget.setItem(aRow, 1, QTableWidgetItem("0"))
+        self.tableWidget.setItem(aRow, 2, QTableWidgetItem("0"))
+        self.tableWidget.setItem(aRow, 3, QTableWidgetItem("0"))
+    # addVertex
+
+    def removeVertex(self):
+        aRow = self.tableWidget.currentRow()
+
+        if QMessageBox.question(self, "", QT_TRANSLATE_NOOP("Primitive", "Are you to remove the selected vertex?")) == QMessageBox.Yes:
+            self.tableWidget.removeRow(aRow)
+        # if
+    # removeVertex
+
+    def previewLoop(self):
+
+        PipeCad.RemoveAid(self.aidNumber)
+
+        aPointList = list()
+
+        for r in range(self.tableWidget.rowCount):
+            aX = float(self.tableWidget.item(r, 0).text())
+            aY = float(self.tableWidget.item(r, 1).text())
+            aZ = float(self.tableWidget.item(r, 2).text())
+            aR = float(self.tableWidget.item(r, 3).text())
+
+            aPoint = Position(aX, aY, aZ)
+            aPointList.append(aPoint)
+        # for
+
+        PipeCad.AddAidPolygon(aPointList, self.aidNumber)
+        PipeCad.UpdateViewer()
+
+    # previewPanel
+
+    def accept(self):
+
+        PipeCad.StartTransaction("Create Extrusion")
+
+        PipeCad.CreateItem("EXTR", self.textName.text)
+
+        aPaneItem = PipeCad.CurrentItem()
+        aPaneItem.Height = float(self.textThickness.text)
+
+        PipeCad.CreateItem("LOOP")
+
+        for r in range(self.tableWidget.rowCount):
+            aX = float(self.tableWidget.item(r, 0).text())
+            aY = float(self.tableWidget.item(r, 1).text())
+            aZ = float(self.tableWidget.item(r, 2).text())
+            aR = float(self.tableWidget.item(r, 3).text())
+
+            PipeCad.CreateItem("VERT")
+            aVertItem = PipeCad.CurrentItem()
+            aVertItem.Position = Position(aX, aY, aZ)
+            aVertItem.Radius = aR
+        # for
+
+        PipeCad.CommitTransaction()
+
+        PipeCad.RemoveAid(self.aidNumber)
+        PipeCad.UpdateViewer()
+
+        QDialog.accept(self)
+    # accept
+
+    def reject(self):
+        PipeCad.RemoveAid(self.aidNumber)
+        QDialog.reject(self)
+    # reject
+
+# ExtrusionDialog
+
+# Singleton Instance.
+aExtrDlg = ExtrusionDialog(PipeCad)
+
+def CreateExtrusion():
+    aExtrDlg.show()
+# CreateExtrusion
+
+
+def CreateRevolution():
+    QMessageBox.warning(PipeCad, "", QT_TRANSLATE_NOOP("Primitive", "Not implement yet!"))
+# CreateRevolution
+
+
 def ConnectPoint():
-    print("ConnectPoint")
+    QMessageBox.warning(PipeCad, "", QT_TRANSLATE_NOOP("Primitive", "Not implement yet!"))
 # ConnectPoint
 
 
