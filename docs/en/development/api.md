@@ -234,6 +234,7 @@ aCurrentSession = PipeCad.CurrentSession
 | CollectItem | Collect items by supplied type |
 | SearchItem | Search items by supplied key and type |
 | IncludeItem | Include the supplied item into current item |
+| ReorderItem | Reorder the supplied item to target row |
 | Translate | Translate the current item |
 | Rotate | Rotate the current item |
 | PickItem | Pick item in the 3d viewer |
@@ -681,6 +682,20 @@ PipeCad.IncludeItem(TreeItem theTreeItem, int thePosition)
 | :--- | :--- | :--- |
 | theTreeItem | TreeItem | The tree item will be included into current item |
 | thePosition | int | The position in current item member list |
+
+## PipeCad.ReorderItem
+Reorder the supplied item to target row.
+
+```python
+PipeCad.ReorderItem(TreeItem theTreeItem, int theTargetRow)
+```
+
+**Parameter List**
+
+| Parameter | Type | Purpose |
+| :--- | :--- | :--- |
+| theTreeItem | TreeItem | The tree item will be included into current item |
+| theTargetRow | int | The target row you want move the item to. |
 
 ## PipeCad.Translate
 Translate the current item by a vector.
