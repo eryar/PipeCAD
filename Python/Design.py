@@ -712,13 +712,6 @@ class ReorderDialog(QDialog):
         self.formLayout.setWidget(0, QFormLayout.LabelRole, self.buttonCE)
         self.formLayout.setWidget(0, QFormLayout.FieldRole, self.labelCE)
 
-        # Reorder
-        self.labelOrder = QLabel(QT_TRANSLATE_NOOP("Design", "Reorder"))
-        self.checkOrder = QCheckBox(QT_TRANSLATE_NOOP("Design", "Before"))
-
-        self.formLayout.setWidget(1, QFormLayout.LabelRole, self.labelOrder)
-        self.formLayout.setWidget(1, QFormLayout.FieldRole, self.checkOrder)
-
         self.verticalLayout.addLayout(self.formLayout)
 
         # Member table.
@@ -817,10 +810,7 @@ class ReorderDialog(QDialog):
             return
         # if
 
-        aTargetRow = aTargetItem.Sequence + 1
-        if self.checkOrder.checked:
-            aTargetRow = aTargetItem.Sequence
-        # if
+        aTargetRow = aTargetItem.Sequence
 
         PipeCad.ReorderItem(aSourceItem, aTargetRow)
 
