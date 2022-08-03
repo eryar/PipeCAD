@@ -68,6 +68,8 @@ PipeCAD also combines Python to provide flexible secondary development functions
 
 [Python Plugins](./development/plugins.md)
 
+[Developing of new utility](./development/sample_utility.md)
+
 ## Video Training Examples
 
 It is recommended that you take a look at the video tutorial before using PipeCAD.
