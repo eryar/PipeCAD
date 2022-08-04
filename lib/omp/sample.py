@@ -1,6 +1,5 @@
 from PythonQt.QtCore import *
 from PythonQt.QtGui import *
-from PythonQt.QtSql import *
 
 from pipecad import *
 
