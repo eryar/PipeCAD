@@ -35,6 +35,25 @@ You also need to enter the username and password on the login interface of PipeC
 
 When creating a user, you need to enter a user name and password, select user permissions, and specify which Team the user belongs to. 
 
+## Import Project Definition from Excel
+To simplify and accelerate process of project setup, administrator can import project definition file using menu:    
+![Menu Import Project Definition](../../images/admin/user_guide/admin_menu_admin_import_en.png)
+
+After pressing button import form will be shown:
+![Form Import Project Definition](../../images/admin/user_guide/admin_import_project_definition_en.png)
+
+By pressing button **Explorer** you need to define location of project definition file (by default, folder **%TEMPLATES_DIR%** will be opened):
+![Form for selecting Project Definition file](../../images/admin/user_guide/admin_import_project_definition_path_en.png)
+
+Project definition file contais data for creating users, teams, databases and mdbs:
+![Form for selecting Project Definition file](../../images/admin/user_guide/admin_import_project_definition_path_en.png)
+
+After selecting file, utility will start importing data and creating elements which are missing in the project. In case of correct import icons will be colored by Green:  
+![Form for selecting Project Definition file](../../images/admin/user_guide/admin_import_project_definition_file.png)
+
+in versus case icons will be colored by Red:
+![Form for selecting Project Definition file](../../images/admin/user_guide/admin_import_project_definition_fail_en.png)
+
 ## Expunge User Session
 On module Admin panel, you can view the user information logged in the current project. To open form click the User Process button:
 
