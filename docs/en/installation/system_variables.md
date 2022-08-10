@@ -15,4 +15,4 @@ SET PYTHONPATH=%PYTHONPATH%;%~dp0lib\site-packages;C:\PipeCAD\lib
 * Path to folder where Python cache will be created:
 ```batch
 SET PYTHONPYCACHEPREFIX=%TEMP%
-batch
+```
