@@ -209,52 +209,53 @@ aCurrentSession = PipeCad.CurrentSession
 | Name  | Purpose |
 | :---  | :--- |
 | About | Show about dialog|
-| GetVersion | Get PipeCAD version string |
-| SaveWork | Save the modification to database |
-| AddAidLine | Add aid line to 3d viewer |
-| AddAidText | Add aid text to 3d viewer |
-| AddAidAxis | Add aid axis to 3d viewer |
 | AddAidArrow | Add aid arrow to 3d viewer |
+| AddAidAxis | Add aid axis to 3d viewer |
 | AddAidCylinder | Add aid cylinder to 3d viewer |
+| AddAidLine | Add aid line to 3d viewer |
 | AddAidPolygon | Add aid polygon to 3d viewer |
-| NextAidNumber | Generate next available aid number |
-| RemoveAid | Remove the aid items by supplied aid number from 3d view |
+| AddAidText | Add aid text to 3d viewer |
+| AddProjectItem | Add item that will be projected to 2d drawing |
+| Clear | Clear all items from 3d viewer |
 | ClearAid | Clear all aid items from 3d view |
-| CurrentItem | Get current selected item |
-| SetCurrentItem | Set current item |
-| GetItem | Get item by name |
-| StartTransaction | Start transaction to combine the following command to one |
+| CollectItem | Collect items by supplied type |
 | CommitTransaction | Commit transaction |
+| CreateDb | Create DB in Admin module |
 | CreateItem | Create a supplied type item |
-| DeleteItem | Delete selected item |
+| CreateMdb | Creeate MDB in Admin module |
 | CreateTeam | Create team in Admin module |
 | CreateUser | Create user in Admin module |
-| CreateMdb | Creeate MDB in Admin module |
-| CreateDb | Create DB in Admin module |
-| CollectItem | Collect items by supplied type |
-| SearchItem | Search items by supplied key and type |
+| CurrentItem | Get current selected item |
+| DeleteItem | Delete selected item |
+| Display | Display the selected item |
+| DisplayConnected | Display the items connected with the current item |
+| DisplayOnly | Only display the selected item |
+| GetAngularIncrement | Get angular increment for Model Editor |
+| GetItem | Get item by name |
+| GetLinearIncrement | Get linear increment for Model Editor |
+| GetVersion | Get PipeCAD version string |
 | IncludeItem | Include the supplied item into current item |
-| ReorderItem | Reorder the supplied item to target row |
-| Translate | Translate the current item |
-| Rotate | Rotate the current item |
+| Login | Login PipeCAD |
+| LookAt | Zoom 3d viewer by supplied item |
+| NextAidNumber | Generate next available aid number |
 | PickItem | Pick item in the 3d viewer |
 | PickPoint | Pick point in the 3d viewer |
-| LookAt | Zoom 3d viewer by supplied item |
-| Display | Display the selected item |
-| DisplayOnly | Only display the selected item |
-| DisplayConnected | Display the items connected with the current item |
-| Remove | Remove the selected items from 3d viewer |
-| Clear | Clear all items from 3d viewer |
-| UpdateViewer | Update 3d viewer |
-| SetIndicator | Set indicator for line edit |
-| Login | Login PipeCAD |
-| GetLinearIncrement | Get linear increment for Model Editor |
-| GetAngularIncrement | Get angular increment for Model Editor |
-| SetIncrements | Set linear and angular increment for Model Editor |
-| SetProjector | Set projector to produce 2D drawing |
-| AddProjectItem | Add item that will be projected to 2d drawing |
-| ProjectPoint | Project the point to 2d point |
 | ProjectDXF | Project items to 2d drawing |
+| ProjectPoint | Project the point to 2d point |
+| Remove | Remove the selected items from 3d viewer |
+| RemoveAid | Remove the aid items by supplied aid number from 3d view |
+| ReorderItem | Reorder the supplied item to target row |
+| Rotate | Rotate the current item |
+| SaveWork | Save the modification to database |
+| SearchItem | Search items by supplied key and type |
+| SetCurrentItem | Set current item |
+| SetIncrements | Set linear and angular increment for Model Editor |
+| SetIndicator | Set indicator for line edit |
+| SetProjector | Set projector to produce 2D drawing |
+| StartTransaction | Start transaction to combine the following command to one |
+| Translate | Translate the current item |
+| UpdateViewer | Update 3d viewer |
+
 
 **Signals**
 
@@ -716,12 +717,12 @@ PipeCad.Translate(Position thePos, Direction* theDir, double theOffset)
 | theDir | Direction | The translate along direction |
 | theOffset | double | The translate distance along the direction |
 
-## PipeCad.Roate
+## PipeCad.Rotate
 Rotate the current item. If there is no theAxis, will roate about the current item Z axis.
 
 ```python
 PipeCad.Rotate(LinkPoint theAxis, double theAngle)
-PipeCad.Roate(theAngle)
+PipeCad.Rotate(theAngle)
 ```
 
 **Parameter List**

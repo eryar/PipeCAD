@@ -52,6 +52,8 @@ PipeCAD also combines Python to provide flexible secondary development functions
 
 [Existing Project Connection](./installation/existing_project.md)
 
+[System Variables of PipeCAD](./installation/system_variables.md)
+
 [Login to Project](./installation/login_to_project.md)
 
 ## User Guides
@@ -69,6 +71,8 @@ PipeCAD also combines Python to provide flexible secondary development functions
 [Python Plugins](./development/plugins.md)
 
 [Developing of new utility](./development/new_utility.md)
+
+[Customisation of Ribbon menu](./common/ribbon_customisation.md)
 
 ## Video Training Examples
 
