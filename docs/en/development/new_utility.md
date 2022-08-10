@@ -46,7 +46,7 @@ sm.ShowSample()
 
 ![Commands in Python console](../../images/development/new_utility/python_console.png)  
 
-or it can be added button to ribbon menu (see [Customisation of ribbon menu](../../common/ribbon_customisation.md) ). 
+or it can be added button to ribbon menu (see [Customisation of ribbon menu](../common/ribbon_customisation.md) ). 
  
 In result form will be shown: 
 
