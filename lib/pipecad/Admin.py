@@ -437,8 +437,7 @@ class ImportProjectDialog(QDialog):
 
         #self.collect_reserved_db_numbers()
 
-        
-        aProjectsDir = os.getenv("PROJECTS_DIR")
+        aProjectsDir = QCoreApplication.applicationDirPath() + "/templates"
         excel_path = QFileDialog.getOpenFileName( self, 'Import Project Definition', aProjectsDir, "Excel file (*.xlsx)" )
         if len(excel_path) < 1:
             return
