@@ -3,7 +3,7 @@ from PythonQt.QtGui import *
 
 from pipecad import *
 
-class dlgSample(QDialog):
+class SampleDialog(QDialog):
     def __init__(self, parent = None):
         QDialog.__init__(self, parent)
         self.setupUi()
@@ -19,8 +19,8 @@ class dlgSample(QDialog):
     # setupUi
 
 # Singleton Instance.
-aSample = dlgSample(PipeCad)
+aSampleDlg = SampleDialog(PipeCad)
 
 def ShowSample():
-    aSample.show()
+    aSampleDlg.show()
 # Show
