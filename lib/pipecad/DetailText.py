@@ -31,7 +31,7 @@ class SdteDialog(QDialog):
 
     def setupUi(self):
         self.resize(500, 360)
-        self.setWindowTitle(self.tr("Detail Text Definition"))
+        self.setWindowTitle(QT_TRANSLATE_NOOP("Paragon", "Detail Text Definition"))
 
         self.verticalLayout = QVBoxLayout(self)
 
@@ -55,12 +55,12 @@ class SdteDialog(QDialog):
 
         self.treeWidget.currentItemChanged.connect(self.currentItemChanged)
 
-        self.database = QSqlDatabase.addDatabase("QSQLITE", "PipeStd")
-        self.database.setDatabaseName("PipeStd.db")
-        self.database.open()
+        aDatabase = QSqlDatabase.addDatabase("QSQLITE", "PipeStd_TEXT")
+        aDatabase.setDatabaseName("catalogues/PipeStd.db")
+        aDatabase.open()
 
         self.typeModel = QSqlQueryModel()
-        self.typeModel.setQuery("SELECT DISTINCT Type, Icon FROM SKEY", self.database)
+        self.typeModel.setQuery("SELECT DISTINCT Type, Icon FROM SKEY", aDatabase)
 
         for i in range(self.typeModel.rowCount()):
             aRecord = self.typeModel.record(i)
@@ -72,7 +72,7 @@ class SdteDialog(QDialog):
             aTypeItem.setIcon(0, QIcon(aIcon))
 
             self.skeyModel = QSqlQueryModel()
-            self.skeyModel.setQuery("SELECT Skey, Detail FROM SKEY WHERE Type='" + aType + "'", self.database)
+            self.skeyModel.setQuery("SELECT Skey, Detail FROM SKEY WHERE Type='" + aType + "'", aDatabase)
 
             for j in range(self.skeyModel.rowCount()):
                 aRecord = self.skeyModel.record(j)

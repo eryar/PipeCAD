@@ -482,11 +482,11 @@ class ModifyDialog(QDialog):
         self.formLayout.setWidget(0, QFormLayout.LabelRole, self.labelStart)
         self.formLayout.setWidget(0, QFormLayout.FieldRole, self.textStart)
 
-        self.formLayout.setWidget(1, QFormLayout.LabelRole, self.labelInterval)
-        self.formLayout.setWidget(1, QFormLayout.FieldRole, self.textInterval)
+        self.formLayout.setWidget(1, QFormLayout.LabelRole, self.labelEnd)
+        self.formLayout.setWidget(1, QFormLayout.FieldRole, self.textEnd)
 
-        self.formLayout.setWidget(2, QFormLayout.LabelRole, self.labelEnd)
-        self.formLayout.setWidget(2, QFormLayout.FieldRole, self.textEnd)
+        self.formLayout.setWidget(2, QFormLayout.LabelRole, self.labelInterval)
+        self.formLayout.setWidget(2, QFormLayout.FieldRole, self.textInterval)
 
         self.formLayout.setWidget(3, QFormLayout.FieldRole, self.buttonBuild)
 
@@ -998,12 +998,12 @@ class ModifyDialog(QDialog):
             return
         # if
 
-        aTableItem = self.tableBoltItem.item(aRow, 0)
-        if aTableItem is None:
+        aBoltItem = self.tableBoltItem.item(aRow, 0)
+        if aBoltItem is None:
             return
         # if
 
-        aSbolItem = aTableItem.data(Qt.UserRole)
+        aSbolItem = aBoltItem.data(Qt.UserRole)
         if aSbolItem is None:
             return
         # if

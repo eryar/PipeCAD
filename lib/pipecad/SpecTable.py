@@ -38,7 +38,7 @@ class TableWorldDialog(QDialog):
         self.formLayout = QFormLayout()
 
         # Name
-        self.labelName = QLabel(QT_TRANSLATE_NOOP("aPurpose", "Name"))
+        self.labelName = QLabel(QT_TRANSLATE_NOOP("Paragon", "Name"))
         self.lineEditName = QLineEdit()
 
         self.formLayout.setWidget(0, QFormLayout.LabelRole, self.labelName)
