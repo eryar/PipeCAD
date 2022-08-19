@@ -150,12 +150,12 @@ class CreateDialog(QDialog):
             aSpecItem = PipeCad.CurrentItem()
             aSpecItem.Purpose = aPurpose
             
-            self.database = QSqlDatabase.addDatabase("QSQLITE", "PipeSpec")
-            self.database.setDatabaseName("PipeStd.db")
-            self.database.open()
+            aDatabase = QSqlDatabase.addDatabase("QSQLITE", "PipeStd_SPEC")
+            aDatabase.setDatabaseName("catalogues/PipeStd.db")
+            aDatabase.open()
 
             self.queryModel = QSqlQueryModel()
-            self.queryModel.setQuery("SELECT type, name FROM HEAD WHERE purpose='" + aPurpose + "'", self.database)
+            self.queryModel.setQuery("SELECT type, name FROM HEAD WHERE purpose='" + aPurpose + "'", aDatabase)
 
             for i in range(self.queryModel.rowCount()):
                 aRecord = self.queryModel.record(i)
@@ -355,8 +355,8 @@ class ModifyDialog(QDialog):
         # if
 
         # Set headings.
-        aDatabase = QSqlDatabase.addDatabase("QSQLITE", "PipeSpec")
-        aDatabase.setDatabaseName("PipeStd.db")
+        aDatabase = QSqlDatabase.addDatabase("QSQLITE", "PipeStd_SPEC")
+        aDatabase.setDatabaseName("catalogues/PipeStd.db")
         aDatabase.open()
 
         self.comboBoxHeadings.clear()
@@ -460,6 +460,7 @@ class ModifyDialog(QDialog):
             aCateItem = aSpcoItem.Catref
             aSdteItem = aSpcoItem.Detref
             aSmteItem = aSpcoItem.Matref
+            aSbolItem = aSpcoItem.Bltref
 
             aSpcoName = aSpcoItem.Name
 
@@ -478,7 +479,12 @@ class ModifyDialog(QDialog):
                     self.tableWidgetSpec.setItem(aRow, c, QTableWidgetItem(aSpcoName))
                 elif aHeaderText == "TYPE":
                     self.tableWidgetSpec.setItem(aRow, c, QTableWidgetItem(aType))
+                elif aHeaderText == "BTYP":
+                    self.tableWidgetSpec.setItem(aRow, c, QTableWidgetItem(aSpcoItem.Purpose))
                 elif aHeaderText == "PBOR0" and aCateItem is not None:
+                    aParam = aCateItem.Param.split()
+                    self.tableWidgetSpec.setItem(aRow, c, QTableWidgetItem(aParam[0]))
+                elif aHeaderText == "BDIA" and aCateItem is not None:
                     aParam = aCateItem.Param.split()
                     self.tableWidgetSpec.setItem(aRow, c, QTableWidgetItem(aParam[0]))
                 elif aHeaderText == "PBOR1" and aCateItem is not None:
@@ -492,6 +498,8 @@ class ModifyDialog(QDialog):
                     self.tableWidgetSpec.setItem(aRow, c, QTableWidgetItem(aParam[1]))
                 elif aHeaderText == "SKEY" and aSdteItem is not None:
                     self.tableWidgetSpec.setItem(aRow, c, QTableWidgetItem(aSdteItem.Skey))
+                elif aHeaderText == "BSEL" and aSdteItem is not None:
+                    self.tableWidgetSpec.setItem(aRow, c, QTableWidgetItem(aSdteItem.Skey))
                 elif aHeaderText == "CATREF" and aCateItem is not None:
                     self.tableWidgetSpec.setItem(aRow, c, QTableWidgetItem(aCateItem.Name))
                 elif aHeaderText == "DETREF" and aSdteItem is not None:
@@ -500,6 +508,8 @@ class ModifyDialog(QDialog):
                     self.tableWidgetSpec.setItem(aRow, c, QTableWidgetItem(aSdteItem.Rtext))
                 elif aHeaderText == "MATREF" and aSmteItem is not None:
                     self.tableWidgetSpec.setItem(aRow, c, QTableWidgetItem(aSmteItem.Name))
+                elif aHeaderText == "BLTREF" and aSbolItem is not None:
+                    self.tableWidgetSpec.setItem(aRow, c, QTableWidgetItem(aSbolItem.Name))
                 # if
             # for
         # for
@@ -565,7 +575,30 @@ class ModifyDialog(QDialog):
     # setSmte
 
     def setSbol(self):
-        QMessageBox.information(self, "", "SET SBOL")
+        aSbolItem = PipeCad.CurrentItem()
+        if aSbolItem.Type != "SBOL":
+            QMessageBox.warning(self, "", "Please select a SBOL!")
+            return
+        # if
+
+        aRows = []
+        aSelectedItems = self.tableWidgetCate.selectedItems()
+        for aItem in aSelectedItems:
+            aRows.append(aItem.row())
+        # for
+
+        aRows = list(set(aRows))
+
+        if len(aRows) < 1:
+            return
+        # if
+
+        for r in aRows:
+            aTableItem = QTableWidgetItem(aSbolItem.Name)
+            aTableItem.setData(Qt.UserRole, aSbolItem)
+
+            self.tableWidgetCate.setItem(r, 6, aTableItem)
+        # for
     # setSbol
 
     def delSpco(self):
@@ -665,7 +698,7 @@ class ModifyDialog(QDialog):
             # if
         # for
 
-        if not hasSeleItem and aSpecItem.Purpose == "PIPE":
+        if not hasSeleItem and aSpecItem.Purpose in {"PIPE", "BOLT"}:
             PipeCad.SetCurrentItem(aSeleItem)
             try:
                 PipeCad.CreateItem("SELE", aSpecName + "/" + aType + "/" + aSkey)
@@ -688,6 +721,8 @@ class ModifyDialog(QDialog):
 
             aCatref = self.tableWidgetCate.item(r, 0).data(Qt.UserRole)
             aDetref = self.tableWidgetCate.item(r, 2).data(Qt.UserRole)
+            aMatref = self.tableWidgetCate.item(r, 5).data(Qt.UserRole)
+            aBltref = self.tableWidgetCate.item(r, 6).data(Qt.UserRole)
 
             PipeCad.SetCurrentItem(aSpcoItem)
 
@@ -699,6 +734,7 @@ class ModifyDialog(QDialog):
 
             aSpcoItem = PipeCad.CurrentItem()
             aSpcoItem.Answer = aBore
+            aSpcoItem.Purpose = aType
 
             if aCatref is not None:
                 aSpcoItem.Catref = aCatref
@@ -706,6 +742,14 @@ class ModifyDialog(QDialog):
 
             if aDetref is not None:
                 aSpcoItem.Detref = aDetref
+            # if
+
+            if aMatref is not None:
+                aSpcoItem.Matref = aMatref
+            # if
+
+            if aBltref is not None:
+                aSpcoItem.Bltref = aBltref
             # if
 
         PipeCad.CommitTransaction()

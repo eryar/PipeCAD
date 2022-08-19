@@ -32,20 +32,20 @@ class CreateDialog(QDialog):
 
     def setupUi(self):
         self.resize(280, 100)
-        self.setWindowTitle(self.tr("Create Bolt Table"))
+        self.setWindowTitle(QT_TRANSLATE_NOOP("Paragon", "Create Bolt Table"))
 
         self.verticalLayout = QVBoxLayout(self)
         self.formLayout = QFormLayout()
 
         # Name
-        self.labelName = QLabel("Name")
+        self.labelName = QLabel(QT_TRANSLATE_NOOP("Paragon", "Name"))
         self.lineEditName = QLineEdit()
 
         self.formLayout.setWidget(0, QFormLayout.LabelRole, self.labelName)
         self.formLayout.setWidget(0, QFormLayout.FieldRole, self.lineEditName)
 
         # Purpose
-        self.labelPurpose = QLabel("Purpose")
+        self.labelPurpose = QLabel(QT_TRANSLATE_NOOP("Paragon", "Purpose"))
         self.comboPurpose = QComboBox()
         self.comboPurpose.setEditable(True)
         self.comboPurpose.addItem("PIPE")
@@ -58,8 +58,7 @@ class CreateDialog(QDialog):
 
         self.verticalLayout.addLayout(self.formLayout)
 
-        self.buttonBox = QDialogButtonBox()
-        self.buttonBox.setStandardButtons(QDialogButtonBox.Cancel|QDialogButtonBox.Ok)
+        self.buttonBox = QDialogButtonBox(QDialogButtonBox.Cancel|QDialogButtonBox.Ok, self)
 
         self.buttonBox.accepted.connect(self.accept)
         self.buttonBox.rejected.connect(self.reject)
@@ -73,7 +72,7 @@ class CreateDialog(QDialog):
         aPurpose = self.comboPurpose.currentText
 
         if len(aName) < 1:
-            QMessageBox.warning(self, "", "Please input name!")
+            QMessageBox.warning(self, "", QT_TRANSLATE_NOOP("Paragon", "Please input bolt table name!"))
             return
         # if
 
@@ -106,7 +105,7 @@ class InputDialog(QDialog):
         self.verticalLayout = QVBoxLayout(self)
 
         self.formLayout = QFormLayout()
-        self.labelName = QLabel("Name")
+        self.labelName = QLabel(QT_TRANSLATE_NOOP("aPurpose", "Name"))
         self.textName = QLineEdit()
         self.textName.setMinimumWidth(180)
         self.formLayout.setWidget(0, QFormLayout.LabelRole, self.labelName)
@@ -114,8 +113,7 @@ class InputDialog(QDialog):
 
         self.verticalLayout.addLayout(self.formLayout)
 
-        self.buttonBox = QDialogButtonBox()
-        self.buttonBox.setStandardButtons(QDialogButtonBox.Cancel|QDialogButtonBox.Ok)
+        self.buttonBox = QDialogButtonBox(QDialogButtonBox.Cancel|QDialogButtonBox.Ok, self)
 
         self.buttonBox.accepted.connect(self.accept)
         self.buttonBox.rejected.connect(self.reject)
@@ -141,7 +139,7 @@ class BoltDialog(QDialog):
     # __init__
 
     def setupUi(self):
-        self.setWindowTitle("Single Bolt")
+        self.setWindowTitle(QT_TRANSLATE_NOOP("Paragon", "Single Bolt"))
 
         self.verticalLayout = QVBoxLayout(self)
         self.formLayout = QFormLayout()
@@ -196,6 +194,8 @@ class BoltDialog(QDialog):
         self.tableBoltItem.setSelectionMode(QAbstractItemView.SingleSelection)
         self.tableBoltItem.setSelectionBehavior(QAbstractItemView.SelectRows)
 
+        self.tableBoltItem.cellClicked.connect(self.boltItemClicked)
+
         self.verticalLayout.addWidget(self.tableBoltItem)
 
         self.horizontalLayout = QHBoxLayout()
@@ -203,23 +203,23 @@ class BoltDialog(QDialog):
         self.comboItemType.addItems(["NUT", "WASH"])
         self.textItemLength = QLineEdit("0")
 
-        self.buttonAdd = QPushButton(QIcon(":/PipeCad/Resources/add_item.png"), "")
+        self.buttonAdd = QPushButton(QIcon(":/PipeCad/Resources/plus.png"), "")
         self.buttonAdd.setToolTip("Add Item")
         self.buttonAdd.clicked.connect(self.addBoltItem)
 
-        self.buttonModify = QPushButton(QIcon(":/PipeCad/Resources/modify_item.png"), "")
+        self.buttonModify = QPushButton(QIcon(":/PipeCad/Resources/modify_bolt.png"), "")
         self.buttonModify.setToolTip("Modify Item")
         self.buttonModify.clicked.connect(self.modifyBoltItem)
 
-        self.buttonDelete = QPushButton(QIcon(":/PipeCad/Resources/model_delete.png"), "")
+        self.buttonDelete = QPushButton(QIcon(":/PipeCad/Resources/minus.png"), "")
         self.buttonDelete.setToolTip("Delete Item")
         self.buttonDelete.clicked.connect(self.deleteBoltItem)
 
         self.horizontalLayout.addWidget(self.comboItemType)
         self.horizontalLayout.addWidget(self.textItemLength)
         self.horizontalLayout.addWidget(self.buttonAdd)
-        self.horizontalLayout.addWidget(self.buttonModify)
         self.horizontalLayout.addWidget(self.buttonDelete)
+        self.horizontalLayout.addWidget(self.buttonModify)
 
         self.verticalLayout.addLayout(self.horizontalLayout)
 
@@ -245,13 +245,35 @@ class BoltDialog(QDialog):
             return
         # if
 
+        self.comboStd.setCurrentText(theSbolItem.Stdblength.Name)
+
         self.sbolItem = theSbolItem
 
         self.textName.setText(theSbolItem.Name)
         self.textDiameter.setText(theSbolItem.Bdiameter)
         self.textLength.setText(theSbolItem.Length)
         self.textNumber.setText(theSbolItem.Noff)
+
+        aBoltItems = theSbolItem.Bitems.split()
+        aItemLength = theSbolItem.Bitlength.split()
+        if len(aBoltItems) == len(aItemLength):
+            aRow = len(aBoltItems)
+            self.tableBoltItem.setRowCount(aRow)
+
+            for i in range(aRow):
+                self.tableBoltItem.setItem(i, 0, QTableWidgetItem(aBoltItems[i]))
+                self.tableBoltItem.setItem(i, 1, QTableWidgetItem(aItemLength[i]))
+            # for
+        # if
     # reset
+
+    def boltItemClicked(self, theRow):
+        aType = self.tableBoltItem.item(theRow, 0).text()
+        aLength = self.tableBoltItem.item(theRow, 1).text()
+
+        self.comboItemType.setCurrentText(aType)
+        self.textItemLength.setText(aLength)
+    # boltItemClicked
 
     def addBoltItem(self):
         aItem = self.comboItemType.currentText
@@ -356,7 +378,7 @@ class ModifyDialog(QDialog):
 
     def setupUi(self):
         self.resize(680, 600)
-        self.setWindowTitle(self.tr("Modify Bolt Table"))
+        self.setWindowTitle(QT_TRANSLATE_NOOP("Paragon", "Modify Bolt Table"))
 
         self.verticalLayout = QVBoxLayout(self)
 
@@ -376,11 +398,11 @@ class ModifyDialog(QDialog):
 
         # Bolt Length Tabe.
         self.tabLength = QWidget()
-        self.tabWidget.addTab(self.tabLength, "Bolt Length")
+        self.tabWidget.addTab(self.tabLength, QT_TRANSLATE_NOOP("Paragon", "Bolt Length"))
 
         self.verticalLayoutTab = QVBoxLayout(self.tabLength)
 
-        self.groupBox = QGroupBox("Length Table")
+        self.groupBox = QGroupBox(QT_TRANSLATE_NOOP("Paragon", "Length Table"))
         self.verticalLayoutTab.addWidget(self.groupBox)
         self.horizontalLayoutBox = QHBoxLayout(self.groupBox)
 
@@ -399,8 +421,8 @@ class ModifyDialog(QDialog):
         self.horizontalLayoutBox.addWidget(self.tableLength)
 
         self.verticalLayoutTemp = QVBoxLayout()
-        self.buttonAddLength = QPushButton("Add Length Table")
-        self.buttonDelLength = QPushButton("Delete Length Table")
+        self.buttonAddLength = QPushButton(QT_TRANSLATE_NOOP("Paragon", "Add Length Table"))
+        self.buttonDelLength = QPushButton(QT_TRANSLATE_NOOP("Paragon", "Delete Length Table"))
         aSpacerItem = QSpacerItem(40, 20, QSizePolicy.Minimum, QSizePolicy.Expanding)
 
         self.buttonAddLength.clicked.connect(self.addLengthTable)
@@ -412,7 +434,7 @@ class ModifyDialog(QDialog):
 
         self.horizontalLayoutBox.addLayout(self.verticalLayoutTemp)
 
-        self.groupBox = QGroupBox("Diameter Table")
+        self.groupBox = QGroupBox(QT_TRANSLATE_NOOP("Paragon", "Diameter Table"))
         self.verticalLayoutTab.addWidget(self.groupBox)
         self.horizontalLayoutBox = QHBoxLayout(self.groupBox)
 
@@ -430,8 +452,8 @@ class ModifyDialog(QDialog):
         self.tableDiameter.itemClicked.connect(self.diameterTableClicked)
 
         self.horizontalLayout = QHBoxLayout()
-        self.buttonAddDiameter = QPushButton("Add Diameter Table")
-        self.buttonDelDiameter = QPushButton("Delete Diameter Table")
+        self.buttonAddDiameter = QPushButton(QT_TRANSLATE_NOOP("Paragon", "Add Diameter Table"))
+        self.buttonDelDiameter = QPushButton(QT_TRANSLATE_NOOP("Paragon", "Delete Diameter Table"))
         self.horizontalSpacer = QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
         self.horizontalLayout.addWidget(self.buttonAddDiameter)
         self.horizontalLayout.addWidget(self.buttonDelDiameter)
@@ -448,23 +470,23 @@ class ModifyDialog(QDialog):
         # Create Length Values.
         self.verticalLayoutTemp = QVBoxLayout()
         self.formLayout = QFormLayout()
-        self.labelStart = QLabel("Length Start")
+        self.labelStart = QLabel(QT_TRANSLATE_NOOP("Paragon", "Length Start"))
         self.textStart = QLineEdit("0")
-        self.labelInterval = QLabel("Length Interval")
+        self.labelInterval = QLabel(QT_TRANSLATE_NOOP("Paragon", "Length Interval"))
         self.textInterval = QLineEdit("0")
-        self.labelEnd = QLabel("Length End")
+        self.labelEnd = QLabel(QT_TRANSLATE_NOOP("Paragon", "Length End"))
         self.textEnd = QLineEdit("0")
-        self.buttonBuild = QPushButton("Build")
+        self.buttonBuild = QPushButton(QT_TRANSLATE_NOOP("Paragon", "Build"))
         self.buttonBuild.clicked.connect(self.buildLength)
 
         self.formLayout.setWidget(0, QFormLayout.LabelRole, self.labelStart)
         self.formLayout.setWidget(0, QFormLayout.FieldRole, self.textStart)
 
-        self.formLayout.setWidget(1, QFormLayout.LabelRole, self.labelInterval)
-        self.formLayout.setWidget(1, QFormLayout.FieldRole, self.textInterval)
+        self.formLayout.setWidget(1, QFormLayout.LabelRole, self.labelEnd)
+        self.formLayout.setWidget(1, QFormLayout.FieldRole, self.textEnd)
 
-        self.formLayout.setWidget(2, QFormLayout.LabelRole, self.labelEnd)
-        self.formLayout.setWidget(2, QFormLayout.FieldRole, self.textEnd)
+        self.formLayout.setWidget(2, QFormLayout.LabelRole, self.labelInterval)
+        self.formLayout.setWidget(2, QFormLayout.FieldRole, self.textInterval)
 
         self.formLayout.setWidget(3, QFormLayout.FieldRole, self.buttonBuild)
 
@@ -480,16 +502,21 @@ class ModifyDialog(QDialog):
         self.tableItem.setHorizontalHeaderLabels(["Length"])
         self.tableItem.horizontalHeader().setStretchLastSection(True)
         self.tableItem.verticalHeader().setDefaultSectionSize(18)
-        self.tableItem.setEditTriggers(QAbstractItemView.NoEditTriggers)
+        #self.tableItem.setEditTriggers(QAbstractItemView.NoEditTriggers)
         self.tableItem.setSelectionMode(QAbstractItemView.SingleSelection)
         self.tableItem.setSelectionBehavior(QAbstractItemView.SelectRows)
 
         self.horizontalLayout = QHBoxLayout()
-        self.buttonDelItem = QPushButton("Delete Length")
+        self.buttonDelItem = QPushButton(QT_TRANSLATE_NOOP("Paragon", "Delete Length"))
         self.buttonDelItem.clicked.connect(self.deleteLengthItem)
-        aSpacerItem = QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
+
+        self.buttonApplyItem = QPushButton(QT_TRANSLATE_NOOP("Paragon", "Apply"))
+        self.buttonApplyItem.clicked.connect(self.applyLengthItem)
+
         self.horizontalLayout.addWidget(self.buttonDelItem)
-        self.horizontalLayout.addItem(aSpacerItem)
+        self.horizontalLayout.addWidget(self.buttonApplyItem)
+        #aSpacerItem = QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
+        #self.horizontalLayout.addItem(aSpacerItem)
 
         self.verticalLayoutTemp.addWidget(self.tableItem)
         self.verticalLayoutTemp.addLayout(self.horizontalLayout)
@@ -497,11 +524,11 @@ class ModifyDialog(QDialog):
 
         # Single Bolt Tab.
         self.tabBolt = QWidget()
-        self.tabWidget.addTab(self.tabBolt, "Single Bolt")
+        self.tabWidget.addTab(self.tabBolt, QT_TRANSLATE_NOOP("Paragon", "Single Bolt"))
 
         self.verticalLayoutTab = QVBoxLayout(self.tabBolt)
 
-        self.groupBox = QGroupBox("Single Bolt List")
+        self.groupBox = QGroupBox(QT_TRANSLATE_NOOP("Paragon", "Single Bolt List"))
         self.verticalLayoutTab.addWidget(self.groupBox)
 
         self.horizontalLayoutBox = QHBoxLayout(self.groupBox)
@@ -520,8 +547,8 @@ class ModifyDialog(QDialog):
         self.horizontalLayoutBox.addWidget(self.tableBoltList)
 
         self.verticalLayoutTemp = QVBoxLayout()
-        self.buttonAddBoltList = QPushButton("Add Bolt List")
-        self.buttonDelBoltList = QPushButton("Delete Bolt List")
+        self.buttonAddBoltList = QPushButton(QT_TRANSLATE_NOOP("Paragon", "Add Single Bolt List"))
+        self.buttonDelBoltList = QPushButton(QT_TRANSLATE_NOOP("Paragon", "Delete Single Bolt List"))
         aSpacerItem = QSpacerItem(40, 20, QSizePolicy.Minimum, QSizePolicy.Expanding)
 
         self.buttonAddBoltList.clicked.connect(self.addBoltList)
@@ -533,7 +560,7 @@ class ModifyDialog(QDialog):
 
         self.horizontalLayoutBox.addLayout(self.verticalLayoutTemp)
 
-        self.groupBox = QGroupBox("Single Bolt Elements")
+        self.groupBox = QGroupBox(QT_TRANSLATE_NOOP("Paragon", "Single Bolt Elements"))
         self.verticalLayoutTab.addWidget(self.groupBox)
 
         self.verticalLayoutBox = QVBoxLayout(self.groupBox)
@@ -552,9 +579,9 @@ class ModifyDialog(QDialog):
         self.verticalLayoutBox.addWidget(self.tableBoltItem)
 
         self.horizontalLayoutBox = QHBoxLayout()
-        self.buttonAddBolt = QPushButton("Add Bolt")
-        self.buttonModBolt = QPushButton("Modify Bolt")
-        self.buttonDelBolt = QPushButton("Delete Bolt")
+        self.buttonAddBolt = QPushButton(QT_TRANSLATE_NOOP("Paragon", "Add Bolt"))
+        self.buttonModBolt = QPushButton(QT_TRANSLATE_NOOP("Paragon", "Modify Bolt"))
+        self.buttonDelBolt = QPushButton(QT_TRANSLATE_NOOP("Paragon", "Delete Bolt"))
         aSpacerItem = QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
 
         self.buttonAddBolt.clicked.connect(self.addBolt)
@@ -571,8 +598,8 @@ class ModifyDialog(QDialog):
         self.verticalLayout.addWidget(self.tabWidget)
 
         # ButtonBox.
-        self.buttonBox = QDialogButtonBox()
-        self.buttonBox.setStandardButtons(QDialogButtonBox.Cancel)
+        self.buttonBox = QDialogButtonBox(QDialogButtonBox.Cancel, self)
+        #self.buttonBox.setStandardButtons()
 
         self.verticalLayout.addWidget(self.buttonBox)
 
@@ -604,6 +631,9 @@ class ModifyDialog(QDialog):
                 self.tableLength.setItem(aRow, 0, aTableItem)
             # if
         # for
+
+        self.tableDiameter.setRowCount(0)
+        self.tableItem.setRowCount(0)
 
         if self.tableLength.rowCount > 0:
             aTableItem = self.tableLength.item(0, 0)
@@ -681,7 +711,7 @@ class ModifyDialog(QDialog):
             return
         # if
 
-        aInputDlg = InputDialog("Add Length Table", self)
+        aInputDlg = InputDialog(QT_TRANSLATE_NOOP("Paragon", "Add Length Table"), self)
         if aInputDlg.exec() == QDialog.Rejected:
             return
         # if
@@ -716,7 +746,21 @@ class ModifyDialog(QDialog):
     # addLengthTable
 
     def delLengthTable(self):
-        QMessageBox.question(self, "", "Are you sure to delete the length table " + "?")
+        aTableItem = self.tableLength.currentItem()
+        if aTableItem is None:
+            return
+        # if
+
+        if QMessageBox.question(self, "", QT_TRANSLATE_NOOP("Paragon", "Are you sure to delete the length table " + aTableItem.text())) != QMessageBox.Yes:
+            return
+        # if
+
+        aLtabItem = aTableItem.data(Qt.UserRole)
+        PipeCad.SetCurrentItem(aLtabItem)
+        PipeCad.DeleteItem(aLtabItem.Type)
+
+        self.resetBoltLength(self.boltTable)
+
     # delLengthTable
 
     def addDiameterTable(self):
@@ -763,7 +807,20 @@ class ModifyDialog(QDialog):
     # addDiameterTable
 
     def delDiameterTable(self):
-        QMessageBox.question(self, "", "Are you sure to delete the diameter table " + "?")
+        aTableItem = self.tableDiameter.currentItem()
+        if aTableItem is None:
+            return
+        # if
+
+        if QMessageBox.question(self, "", QT_TRANSLATE_NOOP("Paragon", "Are you sure to delete the diameter table " + aTableItem.text())) != QMessageBox.Yes:
+            return
+        # if
+
+        aDtabItem = aTableItem.data(Qt.UserRole)
+        PipeCad.SetCurrentItem(aDtabItem)
+        PipeCad.DeleteItem(aDtabItem.Type)
+
+        self.resetBoltLength(self.boltTable)
     # delDiameterTable
 
     def buildLength(self):
@@ -800,15 +857,38 @@ class ModifyDialog(QDialog):
     # buildLength
 
     def deleteLengthItem(self):
-        QMessageBox.warning(self, "", "delete length")
+        aRow = self.tableItem.currentRow()
+
+        self.tableItem.removeRow(aRow)
     # deleteLengthItem
+
+    def applyLengthItem(self):
+        aTableItem = self.tableDiameter.currentItem()
+        if aTableItem is None:
+            return
+        # if
+
+        aDtabItem = aTableItem.data(Qt.UserRole)
+        if aDtabItem is None:
+            return
+        # if
+
+        aLengthList = []
+
+        for i in range (self.tableItem.rowCount):
+            aTableItem = self.tableItem.item(i, 0)
+            aLengthList.append(aTableItem.text())
+        # for
+
+        aDtabItem.Blength = " ".join(aLengthList)
+    # applyLengthItem
 
     def addBoltList(self):
         if self.boltTable is None:
             return
         # if
 
-        aInputDlg = InputDialog("Add Bolt List", self)
+        aInputDlg = InputDialog(QT_TRANSLATE_NOOP("Paragon", "Add Bolt List"), self)
         if aInputDlg.exec() == QDialog.Rejected:
             return
         # if
@@ -918,12 +998,12 @@ class ModifyDialog(QDialog):
             return
         # if
 
-        aTableItem = self.tableBoltItem.item(aRow, 0)
-        if aTableItem is None:
+        aBoltItem = self.tableBoltItem.item(aRow, 0)
+        if aBoltItem is None:
             return
         # if
 
-        aSbolItem = aTableItem.data(Qt.UserRole)
+        aSbolItem = aBoltItem.data(Qt.UserRole)
         if aSbolItem is None:
             return
         # if

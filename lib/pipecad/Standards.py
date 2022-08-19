@@ -78,19 +78,19 @@ class StandardDialog(QDialog):
 
     def setupUi(self):
         self.resize(860, 680)
-        self.setWindowTitle(self.tr("Standard Component"))
+        self.setWindowTitle(QT_TRANSLATE_NOOP("Paragon", "Standard Component"))
         
         self.verticalLayout = QVBoxLayout(self)
         
         self.horizontalLayout = QHBoxLayout()
         self.horizontalLayout.setSpacing(6)
         
-        self.database = QSqlDatabase.addDatabase("QSQLITE", "PipeStd")
-        self.database.setDatabaseName("PipeStd.db")
-        self.database.open()
-        self.database.exec("PRAGMA foreign_keys = ON;")
+        aDatabase = QSqlDatabase.addDatabase("QSQLITE", "PipeStd_STD")
+        aDatabase.setDatabaseName("catalogues/PipeStd.db")
+        aDatabase.open()
+        aDatabase.exec("PRAGMA foreign_keys = ON;")
 
-        self.tableModel = QSqlTableModel(self, self.database)
+        self.tableModel = QSqlTableModel(self, aDatabase)
 
         self.queryModel = QSqlQueryModel()
         
@@ -124,7 +124,7 @@ class StandardDialog(QDialog):
 
         aItemIcon = QIcon(":/PipeCad/Resources/ITEM.png")
 
-        aCataQueryModel.setQuery("SELECT id, name, icon FROM CATA", self.database)
+        aCataQueryModel.setQuery("SELECT id, name, icon FROM CATA", aDatabase)
         for r in range(aCataQueryModel.rowCount()):
             aRecord = aCataQueryModel.record(r)
             aCataId = aRecord.field("id").value()
@@ -133,7 +133,7 @@ class StandardDialog(QDialog):
             aCataItem.setText(0, aRecord.field("name").value())
             aCataItem.setIcon(0, QIcon(aIconName))
 
-            aSectQueryModel.setQuery("SELECT id, name, icon FROM SECT WHERE pid=" + str(aCataId), self.database)
+            aSectQueryModel.setQuery("SELECT id, name, icon FROM SECT WHERE pid=" + str(aCataId), aDatabase)
             for s in range(aSectQueryModel.rowCount()):
                 aRecord = aSectQueryModel.record(s)
                 aSectId = aRecord.field("id").value()
@@ -148,7 +148,7 @@ class StandardDialog(QDialog):
                 else:
                     aIcon = aItemIcon
 
-                aCateQueryModel.setQuery("SELECT id, name, tooltip FROM CATE WHERE pid=" + str(aSectId), self.database)
+                aCateQueryModel.setQuery("SELECT id, name, tooltip FROM CATE WHERE pid=" + str(aSectId), aDatabase)
                 for c in range (aCateQueryModel.rowCount()):
                     aRecord = aCateQueryModel.record(c)
                     aCateId = aRecord.field("id").value()
@@ -158,7 +158,7 @@ class StandardDialog(QDialog):
                     aCateItem.setData(0, Qt.UserRole, aCateId)
                     aCateItem.setToolTip(0, aRecord.field("tooltip").value())
 
-                    aItemQueryModel.setQuery("SELECT id, name, detail FROM SDTE WHERE pid=" + str(aCateId), self.database)
+                    aItemQueryModel.setQuery("SELECT id, name, detail FROM SDTE WHERE pid=" + str(aCateId), aDatabase)
                     for i in range (aItemQueryModel.rowCount()):
                         aRecord = aItemQueryModel.record(i)
                         aStadItem = QTreeWidgetItem(aCateItem, 1)
@@ -338,7 +338,8 @@ class StandardDialog(QDialog):
 
         aColumns = aDataFrame.columns.values.tolist()
 
-        self.database.transaction()
+        aDatabase = self.tableModel.database()
+        aDatabase.transaction()
 
         for aIndex, aRow in aDataFrame.iterrows():
             aRowCount = self.tableView.model().rowCount()
@@ -356,7 +357,7 @@ class StandardDialog(QDialog):
             self.tableModel.submit()
         # for
 
-        self.database.commit()
+        aDatabase.commit()
 
         self.currentItemChanged(aTreeItem)
 
@@ -456,7 +457,7 @@ class StandardDialog(QDialog):
         aDetail = aCateDlg.textDetail.text
 
         aSql = "UPDATE SDTE SET name='" + aNewName + "', detail='" + aDetail + "' WHERE id=" + str(aItem.data(0, Qt.UserRole))
-        self.database.exec(aSql)
+        self.tableModel.database().exec(aSql)
 
         aItem.setText(0, aNewName)
         aItem.setToolTip(0, aDetail)
@@ -474,7 +475,7 @@ class StandardDialog(QDialog):
 
         # Delete it from Database.
         aSql = "DELETE FROM SDTE WHERE id=" + str(aItem.data(0, Qt.UserRole))
-        self.database.exec(aSql)
+        self.tableModel.database().exec(aSql)
 
     # deleteCategory
 
@@ -575,8 +576,6 @@ class StandardDialog(QDialog):
         elif aSkey == "CKSW":
             self.buildCksw()
         # if
-
-        QDialog.accept(self)
     # accept
 
     def buildTube(self):
