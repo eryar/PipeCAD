@@ -145,11 +145,11 @@ class BoxDialog(QDialog):
     def activateName(self):
         self.boxItem = None
 
-        self.checkNegative.setEnabled(True)
-
         aIndex = self.comboName.currentIndex
         if aIndex == 1:
             # modify box
+            self.setWindowTitle(QT_TRANSLATE_NOOP("Design", "Modify Box"))
+
             aTreeItem = PipeCad.CurrentItem()
             if aTreeItem.Type not in {"BOX", "NBOX"}:
                 QMessageBox.warning(self, "", QT_TRANSLATE_NOOP("Design", "Please select BOX/NBOX to modify!"))
@@ -170,6 +170,9 @@ class BoxDialog(QDialog):
             self.textPx.setText(str(aPosition.X))
             self.textPy.setText(str(aPosition.Y))
             self.textPz.setText(str(aPosition.Z))
+        else:
+            self.setWindowTitle(QT_TRANSLATE_NOOP("Design", "Create Box"))
+            self.checkNegative.setEnabled(True)
         # if
     # activateName
 
@@ -246,12 +249,14 @@ def CreateBox():
 class CylinderDialog(QDialog):
     def __init__(self, parent = None):
         QDialog.__init__(self, parent)
+
+        self.cyliItem = None
         
         self.setupUi()
     # __init__
 
     def setupUi(self):
-        self.setWindowTitle(self.tr("Create Cylinder"))
+        self.setWindowTitle(QT_TRANSLATE_NOOP("Design", "Create Cylinder"))
 
         self.horizontalLayout = QHBoxLayout(self)
         self.verticalLayout = QVBoxLayout()
@@ -263,13 +268,14 @@ class CylinderDialog(QDialog):
         self.textName = QLineEdit()
         self.textName.setMinimumWidth(150)
 
-        self.comboName.addItem(self.tr("Create"))
-        self.comboName.addItem(self.tr("Modify"))
+        self.comboName.addItem(QT_TRANSLATE_NOOP("Design", "Create"))
+        self.comboName.addItem(QT_TRANSLATE_NOOP("Design", "Modify"))
+        self.comboName.activated.connect(self.activateName)
 
         self.formLayout.setWidget(0, QFormLayout.LabelRole, self.comboName)
         self.formLayout.setWidget(0, QFormLayout.FieldRole, self.textName)
 
-        self.labelNegative = QLabel(self.tr("Negative"))
+        self.labelNegative = QLabel(QT_TRANSLATE_NOOP("Design", "Negative"))
         self.checkNegative = QCheckBox()
 
         self.formLayout.setWidget(1, QFormLayout.LabelRole, self.labelNegative)
@@ -286,13 +292,13 @@ class CylinderDialog(QDialog):
         # Dimensions.
         self.formLayout = QFormLayout()
 
-        self.labelDiameter = QLabel(self.tr("Diameter"))
+        self.labelDiameter = QLabel(QT_TRANSLATE_NOOP("Design", "Diameter"))
         self.textDiameter = QLineEdit("0.0")
 
         self.formLayout.setWidget(0, QFormLayout.LabelRole, self.labelDiameter)
         self.formLayout.setWidget(0, QFormLayout.FieldRole, self.textDiameter)
         
-        self.labelHeight = QLabel(self.tr("Height"))
+        self.labelHeight = QLabel(QT_TRANSLATE_NOOP("Design", "Height"))
         self.textHeight = QLineEdit("0.0")
 
         self.formLayout.setWidget(1, QFormLayout.LabelRole, self.labelHeight)
@@ -309,19 +315,19 @@ class CylinderDialog(QDialog):
         # Position.
         self.formLayout = QFormLayout()
 
-        self.labelPx = QLabel(self.tr("East"))
+        self.labelPx = QLabel(QT_TRANSLATE_NOOP("Design", "East"))
         self.textPx = QLineEdit("0.0")
 
         self.formLayout.setWidget(0, QFormLayout.LabelRole, self.labelPx)
         self.formLayout.setWidget(0, QFormLayout.FieldRole, self.textPx)
 
-        self.labelPy = QLabel(self.tr("North"))
+        self.labelPy = QLabel(QT_TRANSLATE_NOOP("Design", "North"))
         self.textPy = QLineEdit("0.0")
 
         self.formLayout.setWidget(1, QFormLayout.LabelRole, self.labelPy)
         self.formLayout.setWidget(1, QFormLayout.FieldRole, self.textPy)
 
-        self.labelPz = QLabel(self.tr("Up"))
+        self.labelPz = QLabel(QT_TRANSLATE_NOOP("Design", "Up"))
         self.textPz = QLineEdit("0.0")
 
         self.formLayout.setWidget(2, QFormLayout.LabelRole, self.labelPz)
@@ -352,7 +358,43 @@ class CylinderDialog(QDialog):
         self.horizontalLayout.addWidget(self.labelDiagram)
     # setupUi
 
-    def accept(self):
+    def activateName(self):
+        self.cyliItem = None
+
+        aIndex = self.comboName.currentIndex
+        if aIndex == 1:
+            # modify cylinder
+            self.setWindowTitle(QT_TRANSLATE_NOOP("Design", "Modify Cylinder"))
+
+            aTreeItem = PipeCad.CurrentItem()
+            if aTreeItem.Type not in {"CYLI", "NCYL"}:
+                QMessageBox.warning(self, "", QT_TRANSLATE_NOOP("Design", "Please select CYLI/NCYL to modify!"))
+                return
+            # if
+
+            self.cyliItem = aTreeItem
+
+            self.textName.setText(aTreeItem.Name)
+            self.checkNegative.setChecked(aTreeItem.Type == "NCYL")
+            self.checkNegative.setEnabled(False)
+
+            self.textDiameter.setText(str(aTreeItem.Diameter))
+            self.textHeight.setText(str(aTreeItem.Height))
+
+            aPosition = aTreeItem.Position
+            self.textPx.setText(str(aPosition.X))
+            self.textPy.setText(str(aPosition.Y))
+            self.textPz.setText(str(aPosition.Z))
+
+        else:
+            # create cylinder
+            self.setWindowTitle(QT_TRANSLATE_NOOP("Design", "Create Cylinder"))
+            self.checkNegative.setEnabled(True)
+        # if
+
+    # activateName
+
+    def createCylinder(self):
         aName = self.textName.text
 
         aPx = float(self.textPx.text)
@@ -360,9 +402,13 @@ class CylinderDialog(QDialog):
         aPz = float(self.textPz.text)
 
         try:
-            PipeCad.StartTransaction("Create Cone")
+            PipeCad.StartTransaction("Create Cylinder")
 
-            PipeCad.CreateItem("CYLI", aName)
+            if self.checkNegative.checked:
+                PipeCad.CreateItem("NCYL", aName)
+            else:
+                PipeCad.CreateItem("CYLI", aName)
+            # if
 
             aTreeItem = PipeCad.CurrentItem()
             aTreeItem.Diameter = float(self.textDiameter.text)
@@ -374,6 +420,36 @@ class CylinderDialog(QDialog):
             QMessageBox.critical(self, "", e)
             raise e
         # try
+    # createCylinder
+
+    def modifyCylinder(self):
+        if self.cyliItem is None:
+            return
+        # if
+
+        aName = self.textName.text
+
+        aPx = float(self.textPx.text)
+        aPy = float(self.textPy.text)
+        aPz = float(self.textPz.text)
+
+        PipeCad.StartTransaction("Modify Cylinder")
+
+        aTreeItem = self.cyliItem
+        aTreeItem.Diameter = float(self.textDiameter.text)
+        aTreeItem.Height = float(self.textHeight.text)
+        aTreeItem.Position = Position(aPx, aPy, aPz, aTreeItem.Owner)
+
+        PipeCad.CommitTransaction()
+    # modifyCylinder
+
+    def accept(self):
+        aIndex = self.comboName.currentIndex
+        if aIndex == 0:
+            self.createCylinder()
+        else:
+            self.modifyCylinder()
+        # if
 
         QDialog.accept(self)
     # accept
