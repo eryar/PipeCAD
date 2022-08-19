@@ -27,12 +27,14 @@ from pipecad import *
 class BoxDialog(QDialog):
     def __init__(self, parent = None):
         QDialog.__init__(self, parent)
+
+        self.boxItem = None
         
         self.setupUi()
     # __init__
 
     def setupUi(self):
-        self.setWindowTitle(self.tr("Create Box"))
+        self.setWindowTitle(QT_TRANSLATE_NOOP("Design", "Create Box"))
 
         self.horizontalLayout = QHBoxLayout(self)
         self.verticalLayout = QVBoxLayout()
@@ -44,13 +46,14 @@ class BoxDialog(QDialog):
         self.textName = QLineEdit()
         self.textName.setMinimumWidth(150)
 
-        self.comboName.addItem(self.tr("Create"))
-        self.comboName.addItem(self.tr("Modify"))
+        self.comboName.addItem(QT_TRANSLATE_NOOP("Design", "Create"))
+        self.comboName.addItem(QT_TRANSLATE_NOOP("Design", "Modify"))
+        self.comboName.activated.connect(self.activateName)
 
         self.formLayout.setWidget(0, QFormLayout.LabelRole, self.comboName)
         self.formLayout.setWidget(0, QFormLayout.FieldRole, self.textName)
 
-        self.labelNegative = QLabel(self.tr("Negative"))
+        self.labelNegative = QLabel(QT_TRANSLATE_NOOP("Design", "Negative"))
         self.checkNegative = QCheckBox()
 
         self.formLayout.setWidget(1, QFormLayout.LabelRole, self.labelNegative)
@@ -67,19 +70,19 @@ class BoxDialog(QDialog):
         # Dimensions.
         self.formLayout = QFormLayout()
 
-        self.labelXlen = QLabel(self.tr("X Length"))
+        self.labelXlen = QLabel(QT_TRANSLATE_NOOP("Design", "X Length"))
         self.textXlen = QLineEdit("0.0")
 
         self.formLayout.setWidget(0, QFormLayout.LabelRole, self.labelXlen)
         self.formLayout.setWidget(0, QFormLayout.FieldRole, self.textXlen)
         
-        self.labelYlen = QLabel(self.tr("Y Length"))
+        self.labelYlen = QLabel(QT_TRANSLATE_NOOP("Design", "Y Length"))
         self.textYlen = QLineEdit("0.0")
 
         self.formLayout.setWidget(1, QFormLayout.LabelRole, self.labelYlen)
         self.formLayout.setWidget(1, QFormLayout.FieldRole, self.textYlen)
         
-        self.labelZlen = QLabel(self.tr("Z Length"))
+        self.labelZlen = QLabel(QT_TRANSLATE_NOOP("Design", "Z Length"))
         self.textZlen = QLineEdit("0.0")
 
         self.formLayout.setWidget(2, QFormLayout.LabelRole, self.labelZlen)
@@ -96,19 +99,19 @@ class BoxDialog(QDialog):
         # Position.
         self.formLayout = QFormLayout()
 
-        self.labelPx = QLabel(self.tr("East"))
+        self.labelPx = QLabel(QT_TRANSLATE_NOOP("Design", "East"))
         self.textPx = QLineEdit("0.0")
 
         self.formLayout.setWidget(0, QFormLayout.LabelRole, self.labelPx)
         self.formLayout.setWidget(0, QFormLayout.FieldRole, self.textPx)
 
-        self.labelPy = QLabel(self.tr("North"))
+        self.labelPy = QLabel(QT_TRANSLATE_NOOP("Design", "North"))
         self.textPy = QLineEdit("0.0")
 
         self.formLayout.setWidget(1, QFormLayout.LabelRole, self.labelPy)
         self.formLayout.setWidget(1, QFormLayout.FieldRole, self.textPy)
 
-        self.labelPz = QLabel(self.tr("Up"))
+        self.labelPz = QLabel(QT_TRANSLATE_NOOP("Design", "Up"))
         self.textPz = QLineEdit("0.0")
 
         self.formLayout.setWidget(2, QFormLayout.LabelRole, self.labelPz)
@@ -139,7 +142,38 @@ class BoxDialog(QDialog):
         self.horizontalLayout.addWidget(self.labelDiagram)
     # setupUi
 
-    def accept(self):
+    def activateName(self):
+        self.boxItem = None
+
+        self.checkNegative.setEnabled(True)
+
+        aIndex = self.comboName.currentIndex
+        if aIndex == 1:
+            # modify box
+            aTreeItem = PipeCad.CurrentItem()
+            if aTreeItem.Type not in {"BOX", "NBOX"}:
+                QMessageBox.warning(self, "", QT_TRANSLATE_NOOP("Design", "Please select BOX/NBOX to modify!"))
+                return
+            # if
+
+            self.boxItem = aTreeItem
+
+            self.textName.setText(aTreeItem.Name)
+            self.checkNegative.setChecked(aTreeItem.Type == "NBOX")
+            self.checkNegative.setEnabled(False)
+
+            self.textXlen.setText(str(aTreeItem.Xlength))
+            self.textYlen.setText(str(aTreeItem.Ylength))
+            self.textZlen.setText(str(aTreeItem.Zlength))
+
+            aPosition = aTreeItem.Position
+            self.textPx.setText(str(aPosition.X))
+            self.textPy.setText(str(aPosition.Y))
+            self.textPz.setText(str(aPosition.Z))
+        # if
+    # activateName
+
+    def createBox(self):
         aName = self.textName.text
 
         aPx = float(self.textPx.text)
@@ -149,7 +183,11 @@ class BoxDialog(QDialog):
         try:
             PipeCad.StartTransaction("Create Box")
 
-            PipeCad.CreateItem("BOX", aName)
+            if self.checkNegative.checked:
+                PipeCad.CreateItem("NBOX", aName)
+            else:
+                PipeCad.CreateItem("BOX", aName)
+            # if
 
             aTreeItem = PipeCad.CurrentItem()
             aTreeItem.Xlength = float(self.textXlen.text)
@@ -162,6 +200,37 @@ class BoxDialog(QDialog):
             QMessageBox.critical(self, "", e)
             raise e
         # try
+    # createBox
+
+    def modifyBox(self):
+        if self.boxItem is None:
+            return
+        # if
+
+        aName = self.textName.text
+
+        aPx = float(self.textPx.text)
+        aPy = float(self.textPy.text)
+        aPz = float(self.textPz.text)
+
+        PipeCad.StartTransaction("Modify Box")
+
+        aTreeItem = self.boxItem
+        aTreeItem.Xlength = float(self.textXlen.text)
+        aTreeItem.Ylength = float(self.textYlen.text)
+        aTreeItem.Zlength = float(self.textZlen.text)
+        aTreeItem.Position = Position(aPx, aPy, aPz, aTreeItem.Owner)
+
+        PipeCad.CommitTransaction()
+    # modifyBox
+
+    def accept(self):
+        aIndex = self.comboName.currentIndex
+        if aIndex == 0:
+            self.createBox()
+        else:
+            self.modifyBox()
+        # if
 
         QDialog.accept(self)
     # accept
