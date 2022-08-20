@@ -466,12 +466,14 @@ def CreateCylinder():
 class ConeDialog(QDialog):
     def __init__(self, parent = None):
         QDialog.__init__(self, parent)
+
+        self.coneItem = None
         
         self.setupUi()
     # __init__
 
     def setupUi(self):
-        self.setWindowTitle(self.tr("Create Cone"))
+        self.setWindowTitle(QT_TRANSLATE_NOOP("Design", "Create Cone"))
 
         self.horizontalLayout = QHBoxLayout(self)
         self.verticalLayout = QVBoxLayout()
@@ -483,13 +485,14 @@ class ConeDialog(QDialog):
         self.textName = QLineEdit()
         self.textName.setMinimumWidth(150)
 
-        self.comboName.addItem(self.tr("Create"))
-        self.comboName.addItem(self.tr("Modify"))
+        self.comboName.addItem(QT_TRANSLATE_NOOP("Design", "Create"))
+        self.comboName.addItem(QT_TRANSLATE_NOOP("Design", "Modify"))
+        self.comboName.activated.connect(self.activateName)
 
         self.formLayout.setWidget(0, QFormLayout.LabelRole, self.comboName)
         self.formLayout.setWidget(0, QFormLayout.FieldRole, self.textName)
 
-        self.labelNegative = QLabel(self.tr("Negative"))
+        self.labelNegative = QLabel(QT_TRANSLATE_NOOP("Design", "Negative"))
         self.checkNegative = QCheckBox()
 
         self.formLayout.setWidget(1, QFormLayout.LabelRole, self.labelNegative)
@@ -506,19 +509,19 @@ class ConeDialog(QDialog):
         # Dimensions.
         self.formLayout = QFormLayout()
 
-        self.labelTdiameter = QLabel(self.tr("Top Diameter"))
+        self.labelTdiameter = QLabel(QT_TRANSLATE_NOOP("Design", "Top Diameter"))
         self.textTdiameter = QLineEdit("0.0")
 
         self.formLayout.setWidget(0, QFormLayout.LabelRole, self.labelTdiameter)
         self.formLayout.setWidget(0, QFormLayout.FieldRole, self.textTdiameter)
         
-        self.labelBdiameter = QLabel(self.tr("Bottom Diameter"))
+        self.labelBdiameter = QLabel(QT_TRANSLATE_NOOP("Design", "Bottom Diameter"))
         self.textBdiameter = QLineEdit("0.0")
 
         self.formLayout.setWidget(1, QFormLayout.LabelRole, self.labelBdiameter)
         self.formLayout.setWidget(1, QFormLayout.FieldRole, self.textBdiameter)
         
-        self.labelHeight = QLabel(self.tr("Height"))
+        self.labelHeight = QLabel(QT_TRANSLATE_NOOP("Design", "Height"))
         self.textHeight = QLineEdit("0.0")
 
         self.formLayout.setWidget(2, QFormLayout.LabelRole, self.labelHeight)
@@ -535,19 +538,19 @@ class ConeDialog(QDialog):
         # Position.
         self.formLayout = QFormLayout()
 
-        self.labelPx = QLabel(self.tr("East"))
+        self.labelPx = QLabel(QT_TRANSLATE_NOOP("Design", "East"))
         self.textPx = QLineEdit("0.0")
 
         self.formLayout.setWidget(0, QFormLayout.LabelRole, self.labelPx)
         self.formLayout.setWidget(0, QFormLayout.FieldRole, self.textPx)
 
-        self.labelPy = QLabel(self.tr("North"))
+        self.labelPy = QLabel(QT_TRANSLATE_NOOP("Design", "North"))
         self.textPy = QLineEdit("0.0")
 
         self.formLayout.setWidget(1, QFormLayout.LabelRole, self.labelPy)
         self.formLayout.setWidget(1, QFormLayout.FieldRole, self.textPy)
 
-        self.labelPz = QLabel(self.tr("Up"))
+        self.labelPz = QLabel(QT_TRANSLATE_NOOP("Design", "Up"))
         self.textPz = QLineEdit("0.0")
 
         self.formLayout.setWidget(2, QFormLayout.LabelRole, self.labelPz)
@@ -578,7 +581,42 @@ class ConeDialog(QDialog):
         self.horizontalLayout.addWidget(self.labelDiagram)
     # setupUi
 
-    def accept(self):
+    def activateName(self):
+        self.coneItem = None
+
+        aIndex = self.comboName.currentIndex
+        if aIndex == 1:
+            # modify cone
+            self.setWindowTitle(QT_TRANSLATE_NOOP("Design", "Modify Cone"))
+
+            aTreeItem = PipeCad.CurrentItem()
+            if aTreeItem.Type not in {"CONE", "NCON"}:
+                QMessageBox.warning(self, "", QT_TRANSLATE_NOOP("Design", "Please select CONE/NCON to modify!"))
+                return
+            # if
+
+            self.coneItem = aTreeItem
+
+            self.textName.setText(aTreeItem.Name)
+            self.checkNegative.setChecked(aTreeItem.Type == "NCON")
+            self.checkNegative.setEnabled(False)
+
+            self.textTdiameter.setText(str(aTreeItem.Tdiameter))
+            self.textBdiameter.setText(str(aTreeItem.Bdiameter))
+            self.textHeight.setText(str(aTreeItem.Height))
+
+            aPosition = aTreeItem.Position
+            self.textPx.setText(str(aPosition.X))
+            self.textPy.setText(str(aPosition.Y))
+            self.textPz.setText(str(aPosition.Z))
+        else:
+            # create cone
+            self.setWindowTitle(QT_TRANSLATE_NOOP("Design", "Create Cone"))
+            self.checkNegative.setEnabled(True)
+        # if
+    # activateName
+
+    def createCone(self):
         aName = self.textName.text
 
         aPx = float(self.textPx.text)
@@ -588,7 +626,11 @@ class ConeDialog(QDialog):
         try:
             PipeCad.StartTransaction("Create Cone")
 
-            PipeCad.CreateItem("CONE", aName)
+            if self.checkNegative.checked:
+                PipeCad.CreateItem("NCON", aName)
+            else:
+                PipeCad.CreateItem("CONE", aName)
+            # if
 
             aTreeItem = PipeCad.CurrentItem()
             aTreeItem.Tdiameter = float(self.textTdiameter.text)
@@ -601,6 +643,35 @@ class ConeDialog(QDialog):
             QMessageBox.critical(self, "", e)
             raise e
         # try
+    # createCone
+
+    def modifyCone(self):
+        if self.coneItem is None:
+            return
+        # if
+
+        aName = self.textName.text
+
+        aPx = float(self.textPx.text)
+        aPy = float(self.textPy.text)
+        aPz = float(self.textPz.text)
+
+        aTreeItem = self.coneItem
+        aTreeItem.Tdiameter = float(self.textTdiameter.text)
+        aTreeItem.Bdiameter = float(self.textBdiameter.text)
+        aTreeItem.Height = float(self.textHeight.text)
+        aTreeItem.Position = Position(aPx, aPy, aPz, aTreeItem.Owner)
+
+        PipeCad.CommitTransaction()
+    # modifyCone
+
+    def accept(self):
+        aIndex = self.comboName.currentIndex
+        if aIndex == 0:
+            self.createCone()
+        else:
+            self.modifyCone()
+        # if
 
         QDialog.accept(self)
     # accept
