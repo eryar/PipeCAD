@@ -912,12 +912,14 @@ def CreateDish():
 class CircularDialog(QDialog):
     def __init__(self, parent = None):
         QDialog.__init__(self, parent)
+
+        self.torusItem = None
         
         self.setupUi()
     # __init__
 
     def setupUi(self):
-        self.setWindowTitle(self.tr("Create Circular Torus"))
+        self.setWindowTitle(QT_TRANSLATE_NOOP("Design", "Create Circular Torus"))
 
         self.horizontalLayout = QHBoxLayout(self)
         self.verticalLayout = QVBoxLayout()
@@ -929,13 +931,14 @@ class CircularDialog(QDialog):
         self.textName = QLineEdit()
         self.textName.setMinimumWidth(150)
 
-        self.comboName.addItem(self.tr("Create"))
-        self.comboName.addItem(self.tr("Modify"))
+        self.comboName.addItem(QT_TRANSLATE_NOOP("Design", "Create"))
+        self.comboName.addItem(QT_TRANSLATE_NOOP("Design", "Modify"))
+        self.comboName.activated.connect(self.activateName)
 
         self.formLayout.setWidget(0, QFormLayout.LabelRole, self.comboName)
         self.formLayout.setWidget(0, QFormLayout.FieldRole, self.textName)
 
-        self.labelNegative = QLabel(self.tr("Negative"))
+        self.labelNegative = QLabel(QT_TRANSLATE_NOOP("Design", "Negative"))
         self.checkNegative = QCheckBox()
 
         self.formLayout.setWidget(1, QFormLayout.LabelRole, self.labelNegative)
@@ -952,19 +955,19 @@ class CircularDialog(QDialog):
         # Dimensions.
         self.formLayout = QFormLayout()
 
-        self.labelRi = QLabel(self.tr("Inside Radius"))
+        self.labelRi = QLabel(QT_TRANSLATE_NOOP("Design", "Inside Radius"))
         self.textRi = QLineEdit("0.0")
 
         self.formLayout.setWidget(0, QFormLayout.LabelRole, self.labelRi)
         self.formLayout.setWidget(0, QFormLayout.FieldRole, self.textRi)
         
-        self.labelRo = QLabel(self.tr("Outside Radius"))
+        self.labelRo = QLabel(QT_TRANSLATE_NOOP("Design", "Outside Radius"))
         self.textRo = QLineEdit("0.0")
 
         self.formLayout.setWidget(1, QFormLayout.LabelRole, self.labelRo)
         self.formLayout.setWidget(1, QFormLayout.FieldRole, self.textRo)
         
-        self.labelAngle = QLabel(self.tr("Angle"))
+        self.labelAngle = QLabel(QT_TRANSLATE_NOOP("Design", "Angle"))
         self.textAngle = QLineEdit("0.0")
 
         self.formLayout.setWidget(2, QFormLayout.LabelRole, self.labelAngle)
@@ -981,19 +984,19 @@ class CircularDialog(QDialog):
         # Position.
         self.formLayout = QFormLayout()
 
-        self.labelPx = QLabel(self.tr("East"))
+        self.labelPx = QLabel(QT_TRANSLATE_NOOP("Design", "East"))
         self.textPx = QLineEdit("0.0")
 
         self.formLayout.setWidget(0, QFormLayout.LabelRole, self.labelPx)
         self.formLayout.setWidget(0, QFormLayout.FieldRole, self.textPx)
 
-        self.labelPy = QLabel(self.tr("North"))
+        self.labelPy = QLabel(QT_TRANSLATE_NOOP("Design", "North"))
         self.textPy = QLineEdit("0.0")
 
         self.formLayout.setWidget(1, QFormLayout.LabelRole, self.labelPy)
         self.formLayout.setWidget(1, QFormLayout.FieldRole, self.textPy)
 
-        self.labelPz = QLabel(self.tr("Up"))
+        self.labelPz = QLabel(QT_TRANSLATE_NOOP("Design", "Up"))
         self.textPz = QLineEdit("0.0")
 
         self.formLayout.setWidget(2, QFormLayout.LabelRole, self.labelPz)
@@ -1024,7 +1027,43 @@ class CircularDialog(QDialog):
         self.horizontalLayout.addWidget(self.labelDiagram)
     # setupUi
 
-    def accept(self):
+    def activateName(self):
+        self.torusItem = None
+
+        aIndex = self.comboName.currentIndex
+        if aIndex == 1:
+            # modify torus
+            self.setWindowTitle(QT_TRANSLATE_NOOP("Design", "Modify Circular Torus"))
+
+            aTreeItem = PipeCad.CurrentItem()
+            if aTreeItem.Type not in {"CTOR", "NCTO"}:
+                QMessageBox.warning(self, "", QT_TRANSLATE_NOOP("Design", "Please select CTOR/NCTO to modify!"))
+                return
+            # if
+
+            self.torusItem = aTreeItem
+
+            self.textName.setText(aTreeItem.Name)
+            self.checkNegative.setChecked(aTreeItem.Type == "NCTO")
+            self.checkNegative.setEnabled(False)
+
+            self.textRi.setText(str(aTreeItem.InsideRadius))
+            self.textRo.setText(str(aTreeItem.OutsideRadius))
+            self.textAngle.setText(str(aTreeItem.Angle))
+
+            aPosition = aTreeItem.Position
+            self.textPx.setText(str(aPosition.X))
+            self.textPy.setText(str(aPosition.Y))
+            self.textPz.setText(str(aPosition.Z))
+
+        else:
+            # create torus
+            self.setWindowTitle(QT_TRANSLATE_NOOP("Design", "Create Circular Torus"))
+            self.checkNegative.setEnabled(True)
+        # if
+    # activateName
+
+    def createTorus(self):
         aName = self.textName.text
 
         aPx = float(self.textPx.text)
@@ -1034,7 +1073,11 @@ class CircularDialog(QDialog):
         try:
             PipeCad.StartTransaction("Create Circular Torus")
 
-            PipeCad.CreateItem("CTOR", aName)
+            if self.checkNegative.checked:
+                PipeCad.CreateItem("NCTO", aName)
+            else:
+                PipeCad.CreateItem("CTOR", aName)
+            # if
 
             aTreeItem = PipeCad.CurrentItem()
             aTreeItem.InsideRadius = float(self.textRi.text)
@@ -1047,6 +1090,37 @@ class CircularDialog(QDialog):
             QMessageBox.critical(self, "", e)
             raise e
         # try
+    # createTorus
+
+    def modifyTorus(self):
+        if self.torusItem is None:
+            return
+        # if
+
+        aName = self.textName.text
+
+        aPx = float(self.textPx.text)
+        aPy = float(self.textPy.text)
+        aPz = float(self.textPz.text)
+
+        PipeCad.StartTransaction("Modify Circular Torus")
+
+        aTreeItem = self.torusItem
+        aTreeItem.InsideRadius = float(self.textRi.text)
+        aTreeItem.OutsideRadius = float(self.textRo.text)
+        aTreeItem.Angle = float(self.textAngle.text)
+        aTreeItem.Position = Position(aPx, aPy, aPz, aTreeItem.Owner)
+
+        PipeCad.CommitTransaction()
+    # modifyTorus
+
+    def accept(self):
+        aIndex = self.comboName.currentIndex
+        if aIndex == 0:
+            self.createTorus()
+        else:
+            self.modifyTorus()
+        # if
 
         QDialog.accept(self)
     # accept
