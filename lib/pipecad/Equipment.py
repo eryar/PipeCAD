@@ -408,6 +408,9 @@ def ModifyOrigin():
     aTreeItem = PipeCad.CurrentItem()
     if aTreeItem.Type == "EQUI":
         aOriginDlg.setEquipment()
+    else:
+        QMessageBox.warning(PipeCad, "", QT_TRANSLATE_NOOP("Design", "Please select EQUI to modify origin!"))
+        return
     # if
 
     aOriginDlg.show()
