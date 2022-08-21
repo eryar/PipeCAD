@@ -466,12 +466,14 @@ def CreateCylinder():
 class ConeDialog(QDialog):
     def __init__(self, parent = None):
         QDialog.__init__(self, parent)
+
+        self.coneItem = None
         
         self.setupUi()
     # __init__
 
     def setupUi(self):
-        self.setWindowTitle(self.tr("Create Cone"))
+        self.setWindowTitle(QT_TRANSLATE_NOOP("Design", "Create Cone"))
 
         self.horizontalLayout = QHBoxLayout(self)
         self.verticalLayout = QVBoxLayout()
@@ -483,13 +485,14 @@ class ConeDialog(QDialog):
         self.textName = QLineEdit()
         self.textName.setMinimumWidth(150)
 
-        self.comboName.addItem(self.tr("Create"))
-        self.comboName.addItem(self.tr("Modify"))
+        self.comboName.addItem(QT_TRANSLATE_NOOP("Design", "Create"))
+        self.comboName.addItem(QT_TRANSLATE_NOOP("Design", "Modify"))
+        self.comboName.activated.connect(self.activateName)
 
         self.formLayout.setWidget(0, QFormLayout.LabelRole, self.comboName)
         self.formLayout.setWidget(0, QFormLayout.FieldRole, self.textName)
 
-        self.labelNegative = QLabel(self.tr("Negative"))
+        self.labelNegative = QLabel(QT_TRANSLATE_NOOP("Design", "Negative"))
         self.checkNegative = QCheckBox()
 
         self.formLayout.setWidget(1, QFormLayout.LabelRole, self.labelNegative)
@@ -506,19 +509,19 @@ class ConeDialog(QDialog):
         # Dimensions.
         self.formLayout = QFormLayout()
 
-        self.labelTdiameter = QLabel(self.tr("Top Diameter"))
+        self.labelTdiameter = QLabel(QT_TRANSLATE_NOOP("Design", "Top Diameter"))
         self.textTdiameter = QLineEdit("0.0")
 
         self.formLayout.setWidget(0, QFormLayout.LabelRole, self.labelTdiameter)
         self.formLayout.setWidget(0, QFormLayout.FieldRole, self.textTdiameter)
         
-        self.labelBdiameter = QLabel(self.tr("Bottom Diameter"))
+        self.labelBdiameter = QLabel(QT_TRANSLATE_NOOP("Design", "Bottom Diameter"))
         self.textBdiameter = QLineEdit("0.0")
 
         self.formLayout.setWidget(1, QFormLayout.LabelRole, self.labelBdiameter)
         self.formLayout.setWidget(1, QFormLayout.FieldRole, self.textBdiameter)
         
-        self.labelHeight = QLabel(self.tr("Height"))
+        self.labelHeight = QLabel(QT_TRANSLATE_NOOP("Design", "Height"))
         self.textHeight = QLineEdit("0.0")
 
         self.formLayout.setWidget(2, QFormLayout.LabelRole, self.labelHeight)
@@ -535,19 +538,19 @@ class ConeDialog(QDialog):
         # Position.
         self.formLayout = QFormLayout()
 
-        self.labelPx = QLabel(self.tr("East"))
+        self.labelPx = QLabel(QT_TRANSLATE_NOOP("Design", "East"))
         self.textPx = QLineEdit("0.0")
 
         self.formLayout.setWidget(0, QFormLayout.LabelRole, self.labelPx)
         self.formLayout.setWidget(0, QFormLayout.FieldRole, self.textPx)
 
-        self.labelPy = QLabel(self.tr("North"))
+        self.labelPy = QLabel(QT_TRANSLATE_NOOP("Design", "North"))
         self.textPy = QLineEdit("0.0")
 
         self.formLayout.setWidget(1, QFormLayout.LabelRole, self.labelPy)
         self.formLayout.setWidget(1, QFormLayout.FieldRole, self.textPy)
 
-        self.labelPz = QLabel(self.tr("Up"))
+        self.labelPz = QLabel(QT_TRANSLATE_NOOP("Design", "Up"))
         self.textPz = QLineEdit("0.0")
 
         self.formLayout.setWidget(2, QFormLayout.LabelRole, self.labelPz)
@@ -578,7 +581,42 @@ class ConeDialog(QDialog):
         self.horizontalLayout.addWidget(self.labelDiagram)
     # setupUi
 
-    def accept(self):
+    def activateName(self):
+        self.coneItem = None
+
+        aIndex = self.comboName.currentIndex
+        if aIndex == 1:
+            # modify cone
+            self.setWindowTitle(QT_TRANSLATE_NOOP("Design", "Modify Cone"))
+
+            aTreeItem = PipeCad.CurrentItem()
+            if aTreeItem.Type not in {"CONE", "NCON"}:
+                QMessageBox.warning(self, "", QT_TRANSLATE_NOOP("Design", "Please select CONE/NCON to modify!"))
+                return
+            # if
+
+            self.coneItem = aTreeItem
+
+            self.textName.setText(aTreeItem.Name)
+            self.checkNegative.setChecked(aTreeItem.Type == "NCON")
+            self.checkNegative.setEnabled(False)
+
+            self.textTdiameter.setText(str(aTreeItem.Tdiameter))
+            self.textBdiameter.setText(str(aTreeItem.Bdiameter))
+            self.textHeight.setText(str(aTreeItem.Height))
+
+            aPosition = aTreeItem.Position
+            self.textPx.setText(str(aPosition.X))
+            self.textPy.setText(str(aPosition.Y))
+            self.textPz.setText(str(aPosition.Z))
+        else:
+            # create cone
+            self.setWindowTitle(QT_TRANSLATE_NOOP("Design", "Create Cone"))
+            self.checkNegative.setEnabled(True)
+        # if
+    # activateName
+
+    def createCone(self):
         aName = self.textName.text
 
         aPx = float(self.textPx.text)
@@ -588,7 +626,11 @@ class ConeDialog(QDialog):
         try:
             PipeCad.StartTransaction("Create Cone")
 
-            PipeCad.CreateItem("CONE", aName)
+            if self.checkNegative.checked:
+                PipeCad.CreateItem("NCON", aName)
+            else:
+                PipeCad.CreateItem("CONE", aName)
+            # if
 
             aTreeItem = PipeCad.CurrentItem()
             aTreeItem.Tdiameter = float(self.textTdiameter.text)
@@ -601,6 +643,35 @@ class ConeDialog(QDialog):
             QMessageBox.critical(self, "", e)
             raise e
         # try
+    # createCone
+
+    def modifyCone(self):
+        if self.coneItem is None:
+            return
+        # if
+
+        aName = self.textName.text
+
+        aPx = float(self.textPx.text)
+        aPy = float(self.textPy.text)
+        aPz = float(self.textPz.text)
+
+        aTreeItem = self.coneItem
+        aTreeItem.Tdiameter = float(self.textTdiameter.text)
+        aTreeItem.Bdiameter = float(self.textBdiameter.text)
+        aTreeItem.Height = float(self.textHeight.text)
+        aTreeItem.Position = Position(aPx, aPy, aPz, aTreeItem.Owner)
+
+        PipeCad.CommitTransaction()
+    # modifyCone
+
+    def accept(self):
+        aIndex = self.comboName.currentIndex
+        if aIndex == 0:
+            self.createCone()
+        else:
+            self.modifyCone()
+        # if
 
         QDialog.accept(self)
     # accept
@@ -617,12 +688,14 @@ def CreateCone():
 class DishDialog(QDialog):
     def __init__(self, parent = None):
         QDialog.__init__(self, parent)
+
+        self.dishItem = None
         
         self.setupUi()
     # __init__
 
     def setupUi(self):
-        self.setWindowTitle(self.tr("Create Dish"))
+        self.setWindowTitle(QT_TRANSLATE_NOOP("Design", "Create Dish"))
 
         self.horizontalLayout = QHBoxLayout(self)
         self.verticalLayout = QVBoxLayout()
@@ -634,13 +707,14 @@ class DishDialog(QDialog):
         self.textName = QLineEdit()
         self.textName.setMinimumWidth(150)
 
-        self.comboName.addItem(self.tr("Create"))
-        self.comboName.addItem(self.tr("Modify"))
+        self.comboName.addItem(QT_TRANSLATE_NOOP("Design", "Create"))
+        self.comboName.addItem(QT_TRANSLATE_NOOP("Design", "Modify"))
+        self.comboName.activated.connect(self.activateName)
 
         self.formLayout.setWidget(0, QFormLayout.LabelRole, self.comboName)
         self.formLayout.setWidget(0, QFormLayout.FieldRole, self.textName)
 
-        self.labelNegative = QLabel(self.tr("Negative"))
+        self.labelNegative = QLabel(QT_TRANSLATE_NOOP("Design", "Negative"))
         self.checkNegative = QCheckBox()
 
         self.formLayout.setWidget(1, QFormLayout.LabelRole, self.labelNegative)
@@ -657,19 +731,19 @@ class DishDialog(QDialog):
         # Dimensions.
         self.formLayout = QFormLayout()
 
-        self.labelDiameter = QLabel(self.tr("Diameter"))
+        self.labelDiameter = QLabel(QT_TRANSLATE_NOOP("Design", "Diameter"))
         self.textDiameter = QLineEdit("0.0")
 
         self.formLayout.setWidget(0, QFormLayout.LabelRole, self.labelDiameter)
         self.formLayout.setWidget(0, QFormLayout.FieldRole, self.textDiameter)
         
-        self.labelRadius = QLabel(self.tr("Radius"))
+        self.labelRadius = QLabel(QT_TRANSLATE_NOOP("Design", "Radius"))
         self.textRadius = QLineEdit("0.0")
 
         self.formLayout.setWidget(1, QFormLayout.LabelRole, self.labelRadius)
         self.formLayout.setWidget(1, QFormLayout.FieldRole, self.textRadius)
         
-        self.labelHeight = QLabel(self.tr("Height"))
+        self.labelHeight = QLabel(QT_TRANSLATE_NOOP("Design", "Height"))
         self.textHeight = QLineEdit("0.0")
 
         self.formLayout.setWidget(2, QFormLayout.LabelRole, self.labelHeight)
@@ -686,19 +760,19 @@ class DishDialog(QDialog):
         # Position.
         self.formLayout = QFormLayout()
 
-        self.labelPx = QLabel(self.tr("East"))
+        self.labelPx = QLabel(QT_TRANSLATE_NOOP("Design", "East"))
         self.textPx = QLineEdit("0.0")
 
         self.formLayout.setWidget(0, QFormLayout.LabelRole, self.labelPx)
         self.formLayout.setWidget(0, QFormLayout.FieldRole, self.textPx)
 
-        self.labelPy = QLabel(self.tr("North"))
+        self.labelPy = QLabel(QT_TRANSLATE_NOOP("Design", "North"))
         self.textPy = QLineEdit("0.0")
 
         self.formLayout.setWidget(1, QFormLayout.LabelRole, self.labelPy)
         self.formLayout.setWidget(1, QFormLayout.FieldRole, self.textPy)
 
-        self.labelPz = QLabel(self.tr("Up"))
+        self.labelPz = QLabel(QT_TRANSLATE_NOOP("Design", "Up"))
         self.textPz = QLineEdit("0.0")
 
         self.formLayout.setWidget(2, QFormLayout.LabelRole, self.labelPz)
@@ -729,7 +803,42 @@ class DishDialog(QDialog):
         self.horizontalLayout.addWidget(self.labelDiagram)
     # setupUi
 
-    def accept(self):
+    def activateName(self):
+        self.dishItem = None
+
+        aIndex = self.comboName.currentIndex
+        if aIndex == 1:
+            # modify dish
+            self.setWindowTitle(QT_TRANSLATE_NOOP("Design", "Modify Dish"))
+
+            aTreeItem = PipeCad.CurrentItem()
+            if aTreeItem.Type not in {"DISH", "NDIS"}:
+                QMessageBox.warning(self, "", QT_TRANSLATE_NOOP("Design", "Please select DISH/NDIS to modify!"))
+                return
+            # if
+
+            self.dishItem = aTreeItem
+
+            self.textName.setText(aTreeItem.Name)
+            self.checkNegative.setChecked(aTreeItem.Type == "NDIS")
+            self.checkNegative.setEnabled(False)
+
+            self.textDiameter.setText(str(aTreeItem.Diameter))
+            self.textRadius.setText(str(aTreeItem.Radius))
+            self.textHeight.setText(str(aTreeItem.Height))
+
+            aPosition = aTreeItem.Position
+            self.textPx.setText(str(aPosition.X))
+            self.textPy.setText(str(aPosition.Y))
+            self.textPz.setText(str(aPosition.Z))
+        else:
+            # create dish
+            self.setWindowTitle(QT_TRANSLATE_NOOP("Design", "Create Dish"))
+            self.checkNegative.setEnabled(True)
+        # if
+    # activateName
+
+    def createDish(self):
         aName = self.textName.text
 
         aPx = float(self.textPx.text)
@@ -739,7 +848,11 @@ class DishDialog(QDialog):
         try:
             PipeCad.StartTransaction("Create Dish")
 
-            PipeCad.CreateItem("DISH", aName)
+            if self.checkNegative.checked:
+                PipeCad.CreateItem("NDIS", aName)
+            else:
+                PipeCad.CreateItem("DISH", aName)
+            # if
 
             aTreeItem = PipeCad.CurrentItem()
             aTreeItem.Diameter = float(self.textDiameter.text)
@@ -752,6 +865,37 @@ class DishDialog(QDialog):
             QMessageBox.critical(self, "", e)
             raise e
         # try
+    # createDish
+
+    def modifyDish(self):
+        if self.dishItem is None:
+            return
+        # if
+
+        aName = self.textName.text
+
+        aPx = float(self.textPx.text)
+        aPy = float(self.textPy.text)
+        aPz = float(self.textPz.text)
+
+        PipeCad.StartTransaction("Modify Dish")
+
+        aTreeItem = self.dishItem
+        aTreeItem.Diameter = float(self.textDiameter.text)
+        aTreeItem.Radius = float(self.textRadius.text)
+        aTreeItem.Height = float(self.textHeight.text)
+        aTreeItem.Position = Position(aPx, aPy, aPz, aTreeItem.Owner)
+
+        PipeCad.CommitTransaction()
+    # modifyDish
+
+    def accept(self):
+        aIndex = self.comboName.currentIndex
+        if aIndex == 0:
+            self.createDish()
+        else:
+            self.modifyDish()
+        # if
 
         QDialog.accept(self)
     # accept
@@ -768,12 +912,14 @@ def CreateDish():
 class CircularDialog(QDialog):
     def __init__(self, parent = None):
         QDialog.__init__(self, parent)
+
+        self.torusItem = None
         
         self.setupUi()
     # __init__
 
     def setupUi(self):
-        self.setWindowTitle(self.tr("Create Circular Torus"))
+        self.setWindowTitle(QT_TRANSLATE_NOOP("Design", "Create Circular Torus"))
 
         self.horizontalLayout = QHBoxLayout(self)
         self.verticalLayout = QVBoxLayout()
@@ -785,13 +931,14 @@ class CircularDialog(QDialog):
         self.textName = QLineEdit()
         self.textName.setMinimumWidth(150)
 
-        self.comboName.addItem(self.tr("Create"))
-        self.comboName.addItem(self.tr("Modify"))
+        self.comboName.addItem(QT_TRANSLATE_NOOP("Design", "Create"))
+        self.comboName.addItem(QT_TRANSLATE_NOOP("Design", "Modify"))
+        self.comboName.activated.connect(self.activateName)
 
         self.formLayout.setWidget(0, QFormLayout.LabelRole, self.comboName)
         self.formLayout.setWidget(0, QFormLayout.FieldRole, self.textName)
 
-        self.labelNegative = QLabel(self.tr("Negative"))
+        self.labelNegative = QLabel(QT_TRANSLATE_NOOP("Design", "Negative"))
         self.checkNegative = QCheckBox()
 
         self.formLayout.setWidget(1, QFormLayout.LabelRole, self.labelNegative)
@@ -808,19 +955,19 @@ class CircularDialog(QDialog):
         # Dimensions.
         self.formLayout = QFormLayout()
 
-        self.labelRi = QLabel(self.tr("Inside Radius"))
+        self.labelRi = QLabel(QT_TRANSLATE_NOOP("Design", "Inside Radius"))
         self.textRi = QLineEdit("0.0")
 
         self.formLayout.setWidget(0, QFormLayout.LabelRole, self.labelRi)
         self.formLayout.setWidget(0, QFormLayout.FieldRole, self.textRi)
         
-        self.labelRo = QLabel(self.tr("Outside Radius"))
+        self.labelRo = QLabel(QT_TRANSLATE_NOOP("Design", "Outside Radius"))
         self.textRo = QLineEdit("0.0")
 
         self.formLayout.setWidget(1, QFormLayout.LabelRole, self.labelRo)
         self.formLayout.setWidget(1, QFormLayout.FieldRole, self.textRo)
         
-        self.labelAngle = QLabel(self.tr("Angle"))
+        self.labelAngle = QLabel(QT_TRANSLATE_NOOP("Design", "Angle"))
         self.textAngle = QLineEdit("0.0")
 
         self.formLayout.setWidget(2, QFormLayout.LabelRole, self.labelAngle)
@@ -837,19 +984,19 @@ class CircularDialog(QDialog):
         # Position.
         self.formLayout = QFormLayout()
 
-        self.labelPx = QLabel(self.tr("East"))
+        self.labelPx = QLabel(QT_TRANSLATE_NOOP("Design", "East"))
         self.textPx = QLineEdit("0.0")
 
         self.formLayout.setWidget(0, QFormLayout.LabelRole, self.labelPx)
         self.formLayout.setWidget(0, QFormLayout.FieldRole, self.textPx)
 
-        self.labelPy = QLabel(self.tr("North"))
+        self.labelPy = QLabel(QT_TRANSLATE_NOOP("Design", "North"))
         self.textPy = QLineEdit("0.0")
 
         self.formLayout.setWidget(1, QFormLayout.LabelRole, self.labelPy)
         self.formLayout.setWidget(1, QFormLayout.FieldRole, self.textPy)
 
-        self.labelPz = QLabel(self.tr("Up"))
+        self.labelPz = QLabel(QT_TRANSLATE_NOOP("Design", "Up"))
         self.textPz = QLineEdit("0.0")
 
         self.formLayout.setWidget(2, QFormLayout.LabelRole, self.labelPz)
@@ -880,7 +1027,43 @@ class CircularDialog(QDialog):
         self.horizontalLayout.addWidget(self.labelDiagram)
     # setupUi
 
-    def accept(self):
+    def activateName(self):
+        self.torusItem = None
+
+        aIndex = self.comboName.currentIndex
+        if aIndex == 1:
+            # modify torus
+            self.setWindowTitle(QT_TRANSLATE_NOOP("Design", "Modify Circular Torus"))
+
+            aTreeItem = PipeCad.CurrentItem()
+            if aTreeItem.Type not in {"CTOR", "NCTO"}:
+                QMessageBox.warning(self, "", QT_TRANSLATE_NOOP("Design", "Please select CTOR/NCTO to modify!"))
+                return
+            # if
+
+            self.torusItem = aTreeItem
+
+            self.textName.setText(aTreeItem.Name)
+            self.checkNegative.setChecked(aTreeItem.Type == "NCTO")
+            self.checkNegative.setEnabled(False)
+
+            self.textRi.setText(str(aTreeItem.InsideRadius))
+            self.textRo.setText(str(aTreeItem.OutsideRadius))
+            self.textAngle.setText(str(aTreeItem.Angle))
+
+            aPosition = aTreeItem.Position
+            self.textPx.setText(str(aPosition.X))
+            self.textPy.setText(str(aPosition.Y))
+            self.textPz.setText(str(aPosition.Z))
+
+        else:
+            # create torus
+            self.setWindowTitle(QT_TRANSLATE_NOOP("Design", "Create Circular Torus"))
+            self.checkNegative.setEnabled(True)
+        # if
+    # activateName
+
+    def createTorus(self):
         aName = self.textName.text
 
         aPx = float(self.textPx.text)
@@ -890,7 +1073,11 @@ class CircularDialog(QDialog):
         try:
             PipeCad.StartTransaction("Create Circular Torus")
 
-            PipeCad.CreateItem("CTOR", aName)
+            if self.checkNegative.checked:
+                PipeCad.CreateItem("NCTO", aName)
+            else:
+                PipeCad.CreateItem("CTOR", aName)
+            # if
 
             aTreeItem = PipeCad.CurrentItem()
             aTreeItem.InsideRadius = float(self.textRi.text)
@@ -903,6 +1090,37 @@ class CircularDialog(QDialog):
             QMessageBox.critical(self, "", e)
             raise e
         # try
+    # createTorus
+
+    def modifyTorus(self):
+        if self.torusItem is None:
+            return
+        # if
+
+        aName = self.textName.text
+
+        aPx = float(self.textPx.text)
+        aPy = float(self.textPy.text)
+        aPz = float(self.textPz.text)
+
+        PipeCad.StartTransaction("Modify Circular Torus")
+
+        aTreeItem = self.torusItem
+        aTreeItem.InsideRadius = float(self.textRi.text)
+        aTreeItem.OutsideRadius = float(self.textRo.text)
+        aTreeItem.Angle = float(self.textAngle.text)
+        aTreeItem.Position = Position(aPx, aPy, aPz, aTreeItem.Owner)
+
+        PipeCad.CommitTransaction()
+    # modifyTorus
+
+    def accept(self):
+        aIndex = self.comboName.currentIndex
+        if aIndex == 0:
+            self.createTorus()
+        else:
+            self.modifyTorus()
+        # if
 
         QDialog.accept(self)
     # accept
@@ -919,12 +1137,14 @@ def CreateCircularTorus():
 class RectangularDialog(QDialog):
     def __init__(self, parent = None):
         QDialog.__init__(self, parent)
+
+        self.torusItem = None
         
         self.setupUi()
     # __init__
 
     def setupUi(self):
-        self.setWindowTitle(self.tr("Create Rectangular Torus"))
+        self.setWindowTitle(QT_TRANSLATE_NOOP("Design", "Create Rectangular Torus"))
 
         self.horizontalLayout = QHBoxLayout(self)
         self.verticalLayout = QVBoxLayout()
@@ -936,13 +1156,14 @@ class RectangularDialog(QDialog):
         self.textName = QLineEdit()
         self.textName.setMinimumWidth(150)
 
-        self.comboName.addItem(self.tr("Create"))
-        self.comboName.addItem(self.tr("Modify"))
+        self.comboName.addItem(QT_TRANSLATE_NOOP("Design", "Create"))
+        self.comboName.addItem(QT_TRANSLATE_NOOP("Design", "Modify"))
+        self.comboName.activated.connect(self.activateName)
 
         self.formLayout.setWidget(0, QFormLayout.LabelRole, self.comboName)
         self.formLayout.setWidget(0, QFormLayout.FieldRole, self.textName)
 
-        self.labelNegative = QLabel(self.tr("Negative"))
+        self.labelNegative = QLabel(QT_TRANSLATE_NOOP("Design", "Negative"))
         self.checkNegative = QCheckBox()
 
         self.formLayout.setWidget(1, QFormLayout.LabelRole, self.labelNegative)
@@ -959,25 +1180,25 @@ class RectangularDialog(QDialog):
         # Dimensions.
         self.formLayout = QFormLayout()
 
-        self.labelRi = QLabel(self.tr("Inside Radius"))
+        self.labelRi = QLabel(QT_TRANSLATE_NOOP("Design", "Inside Radius"))
         self.textRi = QLineEdit("0.0")
 
         self.formLayout.setWidget(0, QFormLayout.LabelRole, self.labelRi)
         self.formLayout.setWidget(0, QFormLayout.FieldRole, self.textRi)
         
-        self.labelRo = QLabel(self.tr("Outside Radius"))
+        self.labelRo = QLabel(QT_TRANSLATE_NOOP("Design", "Outside Radius"))
         self.textRo = QLineEdit("0.0")
 
         self.formLayout.setWidget(1, QFormLayout.LabelRole, self.labelRo)
         self.formLayout.setWidget(1, QFormLayout.FieldRole, self.textRo)
         
-        self.labelHeight = QLabel(self.tr("Height"))
+        self.labelHeight = QLabel(QT_TRANSLATE_NOOP("Design", "Height"))
         self.textHeight = QLineEdit("0.0")
 
         self.formLayout.setWidget(2, QFormLayout.LabelRole, self.labelHeight)
         self.formLayout.setWidget(2, QFormLayout.FieldRole, self.textHeight)
         
-        self.labelAngle = QLabel(self.tr("Angle"))
+        self.labelAngle = QLabel(QT_TRANSLATE_NOOP("Design", "Angle"))
         self.textAngle = QLineEdit("0.0")
 
         self.formLayout.setWidget(3, QFormLayout.LabelRole, self.labelAngle)
@@ -994,19 +1215,19 @@ class RectangularDialog(QDialog):
         # Position.
         self.formLayout = QFormLayout()
 
-        self.labelPx = QLabel(self.tr("East"))
+        self.labelPx = QLabel(QT_TRANSLATE_NOOP("Design", "East"))
         self.textPx = QLineEdit("0.0")
 
         self.formLayout.setWidget(0, QFormLayout.LabelRole, self.labelPx)
         self.formLayout.setWidget(0, QFormLayout.FieldRole, self.textPx)
 
-        self.labelPy = QLabel(self.tr("North"))
+        self.labelPy = QLabel(QT_TRANSLATE_NOOP("Design", "North"))
         self.textPy = QLineEdit("0.0")
 
         self.formLayout.setWidget(1, QFormLayout.LabelRole, self.labelPy)
         self.formLayout.setWidget(1, QFormLayout.FieldRole, self.textPy)
 
-        self.labelPz = QLabel(self.tr("Up"))
+        self.labelPz = QLabel(QT_TRANSLATE_NOOP("Design", "Up"))
         self.textPz = QLineEdit("0.0")
 
         self.formLayout.setWidget(2, QFormLayout.LabelRole, self.labelPz)
@@ -1037,7 +1258,43 @@ class RectangularDialog(QDialog):
         self.horizontalLayout.addWidget(self.labelDiagram)
     # setupUi
 
-    def accept(self):
+    def activateName(self):
+        self.torusItem = None
+
+        aIndex = self.comboName.currentIndex
+        if aIndex == 1:
+            # modify torus
+            self.setWindowTitle(QT_TRANSLATE_NOOP("Design", "Modify Rectangular Torus"))
+
+            aTreeItem = PipeCad.CurrentItem()
+            if aTreeItem.Type not in {"RTOR", "NRTO"}:
+                QMessageBox.warning(self, "", QT_TRANSLATE_NOOP("Design", "Please select RTOR/NRTO to modify!"))
+                return
+            # if
+
+            self.torusItem = aTreeItem
+
+            self.textName.setText(aTreeItem.Name)
+            self.checkNegative.setChecked(aTreeItem.Type == "NRTO")
+            self.checkNegative.setEnabled(False)
+
+            self.textRi.setText(str(aTreeItem.InsideRadius))
+            self.textRo.setText(str(aTreeItem.OutsideRadius))
+            self.textHeight.setText(str(aTreeItem.Height))
+            self.textAngle.setText(str(aTreeItem.Angle))
+
+            aPosition = aTreeItem.Position
+            self.textPx.setText(str(aPosition.X))
+            self.textPy.setText(str(aPosition.Y))
+            self.textPz.setText(str(aPosition.Z))
+        else:
+            # create torus
+            self.setWindowTitle(QT_TRANSLATE_NOOP("Design", "Create Rectangular Torus"))
+            self.checkNegative.setEnabled(True)
+        # if
+    # activateName
+
+    def createTorus(self):
         aName = self.textName.text
 
         aPx = float(self.textPx.text)
@@ -1047,7 +1304,11 @@ class RectangularDialog(QDialog):
         try:
             PipeCad.StartTransaction("Create Rectangular Torus")
 
-            PipeCad.CreateItem("RTOR", aName)
+            if self.checkNegative.checked:
+                PipeCad.CreateItem("NRTO", aName)
+            else:
+                PipeCad.CreateItem("RTOR", aName)
+            # if
 
             aTreeItem = PipeCad.CurrentItem()
             aTreeItem.InsideRadius = float(self.textRi.text)
@@ -1061,6 +1322,38 @@ class RectangularDialog(QDialog):
             QMessageBox.critical(self, "", e)
             raise e
         # try
+    # createTorus
+
+    def modifyTorus(self):
+        if self.torusItem is None:
+            return
+        # if
+
+        aName = self.textName.text
+
+        aPx = float(self.textPx.text)
+        aPy = float(self.textPy.text)
+        aPz = float(self.textPz.text)
+
+        PipeCad.StartTransaction("Modify Rectangular Torus")
+
+        aTreeItem = self.torusItem
+        aTreeItem.InsideRadius = float(self.textRi.text)
+        aTreeItem.OutsideRadius = float(self.textRo.text)
+        aTreeItem.Height = float(self.textHeight.text)
+        aTreeItem.Angle = float(self.textAngle.text)
+        aTreeItem.Position = Position(aPx, aPy, aPz, aTreeItem.Owner)
+
+        PipeCad.CommitTransaction()
+    # modifyTorus
+
+    def accept(self):
+        aIndex = self.comboName.currentIndex
+        if aIndex == 0:
+            self.createTorus()
+        else:
+            self.modifyTorus()
+        # if
 
         QDialog.accept(self)
     # accept
