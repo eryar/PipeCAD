@@ -1,4 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <sa-ribbon-customize>
   <customize-data type="3" index="-1" key="import_project" category="ADMIN" pannel="Project" row-prop="1"/>
+  <customize-data type="1" index="2" key="new category[customize]1" category="category_1661199731772" pannel="" row-prop="1"/>
+  <customize-data type="10" index="-1" key="OMP" category="category_1661199731772" pannel="" row-prop="1"/>
+  <customize-data type="11" index="-1" key="Update" category="category_1661199731772" pannel="pannel_1661199745034" row-prop="1"/>
+  <customize-data type="3" index="-1" key="update_from_github" category="category_1661199731772" pannel="pannel_1661199745034" row-prop="1"/>
+  <customize-data type="2" index="0" key="new pannel[customize]1" category="category_1661199731772" pannel="pannel_1661200232808" row-prop="1"/>
+  <customize-data type="11" index="-1" key="Update" category="category_1661199731772" pannel="pannel_1661200232808" row-prop="1"/>
+  <customize-data type="3" index="-1" key="update_from_github" category="category_1661199731772" pannel="pannel_1661200232808" row-prop="1"/>
 </sa-ribbon-customize>

@@ -25,31 +25,31 @@ class dlgUpdateFromGithub(QDialog):
         self.grid = QGridLayout()
         
         self.lblLibrary = QLabel(QT_TRANSLATE_NOOP("Admin", "Library"))
-        self.txtLibrary = QLineEdit("https://github.com/rompik/PipeCAD/tree/main/lib")
+        self.txtLibrary = QLineEdit("https://github.com/eryar/PipeCAD/tree/main/lib")
         self.txtLibrary.setEnabled(True)
 
         self.lblUic = QLabel(QT_TRANSLATE_NOOP("Admin", "Menu"))
-        self.txtUic = QLineEdit("https://github.com/rompik/PipeCAD/tree/main/uic")
+        self.txtUic = QLineEdit("https://github.com/eryar/PipeCAD/tree/main/uic")
         self.txtUic.setEnabled(True)
         
         self.lblSettings = QLabel(QT_TRANSLATE_NOOP("Admin", "Settings"))
-        self.txtSettings = QLineEdit("https://github.com/rompik/PipeCAD/tree/main/settings")
+        self.txtSettings = QLineEdit("https://github.com/eryar/PipeCAD/tree/main/settings")
         self.txtSettings.setEnabled(True)
         
         self.lblDoc = QLabel(QT_TRANSLATE_NOOP("Admin", "Documentation"))
-        self.txtDoc = QLineEdit("https://github.com/rompik/PipeCAD/tree/main/docs")
+        self.txtDoc = QLineEdit("https://github.com/eryar/PipeCAD/tree/main/docs")
         self.txtDoc.setEnabled(True)
         
         self.lblTranslation = QLabel(QT_TRANSLATE_NOOP("Admin", "Translation"))
-        self.txtTranslation = QLineEdit("https://github.com/rompik/PipeCAD/tree/main/translations")
+        self.txtTranslation = QLineEdit("https://github.com/eryar/PipeCAD/tree/main/translations")
         self.txtTranslation.setEnabled(True)       
         
         self.lblTemplate = QLabel(QT_TRANSLATE_NOOP("Admin", "Templates"))
-        self.txtTemplate = QLineEdit("https://github.com/rompik/PipeCAD/tree/main/templates")
+        self.txtTemplate = QLineEdit("https://github.com/eryar/PipeCAD/tree/main/templates")
         self.txtTemplate.setEnabled(True)
   
         self.lblCatalogue = QLabel(QT_TRANSLATE_NOOP("Admin", "Catalogues"))
-        self.txtCatalogue = QLineEdit("https://github.com/rompik/PipeCAD/tree/main/catalogues")
+        self.txtCatalogue = QLineEdit("https://github.com/eryar/PipeCAD/tree/main/catalogues")
         self.txtCatalogue.setEnabled(True)
 
         self.btnUpdateLibrary = QPushButton(QT_TRANSLATE_NOOP("Admin", "Update"))
@@ -72,7 +72,10 @@ class dlgUpdateFromGithub(QDialog):
         self.vBoxLayout.addWidget(self.btnUpdateLibrary)   
             
     def RunUpdateLibrary(self):
-        total_files = self.download("https://github.com/rompik/PipeCAD/tree/main/docs", "c:\PipeCAD\docs")
+        #total_files_help = self.download("https://github.com/eryar/PipeCAD/tree/main/docs", "c:\PipeCAD\docs")
+        total_files_catalogues = self.download("https://github.com/eryar/PipeCAD/tree/main/catalogues", "c:\PipeCAD\catalogues")
+        total_files_library = self.download("https://github.com/eryar/PipeCAD/tree/main/lib", "c:\PipeCAD\lib")
+        total_files_templates = self.download("https://github.com/eryar/PipeCAD/tree/main/templates", "c:\PipeCAD\templates")
 
     def create_url(self, url):
         """
@@ -112,6 +115,7 @@ class dlgUpdateFromGithub(QDialog):
             opener.addheaders = [('User-agent', 'Mozilla/5.0')]
             urllib.request.install_opener(opener)
             response = urllib.request.urlretrieve(api_url)
+            
         except KeyboardInterrupt:
             # when CTRL+C is pressed during the execution of this script,
             # bring the cursor to the beginning, erase the current line, and dont make a new line
@@ -146,10 +150,11 @@ class dlgUpdateFromGithub(QDialog):
                     sys.exit()
 
             for file in data:
+                
                 file_url = file["download_url"]
                 file_name = file["name"]
                 file_path = file["path"]
-
+                print(file_url)
 
                 path = file_path
                 dirname = os.path.dirname(path)
