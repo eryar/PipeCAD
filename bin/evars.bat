@@ -1,0 +1,7 @@
+@echo off
+SET PROJECTS_DIR=C:\PipeCAD\Projects
+SET PIPECAD_HELP_PATH=C:\Github\PipeCAD\docs
+SET PIPECAD_MENU_PATH=C:\Github\PipeCAD\uic
+SET PIPECAD_SETTINGS_PATH=C:\Github\PipeCAD\settings
+SET PYTHONPATH=%PYTHONPATH%;%~dp0lib\site-packages;C:\Github\PipeCAD\lib;C:\PipeCAD\lib;
+SET PYTHONPYCACHEPREFIX=%TEMP%

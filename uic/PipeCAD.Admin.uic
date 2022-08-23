@@ -2,5 +2,6 @@
 <UserInterfaceCustomization xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" >
 <UserActions>
     <Action Key="import_project" Text="Import" Icon=":/PipeCad/Resources/project_import.png" ToolTip="Import project from Excel" Module="pipecad.Admin" Function="Admin.ImportProject()" />
+    <Action Key="update_from_github" Text="Update from Github" Icon=":/PipeCad/Resources/project_import.png" ToolTip="Run Update from Github" Module="omp.UpdateFromGithub" Function="omp.UpdateFromGithub.showUpdateFromGithub()" />
 </UserActions>
 </UserInterfaceCustomization>
