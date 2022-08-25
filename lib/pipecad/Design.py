@@ -827,3 +827,66 @@ def Reorder():
     aReorderDlg.setReorderItem()
     aReorderDlg.show()
 # Reorder
+
+
+class GraphicsDialog(QDialog):
+    def __init__(self, theParent = None):
+        QDialog.__init__(self, theParent)
+
+        self.setupUi()
+    # __init__
+
+    def setupUi(self):
+        self.setWindowTitle(QT_TRANSLATE_NOOP("Design", "Graphics Settings"))
+
+        self.verticalLayout = QVBoxLayout(self)
+
+        self.tabWidget = QTabWidget()
+
+        # Tab Colour
+        self.tabColour = QWidget()
+
+        self.tabWidget.addTab(self.tabColour, QT_TRANSLATE_NOOP("Design", "Colour"))
+
+        # Tab Representation
+        self.tabRepresentation = QWidget()
+        self.verticalLayoutTab = QVBoxLayout(self.tabRepresentation)
+
+        self.formLayout = QFormLayout()
+        self.labelTolerance = QLabel(QT_TRANSLATE_NOOP("Design", "Arc Tolerance"))
+        self.textTolerance = QLineEdit(str(PipeCad.GetArcTolerance()))
+
+        self.formLayout.setWidget(0, QFormLayout.LabelRole, self.labelTolerance)
+        self.formLayout.setWidget(0, QFormLayout.FieldRole, self.textTolerance)
+
+        self.verticalLayoutTab.addLayout(self.formLayout)
+
+        self.tabWidget.addTab(self.tabRepresentation, QT_TRANSLATE_NOOP("Design", "Representation"))
+
+        self.verticalLayout.addWidget(self.tabWidget)
+
+        # Action Box.
+        self.buttonBox = QDialogButtonBox(QDialogButtonBox.Cancel|QDialogButtonBox.Ok, self)
+
+        self.buttonBox.accepted.connect(self.accept)
+        self.buttonBox.rejected.connect(self.reject)
+
+        self.verticalLayout.addWidget(self.buttonBox)
+    # setupUi
+
+    def accept(self):
+        aTolerance = float(self.textTolerance.text)
+
+        PipeCad.SetArcTolerance(aTolerance)
+
+        QDialog.accept(self)
+    # accept
+
+# GraphicsDialog
+
+# Singleton Instance.
+aGraphicsDlg = GraphicsDialog(PipeCad)
+
+def SetGraphics():
+    aGraphicsDlg.show()
+# SetGraphics
