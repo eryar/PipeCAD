@@ -1,4 +1,10 @@
-class HelpViewer(QDialog):
+from PythonQt.QtCore import *
+from PythonQt.QtGui import *
+from PythonQt.QtSql import *
+
+from pipecad import *
+
+class HelpDialog(QDialog):
     """docstring for HelpViewer"""
     def __init__(self, parent = None):
         QDialog.__init__(self, parent)
@@ -159,3 +165,10 @@ class HelpViewer(QDialog):
             
     def showHelpViewer(self):
         self.show()
+
+# Singleton Instance.
+adlgHelp = HelpDialog(PipeCad)
+
+def showReport():
+    adlgHelp.show()
+# Show

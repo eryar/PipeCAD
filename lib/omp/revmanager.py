@@ -6,7 +6,7 @@ from pipecad import *
 
 import numpy as np
 
-class ReportDialog(QDialog):
+class RevManagerDialog(QDialog):
     def __init__(self, parent = None):
         QDialog.__init__(self, parent)
         
@@ -17,7 +17,7 @@ class ReportDialog(QDialog):
     def setupUi(self):
         
         self.resize(500, 400)
-        self.setWindowTitle(self.tr("PipeCAD - Report"))
+        self.setWindowTitle(self.tr("PipeCAD - Revision Manager"))
         
         self.vBoxLayout = QVBoxLayout(self)        
         self.grid = QGridLayout()
@@ -76,7 +76,7 @@ class ReportDialog(QDialog):
         self.hBoxLayoutHierarchy.addWidget(self.txtHierarchy)
         self.hBoxLayoutHierarchy.addWidget(self.btnHierarchy)        
                
-        self.btnRunReport = QPushButton(QT_TRANSLATE_NOOP("Admin", "Run Report"))
+        self.btnRunRevManager = QPushButton(QT_TRANSLATE_NOOP("Admin", "Run RevManager"))
 
         self.tablePreview = QTableWidget()
         self.tablePreview.setEditTriggers(QAbstractItemView.NoEditTriggers)
@@ -94,7 +94,7 @@ class ReportDialog(QDialog):
         
         self.btnAddColumn.clicked.connect(self.callAddColumn)
         self.btnHierarchy.clicked.connect(self.callCE)
-        self.btnRunReport.clicked.connect(self.callRunReport)
+        self.btnRunRevManager.clicked.connect(self.callRunRevManager)
         
         self.grid.addWidget( self.lblType, 0, 0 )
         self.grid.addWidget( self.lstType, 0, 1 )        
@@ -106,7 +106,7 @@ class ReportDialog(QDialog):
         self.grid.addLayout( self.hBoxLayoutHierarchy, 3, 1 )        
  
         self.vBoxLayout.addLayout(self.grid)   
-        self.vBoxLayout.addWidget(self.btnRunReport)  
+        self.vBoxLayout.addWidget(self.btnRunRevManager)  
         self.vBoxLayout.addWidget(self.tablePreview)  
     # setupUi
     
@@ -124,7 +124,7 @@ class ReportDialog(QDialog):
         print(PipeCad.CurrentItem().Name)
         self.txtHierarchy.text = "/" + PipeCad.CurrentItem().Name
     
-    def callRunReport(self):
+    def callRunRevManager(self):
         self.tablePreview.clear()
         self.tablePreview.setRowCount(0)
         self.tablePreview.setColumnCount(len(self.ColumnsHeaders))
@@ -138,8 +138,8 @@ class ReportDialog(QDialog):
                 self.tablePreview.setItem(aRow, j, QTableWidgetItem( getattr(aCollection[i] , self.ColumnsHeaders[j] ) ) )
 
 # Singleton Instance.
-aReportDialog = ReportDialog(PipeCad)
+aRevManagerDialog = RevManagerDialog(PipeCad)
 
-def showReport():
-    aReportDialog.show()
+def showRevManager():
+    aRevManagerDialog.show()
 # Show

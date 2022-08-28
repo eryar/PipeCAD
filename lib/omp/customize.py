@@ -17,18 +17,13 @@ class CustomizeDialog(QDialog):
         
         self.hBoxLayGroups = QHBoxLayout()
         
-        
         self.treeRibbonMenu = QTreeView()
         self.treeRibbonMenu.setRootIsDecorated(True)
-
         
         self.groupRibbonMenu = QGroupBox("Ribbon Menu")
         self.vBoxRibbonMenu = QVBoxLayout()
         self.groupRibbonMenu.setLayout(self.vBoxRibbonMenu)
-        
-        
-        
-        
+       
         self.groupActions = QGroupBox("Actions")
         self.tableActions = QTableWidget()
         self.tableActions.setEditTriggers(QAbstractItemView.NoEditTriggers)
@@ -61,5 +56,5 @@ class CustomizeDialog(QDialog):
 # Singleton Instance.
 aCustomizeDialog = CustomizeDialog(PipeCad)
 
-def showCustomizeDialog():
+def showCustomize():
     aCustomizeDialog.show()

@@ -3,7 +3,7 @@ from PythonQt.QtGui import *
 
 from pipecad import *
 
-class Settings(QDialog):
+class SettingsDialog(QDialog):
     """"Settings Window"""
     
     def __init__(self, parent = None):
@@ -52,10 +52,8 @@ class Settings(QDialog):
     def switchPage(self):
         print(self.pageCombo.currentIndex())
 
-# UpdateFromGithub
-
 # Singleton Instance.
-aSettings = Settings(PipeCad)
+aSettings = SettingsDialog(PipeCad)
 
 def showSettings():
     aSettings.show()

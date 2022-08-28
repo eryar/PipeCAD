@@ -72,10 +72,13 @@ class dlgUpdateFromGithub(QDialog):
         self.vBoxLayout.addWidget(self.btnUpdateLibrary)   
             
     def RunUpdateLibrary(self):
-        #total_files_help = self.download("https://github.com/eryar/PipeCAD/tree/main/docs", "c:\PipeCAD\docs")
-        total_files_catalogues = self.download("https://github.com/eryar/PipeCAD/tree/main/catalogues", "c:\PipeCAD\catalogues")
-        total_files_library = self.download("https://github.com/eryar/PipeCAD/tree/main/lib", "c:\PipeCAD\lib")
-        total_files_templates = self.download("https://github.com/eryar/PipeCAD/tree/main/templates", "c:\PipeCAD\templates")
+        #total_files_lib = self.download("https://github.com/eryar/PipeCAD/tree/main/lib", "c:\PipeCAD\\test\\lib")
+        #total_files_help = self.download("https://github.com/eryar/PipeCAD/tree/main/docs", "c:\PipeCAD\\test\\docs")
+        total_files_catalogues = self.download("https://github.com/eryar/PipeCAD/tree/main/catalogues", "c:\PipeCAD\\test\\catalogues")
+        total_files_uic = self.download("https://github.com/eryar/PipeCAD/tree/main/uic", "c:\PipeCAD\\test\\uic")
+        total_files_library = self.download("https://github.com/eryar/PipeCAD/tree/main/lib", "c:\PipeCAD\\test\\lib")
+        total_files_templates = self.download("https://github.com/eryar/PipeCAD/tree/main/templates", "c:\PipeCAD\\test\\templates")
+        total_files_translations = self.download("https://github.com/eryar/PipeCAD/tree/main/translations", "c:\PipeCAD\\test\\translations")
 
     def create_url(self, url):
         """
@@ -103,13 +106,13 @@ class dlgUpdateFromGithub(QDialog):
 
         # generate the url which returns the JSON data
         api_url, download_dirs = self.create_url(repo_url)
-
+        
         # To handle file names.
         if len(download_dirs.split(".")) == 0:
             dir_out = os.path.join(output_dir, download_dirs)
         else:
             dir_out = os.path.join(output_dir, "/".join(download_dirs.split("/")[:-1]))
-        
+ 
         try:
             opener = urllib.request.build_opener()
             opener.addheaders = [('User-agent', 'Mozilla/5.0')]
@@ -123,13 +126,15 @@ class dlgUpdateFromGithub(QDialog):
 
             # make a directory with the name which is taken from
             # the actual repo
-        os.makedirs(dir_out, exist_ok=True)
 
+        os.makedirs(dir_out, exist_ok=True)
+        
         # total files count
         total_files = 0
 
         with open(response[0], "r") as f:
             data = json.load(f)
+            
             # getting the total number of files so that we
             # can use it for the output information later
             total_files += len(data)
@@ -150,20 +155,18 @@ class dlgUpdateFromGithub(QDialog):
                     sys.exit()
 
             for file in data:
-                
                 file_url = file["download_url"]
                 file_name = file["name"]
                 file_path = file["path"]
-                print(file_url)
 
                 path = file_path
                 dirname = os.path.dirname(path)
-
+                
                 if dirname != '':
                     os.makedirs(os.path.dirname(path), exist_ok=True)
                 else:
                     pass
-
+                    
                 if file_url is not None:
                     try:
                         opener = urllib.request.build_opener()
@@ -178,6 +181,7 @@ class dlgUpdateFromGithub(QDialog):
                         sys.exit()
                 else:
                     self.download(file["html_url"], download_dirs)
+                    
         return total_files
         
 
