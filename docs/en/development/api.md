@@ -172,6 +172,17 @@ User can login project.
 | RefNo | string | STRING containing Database reference number |
 | Password | string | User password |
 
+## SnapOption
+The object snap option:
+
+| Option | Description |
+| :--- | :--- |
+| SnapEnd | Snap object end point. |
+| SnapMiddle | Snap object middle point. |
+| SnapCenter | Snap circle center point. |
+| SnapPpoint | Snap object P-Point. |
+
+
 # PipeCad API
 PipeCad is a core object of PipeCAD, the PipeCad object is a mechanism for providing methods which are not specific to the standard objects, such as TreeItem, QWidget etc.
 
@@ -252,8 +263,10 @@ aCurrentSession = PipeCad.CurrentSession
 | SetIncrements | Set linear and angular increment for Model Editor |
 | SetIndicator | Set indicator for line edit |
 | SetProjector | Set projector to produce 2D drawing |
+| SetSnapOptions | Set snap options. |
 | StartTransaction | Start transaction to combine the following command to one |
 | Translate | Translate the current item |
+| TestSnapOption | Test which snap option is set. |
 | UpdateViewer | Update 3d viewer |
 
 
@@ -923,6 +936,45 @@ PipeCad.SetProjector(Position theDatum, Direction theDn, Direction theDx, double
 | theDn | Direction | The project plane normal direction |
 | theDx | Direction | The project plane x direction |
 | theScale | double | The project scale, default is 1.0 |
+
+
+## PipeCad.SetSnapOptions
+Set snap object options.
+
+```python
+PipeCad.SetSnapOptions(PipeCad.SnapOptions theSnapOptions)
+```
+
+**Parameter List**
+
+| Parameter | Type | Purpose |
+| :--- | :--- | :--- |
+| theSnapOptions | PipeCad.SnapOptions | The object snap options. |
+
+**Example**
+
+```python
+PipeCad.SetSnapOptions(PipeCad.SnapEnd | PipeCad.SnapPpoint)
+```
+
+## PipeCad.TestSnapOption
+Test which snap option is set.
+
+```python
+PipeCad.TestSnapOption(PipeCad.SnapOption theSnapOption)
+```
+
+**Parameter List**
+
+| Parameter | Type | Purpose |
+| :--- | :--- | :--- |
+| theSnapOption | PipeCad.SnapOption | The object snap option. |
+
+**Example**
+
+```python
+PipeCad.TestSnapOption(PipeCad.SnapEnd)
+```
 
 ## PipeCad.AddProjectItem
 Add item that will be projected to 2d drawing.
