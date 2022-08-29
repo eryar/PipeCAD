@@ -1,15 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <sa-ribbon-customize>
   <customize-data type="3" index="-1" key="set_increments" category="VIEW" pannel="Selection" row-prop="1"/>
-  <customize-data type="1" index="6" key="new category[customize]1" category="category_1661630942618" pannel="" row-prop="1"/>
-  <customize-data type="10" index="-1" key="DEVELOPMENT" category="category_1661630942618" pannel="" row-prop="1"/>
-  <customize-data type="2" index="0" key="new pannel[customize]1" category="category_1661630942618" pannel="pannel_1661630955827" row-prop="1"/>
-  <customize-data type="11" index="-1" key="Menu" category="category_1661630942618" pannel="pannel_1661630955827" row-prop="1"/>
-  <customize-data type="3" index="-1" key="ribbon_customize" category="category_1661630942618" pannel="pannel_1661630955827" row-prop="1"/>
   <customize-data type="3" index="-1" key="run_report" category="HOME" pannel="Search" row-prop="1"/>
-  <customize-data type="3" index="-1" key="pipecad_settings" category="category_1661630942618" pannel="pannel_1661630955827" row-prop="1"/>
-  <customize-data type="3" index="-1" key="show_help" category="category_1661630942618" pannel="pannel_1661630955827" row-prop="1"/>
-  <customize-data type="2" index="4" key="new pannel[customize]1" category="GENERAL" pannel="pannel_1661720599437" row-prop="1"/>
-  <customize-data type="11" index="-1" key="Revision" category="GENERAL" pannel="pannel_1661720599437" row-prop="1"/>
-  <customize-data type="3" index="-1" key="show_revision_manager" category="GENERAL" pannel="pannel_1661720599437" row-prop="1"/>
 </sa-ribbon-customize>
