@@ -334,7 +334,7 @@ class OriginDialog(QDialog):
     # setEquipment
 
     def pickVertex(self):
-        aPoint = PipeCad.PickPoint(1)
+        aPoint = PipeCad.PickPoint()
         if aPoint is None:
             return
         # if

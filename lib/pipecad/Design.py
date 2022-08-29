@@ -890,3 +890,78 @@ aGraphicsDlg = GraphicsDialog(PipeCad)
 def SetGraphics():
     aGraphicsDlg.show()
 # SetGraphics
+
+
+class SnapDialog(QDialog):
+    """docstring for SnapDialog"""
+    def __init__(self, theParent = None):
+        QDialog.__init__(self, theParent)
+
+        self.setupUi()
+    # __init__
+
+    def setupUi(self):
+        self.setWindowTitle(QT_TRANSLATE_NOOP("Design", "Snap Options"))
+
+        self.verticalLayout = QVBoxLayout(self)
+
+        self.groupBox = QGroupBox(QT_TRANSLATE_NOOP("Design", "Object Snaps"))
+
+        self.gridLayout = QGridLayout(self.groupBox)
+
+        # Object Snaps
+        self.checkSnapEnd = QCheckBox(QT_TRANSLATE_NOOP("Design", "End"))
+        self.checkSnapMiddle = QCheckBox(QT_TRANSLATE_NOOP("Design", "Middle"))
+        self.checkSnapCenter = QCheckBox(QT_TRANSLATE_NOOP("Design", "Center"))
+        self.checkSnapPpoint = QCheckBox(QT_TRANSLATE_NOOP("Design", "Ppoint"))
+
+        self.checkSnapEnd.setChecked(PipeCad.TestSnapOption(PipeCad.SnapEnd))
+        self.checkSnapMiddle.setChecked(PipeCad.TestSnapOption(PipeCad.SnapMiddle))
+        self.checkSnapCenter.setChecked(PipeCad.TestSnapOption(PipeCad.SnapCenter))
+        self.checkSnapPpoint.setChecked(PipeCad.TestSnapOption(PipeCad.SnapPpoint))
+
+        self.gridLayout.addWidget(self.checkSnapEnd, 0, 0)
+        self.gridLayout.addWidget(self.checkSnapMiddle, 1, 0)
+        self.gridLayout.addWidget(self.checkSnapCenter, 2, 0)
+        self.gridLayout.addWidget(self.checkSnapPpoint, 3, 0)
+
+        self.verticalLayout.addWidget(self.groupBox)
+
+        # Action Box.
+        self.buttonBox = QDialogButtonBox(QDialogButtonBox.Cancel|QDialogButtonBox.Ok, self)
+
+        self.buttonBox.accepted.connect(self.accept)
+        self.buttonBox.rejected.connect(self.reject)
+
+        self.verticalLayout.addWidget(self.buttonBox)
+    # setupUi
+
+    def accept(self):
+        aSnapOptions = PipeCad.SnapOptions()
+
+        if self.checkSnapEnd.checked:
+            aSnapOptions = aSnapOptions | PipeCad.SnapEnd
+        # if
+
+        if self.checkSnapMiddle.checked:
+            aSnapOptions = aSnapOptions | PipeCad.SnapMiddle
+        # if
+
+        if self.checkSnapCenter.checked:
+            aSnapOptions = aSnapOptions | PipeCad.SnapCenter
+        # if
+
+        if self.checkSnapPpoint.checked:
+            aSnapOptions = aSnapOptions | PipeCad.SnapPpoint
+        # if
+
+        PipeCad.SetSnapOptions(aSnapOptions)
+
+        QDialog.accept(self)
+    # accept
+# SnapOptionsDialog        
+
+def SetSnapOptions():
+    aSnapDlg = SnapDialog(PipeCad)
+    aSnapDlg.exec()
+# SetSnapOptions
