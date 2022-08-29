@@ -2,5 +2,6 @@
 <UserInterfaceCustomization xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" >
 <UserActions>
     <Action Key="set_increments" Text="Increments" Icon=":/PipeCad/Resources/selection_increment.png" ToolTip="Set Increments for Model Editor" Module="pipecad.Design" Function="Design.SetIncrements()" />
+    <Action Key="run_report" Text="Run Report" Icon=":/PipeCad/Resources/project_import.png" ToolTip="Run Report" Module="omp.reports" Function="omp.reports.showReport()" />
 </UserActions>
 </UserInterfaceCustomization>
