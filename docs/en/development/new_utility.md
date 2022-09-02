@@ -59,8 +59,8 @@ importlib.reload(omp.sample)
 ```
 or (as it was used abbreviation sm to replace whole name omp.sample)
 ```python 
-import importlib
-importlib.reload(sm)
+import imp
+imp.reload(sm)
 ```
 In case of correct reloading of form file you will see next message:
 
