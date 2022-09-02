@@ -52,6 +52,24 @@ In result form will be shown:
 
 ![Sample Utility Window](../../images/development/new_utility/sample_window.png)
 
+As during updating of python files it could be useful to reload utility during current session w/out restarting PipeCAD. To do it there will need to run next commands: 
+```python 
+import importlib
+importlib.reload(omp.sample)
+```
+or (as it was used abbreviation sm to replace whole name omp.sample)
+```python 
+import importlib
+importlib.reload(sm)
+```
+In case of correct reloading of form file you will see next message:
+
+![Reload Modified Form](../../images/development/new_utility/reload_form_message.png)
+
+After that form can be started again via menu (if setuped) or using again coommand:
+```python 
+sm.ShowSample()
+```
 
 
 
