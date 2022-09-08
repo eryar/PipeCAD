@@ -36,8 +36,14 @@ def ExportPcf(theTreeItem, theFileName):
     aPcfFile.write("\nUNITS-WEIGHT  KGS")
 
     # PIPELINE
+    aSpec = ''
+    aPspec = theTreeItem.Pspec
+    if aPspec != None:
+        aSpec = aPspec.Name
+    # if
+
     aPcfFile.write("\nPIPELINE-REFERENCE   " + theTreeItem.Name)
-    aPcfFile.write("\n    PIPING-SPEC   ")
+    aPcfFile.write("\n    PIPING-SPEC   " + aSpec)
     aPcfFile.write("\n    INSULATION-SPEC   ")
     aPcfFile.write("\n    PAINTING-SPEC   ")
     aPcfFile.write("\n    TRACING-SPEC   ")
@@ -92,6 +98,8 @@ def ExportPcf(theTreeItem, theFileName):
                     aType = "REDUCER-CONCENTRIC"
                 else:
                     aType = "REDUCER-ECCENTRIC"
+                # if
+            # if
 
             aPcfFile.write("\n" + aType)
             aPcfFile.write("\n    END-POINT    " + aArrivePoint.Position.string() + " " + aArrivePoint.Bore + " " + aArrivePoint.Type)
@@ -104,6 +112,33 @@ def ExportPcf(theTreeItem, theFileName):
                 aPcfFile.write("\n    BRANCH1-POINT   " + aBranchPoint.Position.string() + " " + aBranchPoint.Bore + " " + aBranchPoint.Type)
             elif aType == "ELBOW":
                 aPcfFile.write("\n    CENTRE-POINT   " + aCompItem.Position.string())
+            elif aType == "VALVE":
+                aSpindlePoint = aCompItem.linkPoint("P3")
+                if aSpindlePoint != None:
+                    aDirection = aSpindlePoint.Direction
+                    aSpindleDirection = ''
+                    if abs(aDirection.x) > abs(aDirection.y) and abs(aDirection.x) > abs(aDirection.z):
+                        if aDirection.x > 0:
+                            aSpindleDirection = "EAST"
+                        else:
+                            aSpindleDirection = "WEST"
+                        # if
+                    elif abs(aDirection.y) > abs(aDirection.x) and abs(aDirection.y) > abs(aDirection.z):
+                        if aDirection.y > 0:
+                            aSpindleDirection = "NORTH"
+                        else:
+                            aSpindleDirection = "SOUTH"
+                        # if
+                    elif abs(aDirection.z) > abs(aDirection.x) and abs(aDirection.z) > abs(aDirection.y):
+                        if aDirection.z > 0:
+                            aSpindleDirection = "UP"
+                        else:
+                            aSpindleDirection = "DOWN"
+                        # if
+                    # if
+
+                    aPcfFile.write("\n    SPINDLE-DIRECTION  " + aSpindleDirection)
+                # if
             # if
 
             aPcfFile.write("\n    SKEY     " + aSkey)
@@ -117,6 +152,7 @@ def ExportPcf(theTreeItem, theFileName):
 
             if len(aCode) > 0:
                 aCodeDict[aCode] = aDescription
+            # if
         # for
 
         # Add last pipe.
