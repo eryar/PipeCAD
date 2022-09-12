@@ -1372,29 +1372,40 @@ class ExtrusionDialog(QDialog):
         QDialog.__init__(self, theParent)
 
         self.aidNumber = PipeCad.NextAidNumber()
+        self.extrItem = None
 
         self.setupUi()
     # __init__
 
     def setupUi(self):
-        self.setWindowTitle(QT_TRANSLATE_NOOP("Primitive", "Create Extrusion"))
+        self.setWindowTitle(QT_TRANSLATE_NOOP("Design", "Create Extrusion"))
 
         self.verticalLayout = QVBoxLayout(self)
         self.formLayout = QFormLayout()
 
         # Name
-        self.labelName = QLabel(QT_TRANSLATE_NOOP("Primitive", "Name"))
+        self.comboName = QComboBox()
+        self.comboName.addItem(QT_TRANSLATE_NOOP("Design", "Create"))
+        self.comboName.addItem(QT_TRANSLATE_NOOP("Design", "Modify"))
+        self.comboName.activated.connect(self.activateName)
+
         self.textName = QLineEdit()
 
-        self.formLayout.setWidget(0, QFormLayout.LabelRole, self.labelName)
+        self.formLayout.setWidget(0, QFormLayout.LabelRole, self.comboName)
         self.formLayout.setWidget(0, QFormLayout.FieldRole, self.textName)
 
         # Thickness
-        self.labelThickness = QLabel(QT_TRANSLATE_NOOP("Primitive", "Thickness"))
+        self.labelThickness = QLabel(QT_TRANSLATE_NOOP("Design", "Thickness"))
         self.textThickness = QLineEdit("10")
 
         self.formLayout.setWidget(1, QFormLayout.LabelRole, self.labelThickness)
         self.formLayout.setWidget(1, QFormLayout.FieldRole, self.textThickness)
+
+        self.labelNegative = QLabel(QT_TRANSLATE_NOOP("Design", "Negative"))
+        self.checkNegative = QCheckBox()
+
+        self.formLayout.setWidget(2, QFormLayout.LabelRole, self.labelNegative)
+        self.formLayout.setWidget(2, QFormLayout.FieldRole, self.checkNegative)
 
         self.verticalLayout.addLayout(self.formLayout)
 
@@ -1415,13 +1426,13 @@ class ExtrusionDialog(QDialog):
         self.horizontalLayout = QHBoxLayout()
 
         # Add, Remove
-        self.buttonAdd = QPushButton(QT_TRANSLATE_NOOP("Primitive", "Add"))
+        self.buttonAdd = QPushButton(QT_TRANSLATE_NOOP("Design", "Add"))
         self.buttonAdd.clicked.connect(self.addVertex)
 
-        self.buttonRemove = QPushButton(QT_TRANSLATE_NOOP("Primitive", "Remove"))
+        self.buttonRemove = QPushButton(QT_TRANSLATE_NOOP("Design", "Remove"))
         self.buttonRemove.clicked.connect(self.removeVertex)
 
-        self.buttonPreview = QPushButton(QT_TRANSLATE_NOOP("Primitive", "Preview"))
+        self.buttonPreview = QPushButton(QT_TRANSLATE_NOOP("Design", "Preview"))
         self.buttonPreview.clicked.connect(self.previewLoop)
 
         self.horizontalLayout.addWidget(self.buttonAdd)
@@ -1437,6 +1448,55 @@ class ExtrusionDialog(QDialog):
 
         self.verticalLayout.addLayout(self.horizontalLayout)
     # setupUi
+
+    def activateName(self):
+        self.extrItem = None
+
+        aIndex = self.comboName.currentIndex
+        if aIndex == 1:
+            # modify 
+            self.setWindowTitle(QT_TRANSLATE_NOOP("Design", "Modify Extrusion"))
+
+            aTreeItem = PipeCad.CurrentItem()
+            if aTreeItem.Type not in {"EXTR", "NXTR"}:
+                QMessageBox.warning(self, "", QT_TRANSLATE_NOOP("Design", "Please select EXTR/NXTR to modify!"))
+                return
+            # if
+
+            self.extrItem = aTreeItem
+
+            self.textName.setText(aTreeItem.Name)
+            self.checkNegative.setChecked(aTreeItem.Type == "NXTR")
+            self.checkNegative.setEnabled(False)
+
+            self.textThickness.setText(str(aTreeItem.Height))
+
+            # First loop.
+            if len(self.extrItem.Member) < 1:
+                self.tableWidget.setRowCount(0)
+            else:
+                aLoopItem = self.extrItem.Member[0]
+
+                self.tableWidget.setRowCount(0)
+
+                for aVertItem in aLoopItem.Member:
+                    aPoint = aVertItem.Position.Wrt()
+                    aRadius = aVertItem.Radius
+
+                    aRow = self.tableWidget.rowCount
+                    self.tableWidget.insertRow(aRow)
+                    self.tableWidget.setItem(aRow, 0, QTableWidgetItem(str(aPoint.X)))
+                    self.tableWidget.setItem(aRow, 1, QTableWidgetItem(str(aPoint.Y)))
+                    self.tableWidget.setItem(aRow, 2, QTableWidgetItem(str(aPoint.Z)))
+                    self.tableWidget.setItem(aRow, 3, QTableWidgetItem(str(aRadius)))
+                # for
+            # if
+        else:
+            # create
+            self.setWindowTitle(QT_TRANSLATE_NOOP("Design", "Create Extrusion"))
+            self.checkNegative.setEnabled(True)
+        # if
+    # activateName
 
     def addVertex(self):
         aRow = self.tableWidget.currentRow()
@@ -1456,7 +1516,7 @@ class ExtrusionDialog(QDialog):
     def removeVertex(self):
         aRow = self.tableWidget.currentRow()
 
-        if QMessageBox.question(self, "", QT_TRANSLATE_NOOP("Primitive", "Are you to remove the selected vertex?")) == QMessageBox.Yes:
+        if QMessageBox.question(self, "", QT_TRANSLATE_NOOP("Design", "Are you to remove the selected vertex?")) == QMessageBox.Yes:
             self.tableWidget.removeRow(aRow)
         # if
     # removeVertex
@@ -1482,30 +1542,105 @@ class ExtrusionDialog(QDialog):
 
     # previewPanel
 
-    def accept(self):
+    def createExtrusion(self):
 
-        PipeCad.StartTransaction("Create Extrusion")
+        try:
+            PipeCad.StartTransaction("Create Extrusion")
 
-        PipeCad.CreateItem("EXTR", self.textName.text)
+            if self.checkNegative.checked:
+                PipeCad.CreateItem("NXTR", self.textName.text)
+            else:
+                PipeCad.CreateItem("EXTR", self.textName.text)
+            # if
 
-        aPaneItem = PipeCad.CurrentItem()
-        aPaneItem.Height = float(self.textThickness.text)
+            aPaneItem = PipeCad.CurrentItem()
+            aPaneItem.Height = float(self.textThickness.text)
 
-        PipeCad.CreateItem("LOOP")
+            PipeCad.CreateItem("LOOP")
 
-        for r in range(self.tableWidget.rowCount):
-            aX = float(self.tableWidget.item(r, 0).text())
-            aY = float(self.tableWidget.item(r, 1).text())
-            aZ = float(self.tableWidget.item(r, 2).text())
-            aR = float(self.tableWidget.item(r, 3).text())
+            for r in range(self.tableWidget.rowCount):
+                aX = float(self.tableWidget.item(r, 0).text())
+                aY = float(self.tableWidget.item(r, 1).text())
+                aZ = float(self.tableWidget.item(r, 2).text())
+                aR = float(self.tableWidget.item(r, 3).text())
 
-            PipeCad.CreateItem("VERT")
-            aVertItem = PipeCad.CurrentItem()
-            aVertItem.Position = Position(aX, aY, aZ)
-            aVertItem.Radius = aR
-        # for
+                PipeCad.CreateItem("VERT")
+                aVertItem = PipeCad.CurrentItem()
+                aVertItem.Position = Position(aX, aY, aZ)
+                aVertItem.Radius = aR
+            # for
+
+            PipeCad.CommitTransaction()
+            
+        except Exception as e:
+            QMessageBox.critical(self, "", e)
+            raise e
+        # try
+    # createExtrusion
+
+    def modifyExtrusion(self):
+        if self.extrItem is None:
+            return
+        # if
+
+        PipeCad.StartTransaction("Modify Extrusion")
+
+        aTreeItem = self.extrItem
+        aTreeItem.Name = self.textName.text
+        aTreeItem.Height = float(self.textThickness.text)
+
+        if len(aTreeItem.Member) > 0:
+            # Only modify first loop
+            aLoopItem = aTreeItem.Member[0]
+            aVertexSize = len(aLoopItem.Member)
+
+            if aVertexSize > 0:
+                PipeCad.SetCurrentItem(aLoopItem.Member[-1])
+            # if
+
+            for r in range(max(aVertexSize, self.tableWidget.rowCount)):
+                if r >= aVertexSize:
+                    # Create vertex
+                    aX = float(self.tableWidget.item(r, 0).text())
+                    aY = float(self.tableWidget.item(r, 1).text())
+                    aZ = float(self.tableWidget.item(r, 2).text())
+                    aR = float(self.tableWidget.item(r, 3).text())
+
+                    PipeCad.CreateItem("VERT")
+                    aVertItem = PipeCad.CurrentItem()
+                    aVertItem.Position = Position(aX, aY, aZ)
+                    aVertItem.Radius = aR
+                else:
+                    aVertItem = aLoopItem.Member[r]
+
+                    if r >= self.tableWidget.rowCount:
+                        # Delete vertex
+                        PipeCad.SetCurrentItem(aVertItem)
+                        PipeCad.DeleteItem(aVertItem.Type)
+                    else:
+                        # Modify vertex
+                        aX = float(self.tableWidget.item(r, 0).text())
+                        aY = float(self.tableWidget.item(r, 1).text())
+                        aZ = float(self.tableWidget.item(r, 2).text())
+                        aR = float(self.tableWidget.item(r, 3).text())
+
+                        aVertItem.Position = Position(aX, aY, aZ)
+                        aVertItem.Radius = aR
+                    # if
+                # if
+            # for
+        # if
 
         PipeCad.CommitTransaction()
+    # modifyExtrusion
+
+    def accept(self):
+        aIndex = self.comboName.currentIndex
+        if aIndex == 0:
+            self.createExtrusion()
+        else:
+            self.modifyExtrusion()
+        # if
 
         PipeCad.RemoveAid(self.aidNumber)
         PipeCad.UpdateViewer()
