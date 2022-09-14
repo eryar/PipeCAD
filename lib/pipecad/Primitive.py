@@ -1495,6 +1495,7 @@ class ExtrusionDialog(QDialog):
             # create
             self.setWindowTitle(QT_TRANSLATE_NOOP("Design", "Create Extrusion"))
             self.checkNegative.setEnabled(True)
+            self.tableWidget.setRowCount(0)
         # if
     # activateName
 
@@ -1632,6 +1633,9 @@ class ExtrusionDialog(QDialog):
         # if
 
         PipeCad.CommitTransaction()
+
+        self.comboName.setCurrentIndex(0)
+        self.activateName()
     # modifyExtrusion
 
     def accept(self):
