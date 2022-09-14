@@ -1673,7 +1673,36 @@ def CreateRevolution():
 
 
 def ConnectPoint():
-    QMessageBox.warning(PipeCad, "", QT_TRANSLATE_NOOP("Primitive", "Not implement yet!"))
+    aTreeItem = PipeCad.CurrentItem()
+    if aTreeItem is None:
+        return
+    # if
+
+    aTypeSet = {"BOX", "CYLI", "SLCY", "SNOU", "DISH", "CONE", "NOZZ", "PYRA", "CTOR", "RTOR",
+                "NBOX", "NCYL", "NSLC", "NSNO", "NDIS", "NCON", "NCTO", "NRTO"}
+
+    aType = aTreeItem.Type
+    if aType not in aTypeSet:
+        QMessageBox.critical(PipeCad, "", PipeCad.tr("You must be positioned at a Primitive level or below!"))
+        return
+    # if
+
+    aP1 = PipeCad.PickLinkPoint("Pick on a point on the current item, press ESC to cancel")
+    if aP1 is None:
+        return
+    # if
+
+    aP2 = PipeCad.PickLinkPoint("Pick the point to connect to, press ESC to cancel")
+    if aP2 is None:
+        return
+    # if
+
+    try:
+        aTreeItem.Connect(aP1, aP2)
+    except Exception as e:
+        QMessageBox.critical(self, "", e)
+        raise e
+    # try
 # ConnectPoint
 
 
