@@ -1,6 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <UserInterfaceCustomization xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" >
-<UserActions>
-    <Action Key="run_report" Text="Report" Icon=":/PipeCad/Resources/report_excel.png" ToolTip="Run Report" Module="omp.reports" Function="omp.reports.showReport()" />
-</UserActions>
+	<UserActions>
+		<Action Key="set_increments" Text="Increments" Icon=":/PipeCad/Resources/selection_increment.png" ToolTip="Set Increments for Model Editor" Module="pipecad.Design" Function="Design.SetIncrements()" />
+		<Action Key="ribbon_customize" Text="Menu Customisation" Icon=":/PipeCad/Resources/project_import.png" ToolTip="Setup Ribbon Menu" Module="omp.customize" Function="omp.customize.showCustomize()" />
+		<Action Key="pipecad_settings" Text="PipeCAD Setting" Icon=":/PipeCad/Resources/project_import.png" ToolTip="Setup PipeCAD Settings" Module="omp.settings" Function="omp.settings.showSettings()" />
+		<Action Key="run_report" Text="Run Report" Icon=":/PipeCad/Resources/project_import.png" ToolTip="Run Report" Module="omp.reports" Function="omp.reports.showReport()" />
+		<Action Key="show_help" Text="Show Help" Icon=":/PipeCad/Resources/project_import.png" ToolTip="Show Help" Module="omp.helpviewer" Function="omp.helpviewer.showHelp()" />
+		<Action Key="show_revision_manager" Text="Revision Manager" Icon="../../PipeCAD/lib/omp/icons/common/90x90_revision.png" ToolTip="Revison Manager utiltiy" Module="omp.revmanager" Function="omp.revmanager.showRevManager()" />
+	</UserActions>
 </UserInterfaceCustomization>

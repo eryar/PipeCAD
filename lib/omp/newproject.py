@@ -107,6 +107,7 @@ class NewProjectDialog(QDialog):
     
         
     def callRunNewProject(self):
+        
         os.mkdir("C:/PipeCAD/Projects/Tester")
 
         aDatabase = QSqlDatabase.addDatabase("QSQLITE", "TST_DB")
