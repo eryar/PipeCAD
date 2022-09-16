@@ -798,6 +798,7 @@ class PipeDialog():
         self.labelPosition = QLabel("Position wrt World:")
         self.buttonPick = QPushButton("Pick")
         self.buttonPick.setSizePolicy(aSizePolicy)
+        self.buttonPick.clicked.connect(self.pickHeadPosition)
         self.horizontalLayout.addWidget(self.labelPosition)
         self.horizontalLayout.addWidget(self.buttonPick)
 
@@ -870,6 +871,17 @@ class PipeDialog():
             self.textY.setText(aPos[1])
             self.textZ.setText(aPos[2])
     # changeHeadDetail
+
+    def pickHeadPosition(self):
+        aPoint = PipeCad.PickPoint("Pick position for branch head, press ESC to cancel")
+        if aPoint is None:
+            return
+        # if
+
+        self.textX.setText(str(aPoint.X))
+        self.textY.setText(str(aPoint.Y))
+        self.textZ.setText(str(aPoint.Z))
+    # pickHeadPosition
 
     def changeHeadConnection(self):
         self.dockContent = QWidget()
@@ -1167,6 +1179,7 @@ class PipeDialog():
         self.labelPosition = QLabel("Position wrt World:")
         self.buttonPick = QPushButton("Pick")
         self.buttonPick.setSizePolicy(aSizePolicy)
+        self.buttonPick.clicked.connect(self.pickTailPosition)
         self.horizontalLayout.addWidget(self.labelPosition)
         self.horizontalLayout.addWidget(self.buttonPick)
 
@@ -1238,6 +1251,19 @@ class PipeDialog():
             self.textX.setText(aPos[0])
             self.textY.setText(aPos[1])
             self.textZ.setText(aPos[2])
+        # if
+    # changeTailDetail
+
+    def pickTailPosition(self):
+        aPoint = PipeCad.PickPoint("Pick position for branch tail, press ESC to cancel")
+        if aPoint is None:
+            return
+        # if
+
+        self.textX.setText(str(aPoint.X))
+        self.textY.setText(str(aPoint.Y))
+        self.textZ.setText(str(aPoint.Z))
+    # pickTailPosition
 
     def changeTailConnection(self):
         
