@@ -601,6 +601,7 @@ class ComponentDialog():
         aTypeItem = self.comboType.currentData
         if aTypeItem is None:
             return
+        # if
 
         aRow = self.tableWidget.currentRow()
         aSpcoItem = self.tableWidget.item(aRow, 0).data(Qt.UserRole)
@@ -690,7 +691,7 @@ class ComponentDialog():
 
             aPa = self.currentItem.ArrivePoint.Position
             aPc = self.currentItem.Position
-            aOffset += aPc.distance(aPa)
+            aOffset += aPc.Distance(aPa)
 
             PipeCad.Translate(aPs, aDir, aOffset)
         else:
