@@ -16,10 +16,10 @@ class RevManagerDialog(QDialog):
 
     def setupUi(self):
         
-        self.resize(500, 400)
-        self.setWindowTitle(self.tr("PipeCAD - Revision Manager - Dev ver."))
+        self.resize(400, 40)
+        self.setWindowTitle(self.tr("PipeCAD - Revision Manager"))
               
-        self.hBoxLayPipe = QHBoxLayout(self)
+        self.hBoxLayPipe = QHBoxLayout()
        
         self.btnCE = QPushButton(QT_TRANSLATE_NOOP("Admin", "CE"))
         self.btnCE.setMaximumSize( 40 , 40 )
@@ -28,15 +28,14 @@ class RevManagerDialog(QDialog):
         
         self.hBoxLayPipe.addWidget(self.btnCE)
         self.hBoxLayPipe.addWidget(self.lblCE)
-
          
-        self.btnApply = QPushButton(QT_TRANSLATE_NOOP("Design", "Apply"))
+        self.btnApply = QPushButton(QT_TRANSLATE_NOOP("Admin", "Apply"))
         self.btnApply.setMaximumSize( 60 , 40 )
         
-        self.btnCancel = QPushButton(QT_TRANSLATE_NOOP("Design", "Cancel"))
+        self.btnCancel = QPushButton(QT_TRANSLATE_NOOP("Admin", "Cancel"))
         self.btnCancel.setMaximumSize( 60 , 40 )
             
-        self.hBoxLayButtons = QHBoxLayout(self)
+        self.hBoxLayButtons = QHBoxLayout()
         self.hBoxLayButtons.addWidget(self.btnApply)
         self.hBoxLayButtons.addWidget(self.btnCancel)
         
@@ -47,10 +46,12 @@ class RevManagerDialog(QDialog):
         self.tableRevisions.setSelectionBehavior(QAbstractItemView.SelectRows)
         self.tableRevisions.horizontalHeader().setStretchLastSection(False)
         self.tableRevisions.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeToContents)
-        #self.tableRevisions.verticalHeader().setMinimumSectionSize(16)
-        #self.tableRevisions.verticalHeader().setDefaultSectionSize(18)
-                
-        #self.btnCE.clicked.connect(self.callCE)
+        self.tableRevisions.verticalHeader().setMinimumSectionSize(16)
+        self.tableRevisions.verticalHeader().setDefaultSectionSize(18)
+        self.tableRevisions.setHorizontalHeaderLabels(["Name"])         
+        self.tableRevisions.setColumnCount(1)
+           
+        self.btnCE.clicked.connect(self.callCE)
         #self.btnApply.clicked.connect(self.callApply)
         
         self.vBoxLayMain = QVBoxLayout(self)
@@ -59,9 +60,6 @@ class RevManagerDialog(QDialog):
         self.vBoxLayMain.addLayout( self.hBoxLayButtons )
         
 
-
-    # setupUi
-    
     #def callAddColumn(self):      
     #    #df = pd.DataFrame((some_Data),('z','T'))
     #    #self.data.setRowCount(len(df))
@@ -73,8 +71,30 @@ class RevManagerDialog(QDialog):
     #    self.tableRevisions.setHorizontalHeaderLabels(self.ColumnsHeaders)
     
     def callCE(self):
-        print(PipeCad.CurrentItem().Name)
-        self.txtHierarchy.text = "/" + PipeCad.CurrentItem().Name
+        self.lblCE.text = "/" + PipeCad.CurrentItem().Name
+        revisions = PipeCad.CollectItem("REVI", PipeCad.CurrentItem())
+        self.tableRevisions.clear()
+        self.tableRevisions.setRowCount(0)
+        for i in range( len(revisions) ):
+            print(revisions[i])
+            aRow = self.tableRevisions.rowCount
+            self.tableRevisions.insertRow(aRow)
+            #for j in range( len(self.ColumnsHeaders) ):           
+            self.tableRevisions.setItem(aRow, 1, QTableWidgetItem() )
+            
+                        
+    #ef callRemoveColumn(self):      
+    #   
+    #   
+    #   for k in self.ColumnsHeaders:
+    #       if self.lstAttributes.currentText == k:
+    #           self.ColumnsHeaders.remove(self.lstAttributes.currentText)
+    #          
+    #   self.tablePreview.setColumnCount(len(self.ColumnsHeaders))
+    #   self.tablePreview.setHorizontalHeaderLabels(self.ColumnsHeaders)  
+
+
+        
     
     def callApply(self):
         self.tableRevisions.clear()
