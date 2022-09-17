@@ -90,9 +90,5 @@ class CustomizeDialog(QDialog):
 # Singleton Instance.
 aCustomizeDialog = CustomizeDialog(PipeCad)
 
-<<<<<<< Updated upstream
-def showCustomize():
-=======
 def showCustomizeDialog():
->>>>>>> Stashed changes
     aCustomizeDialog.show()
