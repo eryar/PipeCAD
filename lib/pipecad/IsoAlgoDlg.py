@@ -26,6 +26,130 @@ from PythonQt.pipecad import *
 from pipecad import *
 from pipecad import PcfExporter
 
+
+class IsoSetupDialog(QDialog):
+    def __init__(self, theParent = None):
+        QDialog.__init__(self, theParent)
+        
+        self.setupUi()
+    # __init__
+    
+    def setupUi(self):
+        self.setWindowTitle(QT_TRANSLATE_NOOP("IsoAlgo", "Isometrics Options"))
+
+        self.verticalLayout = QVBoxLayout(self)
+
+        self.formLayout = QFormLayout()
+
+        self.labelDirectory = QLabel(QT_TRANSLATE_NOOP("IsoAlgo", "Options file directory"))
+        self.comboDirectory = QComboBox()
+        self.comboDirectory.addItem(QT_TRANSLATE_NOOP("IsoAlgo", "Project"))
+        self.comboDirectory.addItem(QT_TRANSLATE_NOOP("IsoAlgo", "Local"))
+        self.comboDirectory.activated.connect(self.refreshList)
+
+        self.formLayout.setWidget(0, QFormLayout.LabelRole, self.labelDirectory)
+        self.formLayout.setWidget(0, QFormLayout.FieldRole, self.comboDirectory)
+
+        self.verticalLayout.addLayout(self.formLayout)
+
+        self.groupBox = QGroupBox(QT_TRANSLATE_NOOP("IsoAlgo", "Options Files"))
+        self.horizontalLayout = QHBoxLayout(self.groupBox)
+
+        self.listWidget = QListWidget()
+        self.listWidget.setEditTriggers(QAbstractItemView.NoEditTriggers)
+        self.listWidget.setAlternatingRowColors(True)
+        self.listWidget.setUniformItemSizes(True)
+
+        self.horizontalLayout.addWidget(self.listWidget)
+
+        self.verticalLayout.addWidget(self.groupBox)
+
+        self.horizontalLayout = QHBoxLayout()
+        self.buttonCreate = QPushButton(QT_TRANSLATE_NOOP("IsoAlgo", "Create"))
+        self.buttonModify = QPushButton(QT_TRANSLATE_NOOP("IsoAlgo", "Modify"))
+        self.buttonBox = QDialogButtonBox(QDialogButtonBox.Cancel, self)
+
+        self.buttonCreate.clicked.connect(self.createOptionFile)
+        self.buttonModify.clicked.connect(self.modifyOptionFile)
+
+        self.buttonBox.rejected.connect(self.reject)
+
+        self.horizontalLayout.addWidget(self.buttonCreate)
+        self.horizontalLayout.addWidget(self.buttonModify)
+        self.horizontalLayout.addWidget(self.buttonBox)
+
+        self.verticalLayout.addLayout(self.horizontalLayout)
+
+        self.initData()
+    # setupUi
+
+    def initData(self):
+        self.projectDir = os.getenv(PipeCad.CurrentProject.Code + "ISO") + "/STD"
+        if os.path.exists(self.projectDir) == False:
+            os.mkdir(self.projectDir)
+        # if
+
+        self.localDir = QCoreApplication.applicationDirPath() + "/settings/iso"
+        if os.path.exists(self.localDir) == False:
+            os.mkdir(self.localDir)
+        # if
+
+        self.refreshList()
+    # initData
+
+    def refreshList(self):
+        self.listWidget.clear()
+
+        aOptionPath = self.projectDir
+
+        aIndex = self.comboDirectory.currentIndex
+        if aIndex == 1:
+            aOptionPath = self.localDir
+        # if
+
+        aOptionDir = QDir(aOptionPath)
+        aOptionFiles = aOptionDir.entryList(QDir.Files)
+        for aOptionFile in aOptionFiles:
+            aListItem = QListWidgetItem(aOptionFile, self.listWidget)
+        # for
+    # refreshList
+
+    def createOptionFile(self):
+        aIndex = self.comboDirectory.currentIndex
+        aFileName = QInputDialog.getText(self, QT_TRANSLATE_NOOP("IsoAlgo", "Create Option File"), QT_TRANSLATE_NOOP("IsoAlgo", "Please input isometrics option file name"))
+        if len(aFileName) < 1:
+            return
+        # if
+
+        if aIndex == 0:
+            # Project
+            if len(self.projectDir) > 1:
+                aFile = open(self.projectDir + "/" + aFileName, "w")
+                aFile.close()
+            # if
+        else:
+            # Local
+            if len(self.localDir) > 1:
+                aFile = open(self.localDir + "/" + aFileName, "w")
+                aFile.close()
+            # if
+        # if
+
+        self.refreshList()
+    # createOptionFile
+
+    def modifyOptionFile(self):
+        pass
+    # modifyOptionFile
+# IsoSetupDialog
+
+# Singleton Instance.
+aSetupDlg = IsoSetupDialog(PipeCad)
+
+def Setup():
+    aSetupDlg.show()
+# Setup
+
 class IsoAlgoDialog(QDialog):
     def __init__(self, parent = None):
         QDialog.__init__(self, parent)
@@ -59,8 +183,7 @@ class IsoAlgoDialog(QDialog):
         self.buttonPCF.setToolTip(QT_TRANSLATE_NOOP("IsoAlgo", "Preview the selected IDF/PCF"))
         self.buttonPCF.clicked.connect(self.previewPcf)
 
-        self.buttonBox = QDialogButtonBox()
-        self.buttonBox.setStandardButtons(QDialogButtonBox.Cancel)
+        self.buttonBox = QDialogButtonBox(QDialogButtonBox.Cancel, self)
 
         self.buttonBox.rejected.connect(self.reject)
 
