@@ -48,8 +48,26 @@ class AdministrativeDialog(QDialog):
 
         self.verticalLayout.addWidget(self.groupBox)
 
+        self.groupBox = QGroupBox(QT_TRANSLATE_NOOP("IsoAlgo", "Plots"))
+        self.gridLayout = QGridLayout(self.groupBox)
+
+        self.labelPlotDirectory = QLabel(QT_TRANSLATE_NOOP("IsoAlgo", "Directory"))
+        self.textPlotDirectory = QLineEdit()
+
+        self.labelDxf = QLabel(QT_TRANSLATE_NOOP("IsoAlgo", "DXF"))
+        self.checkDxf = QCheckBox(QT_TRANSLATE_NOOP("IsoAlgo", "Output"))
+
+        self.gridLayout.addWidget(self.labelPlotDirectory, 0, 0)
+        self.gridLayout.addWidget(self.textPlotDirectory, 0, 1)
+
+        self.gridLayout.addWidget(self.labelDxf, 1, 0)
+        self.gridLayout.addWidget(self.checkDxf, 1, 1)
+
+        self.verticalLayout.addWidget(self.groupBox)
+
         self.horizontalLayout = QHBoxLayout()
         self.buttonReset = QPushButton(QT_TRANSLATE_NOOP("IsoAlgo", "Reset"))
+        self.buttonReset.clicked.connect(self.resetData)
 
         self.buttonBox = QDialogButtonBox(QDialogButtonBox.Cancel | QDialogButtonBox.Ok, self)
 
@@ -66,10 +84,10 @@ class AdministrativeDialog(QDialog):
     def setOptionFile(self, theFileName):
         self.optionFileName = theFileName
 
-        self.initData()
+        self.resetData()
     # setOptionFile
 
-    def initData(self):
+    def resetData(self):
 
         # Load option file.
         with open(self.optionFileName, 'r') as aJsonFile:
@@ -78,11 +96,16 @@ class AdministrativeDialog(QDialog):
 
         self.textComments.setPlainText(self.jsonDict["Comments"])
 
-    # initData
+        self.textPlotDirectory.setText(self.jsonDict["PlotDirectory"])
+        self.checkDxf.setChecked(self.jsonDict["OutputDXF"])
+
+    # resetData
 
     def accept(self):
 
         self.jsonDict["Comments"] = self.textComments.plainText
+        self.jsonDict["PlotDirectory"] = self.textPlotDirectory.text
+        self.jsonDict["OutputDXF"] = self.checkDxf.checked
 
         with open(self.optionFileName, "w") as aJsonFile:
             json.dump(self.jsonDict, aJsonFile, indent=4, ensure_ascii=False)
@@ -144,7 +167,10 @@ class SheetLayoutDialog(QDialog):
         self.verticalLayout.addWidget(self.groupBox)
 
         self.groupBox = QGroupBox(QT_TRANSLATE_NOOP("IsoAlgo", "Graphics"))
-        self.gridLayout = QGridLayout(self.groupBox)
+        self.verticalLayoutGraphics = QVBoxLayout(self.groupBox)
+
+        self.gridLayout = QGridLayout()
+        self.verticalLayoutGraphics.addLayout(self.gridLayout)
 
         self.labelViewDirection = QLabel(QT_TRANSLATE_NOOP("IsoAlgo", "View direction"))
         self.comboViewDirection = QComboBox()
@@ -182,7 +208,34 @@ class SheetLayoutDialog(QDialog):
 
         self.verticalLayout.addWidget(self.groupBox)
 
-        self.groupBox = QGroupBox(QT_TRANSLATE_NOOP("IsoAlgo", "Flow arrows and Margins"))
+        self.groupBox = QGroupBox(QT_TRANSLATE_NOOP("IsoAlgo", "Graphics Area"))
+        self.gridLayout = QGridLayout(self.groupBox)
+
+        self.labelDwgLeft = QLabel(QT_TRANSLATE_NOOP("IsoAlgo", "Left"))
+        self.textDwgLeft = QLineEdit("5")
+
+        self.labelDwgRight = QLabel(QT_TRANSLATE_NOOP("IsoAlgo", "Right"))
+        self.textDwgRight = QLineEdit("5")
+
+        self.gridLayout.addWidget(self.labelDwgLeft, 0, 0)
+        self.gridLayout.addWidget(self.textDwgLeft, 0, 1)
+        self.gridLayout.addWidget(self.labelDwgRight, 0, 2)
+        self.gridLayout.addWidget(self.textDwgRight, 0, 3)
+
+        self.labelDwgTop = QLabel(QT_TRANSLATE_NOOP("IsoAlgo", "Top"))
+        self.textDwgTop = QLineEdit("5")
+
+        self.labelDwgBottom = QLabel(QT_TRANSLATE_NOOP("IsoAlgo", "Bottom"))
+        self.textDwgBottom = QLineEdit("5")
+
+        self.gridLayout.addWidget(self.labelDwgBottom, 1, 0)
+        self.gridLayout.addWidget(self.textDwgBottom, 1, 1)
+        self.gridLayout.addWidget(self.labelDwgTop, 1, 2)
+        self.gridLayout.addWidget(self.textDwgTop, 1, 3)
+
+        self.verticalLayoutGraphics.addWidget(self.groupBox)
+
+        self.groupBox = QGroupBox(QT_TRANSLATE_NOOP("IsoAlgo", "Flow arrows"))
         self.verticalLayoutFlow = QVBoxLayout(self.groupBox)
 
         self.checkComponentFlow = QCheckBox(QT_TRANSLATE_NOOP("IsoAlgo", "Component flow arrows"))
@@ -205,36 +258,11 @@ class SheetLayoutDialog(QDialog):
 
         self.verticalLayoutFlow.addLayout(self.horizontalLayoutFlow)
 
-        self.gridLayout = QGridLayout()
-
-        self.labelMarginLeft = QLabel(QT_TRANSLATE_NOOP("IsoAlgo", "Margin Left"))
-        self.textMarginLeft = QLineEdit("5")
-
-        self.labelMarginRight = QLabel(QT_TRANSLATE_NOOP("IsoAlgo", "Margin Right"))
-        self.textMarginRight = QLineEdit("5")
-
-        self.gridLayout.addWidget(self.labelMarginLeft, 0, 0)
-        self.gridLayout.addWidget(self.textMarginLeft, 0, 1)
-        self.gridLayout.addWidget(self.labelMarginRight, 0, 2)
-        self.gridLayout.addWidget(self.textMarginRight, 0, 3)
-
-        self.labelMarginTop = QLabel(QT_TRANSLATE_NOOP("IsoAlgo", "Margin Top"))
-        self.textMarginTop = QLineEdit("5")
-
-        self.labelMarginBottom = QLabel(QT_TRANSLATE_NOOP("IsoAlgo", "Margin Bottom"))
-        self.textMarginBottom = QLineEdit("5")
-
-        self.gridLayout.addWidget(self.labelMarginTop, 1, 0)
-        self.gridLayout.addWidget(self.textMarginTop, 1, 1)
-        self.gridLayout.addWidget(self.labelMarginBottom, 1, 2)
-        self.gridLayout.addWidget(self.textMarginBottom, 1, 3)
-
-        self.verticalLayoutFlow.addLayout(self.gridLayout)
-
         self.verticalLayout.addWidget(self.groupBox)
 
         self.horizontalLayout = QHBoxLayout()
         self.buttonReset = QPushButton(QT_TRANSLATE_NOOP("IsoAlgo", "Reset"))
+        self.buttonReset.clicked.connect(self.resetData)
 
         self.buttonBox = QDialogButtonBox(QDialogButtonBox.Cancel | QDialogButtonBox.Ok, self)
 
@@ -250,8 +278,61 @@ class SheetLayoutDialog(QDialog):
     def setOptionFile(self, theFileName):
         self.optionFileName = theFileName
 
-        self.comboDwgSize.setCurrentIndex(2)
+        #self.comboDwgSize.setCurrentIndex(2)
+        self.resetData()
     # setOptionFile
+
+    def resetData(self):
+        # Load option file.
+        with open(self.optionFileName, 'r') as aJsonFile:
+            self.jsonDict = json.load(aJsonFile)
+        # with
+
+        aSheetLayout = self.jsonDict["SheetLayout"]
+
+        # Drawing Size
+        aDwgSize = aSheetLayout["DwgSize"]
+
+        try:
+            aSizeIndex = aDwgSize["Index"]
+        except Exception as e:
+            aSizeIndex = 2
+        # try
+
+        self.comboDwgSize.setCurrentIndex(aSizeIndex)
+        self.textDwgHeight.setText(aDwgSize["Height"])
+        self.textDwgWidth.setText(aDwgSize["Width"])
+
+        # Graphics
+        aNorthDir = aSheetLayout["NorthDirection"]
+        self.comboViewDirection.setCurrentIndex(aNorthDir)
+        self.textPipelineThickness.setText(aSheetLayout["PipelineWidth"])
+
+        # Graphics Area
+        aDwgArea = aSheetLayout["DwgArea"]
+        self.textDwgLeft.setText(aDwgArea["Left"])
+        self.textDwgRight.setText(aDwgArea["Right"])
+        self.textDwgTop.setText(aDwgArea["Top"])
+        self.textDwgBottom.setText(aDwgArea["Bottom"])
+
+        # Flow Arrow.
+        aFlowArrow = aSheetLayout["FlowArrow"]
+        aComponentFlow = aFlowArrow["Component"]
+        aPipelineFlow = aFlowArrow["Pipeline"]
+
+        self.checkComponentFlow.setChecked(aComponentFlow == 0)
+        if aPipelineFlow == 1:
+            self.comboPipelineFlow.setCurrentIndex(2)
+            self.textArrowScale.setText("1")
+        elif aPipelineFlow == 0:
+            self.comboPipelineFlow.setCurrentIndex(0)
+            self.textArrowScale.setText("8")
+        else:
+            self.comboPipelineFlow.setCurrentIndex(1)
+            self.textArrowScale.setText(str(aPipelineFlow))
+        # if
+
+    # resetData
 
     def dwgSizeChanged(self):
         aSize = self.comboDwgSize.currentData
@@ -266,7 +347,157 @@ class SheetLayoutDialog(QDialog):
         # if
     # dwgSizeChanged
 
+    def accept(self):
+        aSheetLayout = self.jsonDict["SheetLayout"]
+
+        # Drawing Size
+        aDwgSize = {"Index": self.comboDwgSize.currentIndex,
+                    "Height": float(self.textDwgHeight.text),
+                    "Width": float(self.textDwgWidth.text) }
+
+        aSheetLayout["DwgSize"] = aDwgSize
+
+        # Graphics
+        aSheetLayout["NorthDirection"] = self.comboViewDirection.currentIndex
+        aSheetLayout["PipelineWidth"] = float(self.textPipelineThickness.text)
+
+        # Graphics Area
+        aDwgArea = {"Left": float(self.textDwgLeft.text), 
+                    "Bottom": float(self.textDwgBottom.text),
+                    "Right": float(self.textDwgRight.text),
+                    "Top": float(self.textDwgTop.text)
+                    }
+
+        aSheetLayout["DwgArea"] = aDwgArea
+
+        # Flow Arrow
+        aFlowArrow = aSheetLayout["FlowArrow"]
+
+        if self.checkComponentFlow.checked:
+            aFlowArrow["Component"] = 0
+        else:
+            aFlowArrow["Component"] = 1
+        # if
+
+        aFlowIndex = self.comboPipelineFlow.currentIndex
+        if aFlowIndex == 0:
+            aFlowArrow["Pipeline"] = 8
+        elif aFlowIndex == 1:
+            aFlowArrow["Pipeline"] = int(self.textArrowScale.text)
+        else:
+            aFlowArrow["Pipeline"] = 1
+        # if
+
+        with open(self.optionFileName, "w") as aJsonFile:
+            json.dump(self.jsonDict, aJsonFile, indent=4, ensure_ascii=False)
+        # with
+
+        QDialog.accept(self)
+    # accept
+
 # SheetLayoutDialog
+
+
+class DimensioningDialog(QDialog):
+    def __init__(self, theParent = None):
+        QDialog.__init__(self, theParent)
+
+        self.setupUi()
+    # __init__
+
+    def setupUi(self):
+        self.setWindowTitle(QT_TRANSLATE_NOOP("IsoAlgo", "Dimensioning Options"))
+
+        self.verticalLayout = QVBoxLayout(self)
+
+        self.groupBox = QGroupBox(QT_TRANSLATE_NOOP("IsoAlgo", "Units"))
+        self.verticalLayout.addWidget(self.groupBox)
+
+        self.groupBox = QGroupBox(QT_TRANSLATE_NOOP("IsoAlgo", "Dimensions"))
+        self.verticalLayoutGroup = QVBoxLayout(self.groupBox)
+
+        self.gridLayout = QGridLayout()
+
+        # Labels.
+        self.labelDimensionType = QLabel(QT_TRANSLATE_NOOP("IsoAlgo", "Dimension type"))
+        self.labelDimensionComponent = QLabel(QT_TRANSLATE_NOOP("IsoAlgo", "Component"))
+        self.labelDimensionOverall = QLabel(QT_TRANSLATE_NOOP("IsoAlgo", "Overall"))
+        self.labelDimensionSupport = QLabel(QT_TRANSLATE_NOOP("IsoAlgo", "Support"))
+
+        self.gridLayout.addWidget(self.labelDimensionType, 0, 0)
+        self.gridLayout.addWidget(self.labelDimensionComponent, 0, 1)
+        self.gridLayout.addWidget(self.labelDimensionOverall, 0, 2)
+        self.gridLayout.addWidget(self.labelDimensionSupport, 0, 3)
+
+        # Representation
+        self.labelRepresentation = QLabel(QT_TRANSLATE_NOOP("IsoAlgo", "Representation"))
+        self.comboDimensionComponent = QComboBox()
+        self.comboDimensionComponent.addItem("Off")
+        self.comboDimensionComponent.addItem("String")
+        self.comboDimensionComponent.addItem("Composite")
+
+        self.comboDimensionOverall = QComboBox()
+        self.comboDimensionOverall.addItem("Off")
+        self.comboDimensionOverall.addItem("Normal")
+        self.comboDimensionOverall.addItem("Centreline")
+        self.comboDimensionOverall.addItem("Critical")
+
+        self.comboDimensionSupport = QComboBox()
+        self.comboDimensionSupport.addItem("Off")
+        self.comboDimensionSupport.addItem("String")
+        self.comboDimensionSupport.addItem("Overall")
+
+        self.gridLayout.addWidget(self.labelRepresentation, 1, 0)
+        self.gridLayout.addWidget(self.comboDimensionComponent, 1, 1)
+        self.gridLayout.addWidget(self.comboDimensionOverall, 1, 2)
+        self.gridLayout.addWidget(self.comboDimensionSupport, 1, 3)
+
+        # Standouts
+        self.labelStandouts = QLabel(QT_TRANSLATE_NOOP("IsoAlgo", "Standouts"))
+        self.textDimensionComponent = QLineEdit("11.0")
+        self.textDimensionOverall = QLineEdit("16.0")
+        self.textDimensionSupport = QLineEdit("6.0")
+
+        self.gridLayout.addWidget(self.labelStandouts, 2, 0)
+        self.gridLayout.addWidget(self.textDimensionComponent, 2, 1)
+        self.gridLayout.addWidget(self.textDimensionOverall, 2, 2)
+        self.gridLayout.addWidget(self.textDimensionSupport, 2, 3)
+
+        self.verticalLayoutGroup.addLayout(self.gridLayout)
+
+        self.verticalLayout.addWidget(self.groupBox)
+
+        self.groupBox = QGroupBox(QT_TRANSLATE_NOOP("IsoAlgo", "Fall Indicator"))
+        self.verticalLayout.addWidget(self.groupBox)
+
+        self.groupBox = QGroupBox(QT_TRANSLATE_NOOP("IsoAlgo", "Skew Box"))
+        self.verticalLayout.addWidget(self.groupBox)
+
+        self.horizontalLayout = QHBoxLayout()
+        self.buttonReset = QPushButton(QT_TRANSLATE_NOOP("IsoAlgo", "Reset"))
+        self.buttonReset.clicked.connect(self.resetData)
+
+        self.buttonBox = QDialogButtonBox(QDialogButtonBox.Cancel | QDialogButtonBox.Ok, self)
+
+        self.buttonBox.accepted.connect(self.accept)
+        self.buttonBox.rejected.connect(self.reject)
+
+        self.horizontalLayout.addWidget(self.buttonReset)
+        self.horizontalLayout.addWidget(self.buttonBox)
+
+        self.verticalLayout.addLayout(self.horizontalLayout)
+    # setupUi
+
+    def setOptionFile(self, theFileName):
+        pass
+    # setOptionFile
+
+    def resetData(self):
+        pass
+    # resetData
+
+# DimensionDialog
+
 
 class IsoModifyDialog(QDialog):
     def __init__(self, theParent = None):
@@ -291,11 +522,15 @@ class IsoModifyDialog(QDialog):
         self.verticalLayout.addWidget(self.buttonAdministrative)
 
         self.sheetLayoutDlg = SheetLayoutDialog(self)
+
         self.buttonSheetLayout = QPushButton(QT_TRANSLATE_NOOP("IsoAlgo", "Sheet Layout"))
         self.buttonSheetLayout.clicked.connect(self.sheetLayoutOption)
         self.verticalLayout.addWidget(self.buttonSheetLayout)
 
+        self.dimensioningDlg = DimensioningDialog(self)
+
         self.buttonDimensioning = QPushButton(QT_TRANSLATE_NOOP("IsoAlgo", "Dimensioning"))
+        self.buttonDimensioning.clicked.connect(self.dimensioningOption)
         self.verticalLayout.addWidget(self.buttonDimensioning)
 
         self.buttonAnnotation = QPushButton(QT_TRANSLATE_NOOP("IsoAlgo", "Annotation"))
@@ -322,7 +557,7 @@ class IsoModifyDialog(QDialog):
         self.buttonComponentTags = QPushButton(QT_TRANSLATE_NOOP("IsoAlgo", "Component Tags"))
         self.verticalLayout.addWidget(self.buttonComponentTags)
 
-        aVerticalSpacer = QSpacerItem(20, 40, QSizePolicy.Minimum, QSizePolicy.Expanding)
+        aVerticalSpacer = QSpacerItem(10, 10, QSizePolicy.Minimum, QSizePolicy.Expanding)
         self.verticalLayout.addItem(aVerticalSpacer)
 
         self.buttonBox = QDialogButtonBox(QDialogButtonBox.Cancel, self)
@@ -348,9 +583,15 @@ class IsoModifyDialog(QDialog):
         self.sheetLayoutDlg.show()
     # sheetLayoutOption
 
+    def dimensioningOption(self):
+        self.dimensioningDlg.setOptionFile(self.optionFile)
+        self.dimensioningDlg.show()
+    # dimensionOption
+
     def reject(self):
         self.administrativeDlg.close()
         self.sheetLayoutDlg.close()
+        self.dimensioningDlg.close()
 
         QDialog.reject(self)
     # reject
@@ -440,6 +681,10 @@ class IsoSetupDialog(QDialog):
             aListItem = QListWidgetItem(aOptionFile, self.listWidget)
             aListItem.setData(Qt.UserRole, aOptionPath + "/" + aOptionFile)
         # for
+
+        if self.listWidget.count > 0:
+            self.listWidget.setCurrentRow(0)
+        # if
     # refreshList
 
     def createOptionFile(self):
@@ -451,15 +696,18 @@ class IsoSetupDialog(QDialog):
 
         aOptionFile = aOptionPath + "/" + aFileName
         if os.path.exists(aOptionFile):
-            QMessageBox.warning(self, "", QT_TRANSLATE_NOOP("IsoAlgo", aOptionFile + " exists!"))
-            return
+            if QMessageBox.question(self, "", QT_TRANSLATE_NOOP("IsoAlgo", "Overwrite " + aOptionFile + "?")) == QMessageBox.No:
+                return
+            # if
         # if
 
         # Create default IsoAlgo option file.
         aDwgSize = {"Height": 420, "Width": 594}
+        aDwgArea = {"Left": 20.0, "Bottom": 20.0, "Right": 360.0, "Top": 380 }
         aFlowArrow = {"Component": 0, "Pipeline": 8}
 
         aSheetLayout = {"DwgSize": aDwgSize,
+                        "DwgArea": aDwgArea,
                         "PipelineWidth": 1.0,
                         "NorthDirection": 1,
                         "FlowArrow": aFlowArrow
@@ -468,6 +716,8 @@ class IsoSetupDialog(QDialog):
         aOptionJson = {"AppName": "IsoAlgo", 
                        "Version": PipeCad.GetVersion(),
                        "Comments": "Comments",
+                       "PlotDirectory": QCoreApplication.applicationDirPath() + "/ISO",
+                       "OutputDXF": True,
                        "SheetLayout": aSheetLayout
                     }
 
@@ -520,6 +770,14 @@ class IsoAlgoDialog(QDialog):
         # Action buttons.
         self.horizontalLayout = QHBoxLayout(self)
 
+        self.labelOption = QLabel(QT_TRANSLATE_NOOP("IsoAlgo", "Option File"))
+        self.comboOptionPath = QComboBox()
+        self.comboOptionPath.addItem(QT_TRANSLATE_NOOP("IsoAlgo", "Project"))
+        self.comboOptionPath.addItem(QT_TRANSLATE_NOOP("IsoAlgo", "Local"))
+        self.comboOptionPath.activated.connect(self.refreshList)
+
+        self.comboOptionFile = QComboBox()
+
         self.buttonPreview = QPushButton(QT_TRANSLATE_NOOP("IsoAlgo", "Preview"))
         self.buttonPreview.setToolTip(QT_TRANSLATE_NOOP("IsoAlgo", "Preview Pipe Isometrics"))
         self.buttonPreview.clicked.connect(self.previewIso)
@@ -536,34 +794,82 @@ class IsoAlgoDialog(QDialog):
 
         self.buttonBox.rejected.connect(self.reject)
 
+        self.horizontalLayout.addWidget(self.labelOption)
+        self.horizontalLayout.addWidget(self.comboOptionPath)
+        self.horizontalLayout.addWidget(self.comboOptionFile)
         self.horizontalLayout.addWidget(self.buttonPreview)
         self.horizontalLayout.addWidget(self.buttonExport)
         self.horizontalLayout.addWidget(self.buttonPCF)
         self.horizontalLayout.addWidget(self.buttonBox)
         self.verticalLayout.addLayout(self.horizontalLayout)
 
+        self.initData()
         self.resize(860, 600)
     # setupUi
 
-    def previewIso(self):
-        aIsoEnv = os.getenv(PipeCad.CurrentProject.Code + "ISO")
+    def initData(self):
+        self.projectDir = os.getenv(PipeCad.CurrentProject.Code + "ISO") + "/STD"
+        if os.path.exists(self.projectDir) == False:
+            os.mkdir(self.projectDir)
+        # if
 
+        self.localDir = QCoreApplication.applicationDirPath() + "/settings/iso"
+        if os.path.exists(self.localDir) == False:
+            os.mkdir(self.localDir)
+        # if
+
+        self.comboOptionPath.setItemData(0, self.projectDir)
+        self.comboOptionPath.setItemData(1, self.localDir)
+
+        self.refreshList()
+    # initData
+
+    def refreshList(self):
+        self.comboOptionFile.clear()
+
+        aOptionPath = self.comboOptionPath.currentData
+
+        aOptionDir = QDir(aOptionPath)
+        aOptionFiles = aOptionDir.entryList(QDir.Files)
+        for aOptionFile in aOptionFiles:
+            self.comboOptionFile.addItem(aOptionFile, aOptionPath + "/" + aOptionFile)
+        # for
+
+        if self.comboOptionFile.count > 0:
+            self.comboOptionFile.setCurrentIndex(0)
+        # if
+    # refreshList
+
+    def previewIso(self):
         aTreeItem = PipeCad.CurrentItem()
         aName = aTreeItem.Name
         if len(aName) < 1:
             aName = aTreeItem.RefNo.replace("/", "_")
+        # if
+
+        aOptionFile = self.comboOptionFile.currentData
+        # Load option file.
+        with open(aOptionFile, 'r') as aJsonFile:
+            self.jsonDict = json.load(aJsonFile)
+        # with
+
+        aIsoEnv = self.jsonDict["PlotDirectory"]
+        if len(aIsoEnv) < 1:
+            aIsoEnv = os.getenv(PipeCad.CurrentProject.Code + "ISO")
         # if
         
         if len(aName) > 1 and len(aIsoEnv) > 1:
             aFileName = aIsoEnv + "/" + aName + ".pcf"
             PcfExporter.ExportPcf(aTreeItem, aFileName)
             self.setWindowTitle(QT_TRANSLATE_NOOP("IsoAlgo", "Pipe Isometrics: ") + aName)
+
+            self.isoGraphicsView.SetOptionFile(aOptionFile)
             self.isoGraphicsView.PreviewIso(aFileName)
         # if
     # previewIso
 
     def previewPcf(self):
-        aFileName = QFileDialog.getOpenFileName(self, "Select PCF File", self.filePath, "Piping Files (*.idf *.pcf)")
+        aFileName = QFileDialog.getOpenFileName(self, "Select Pipe File", self.filePath, "Piping Files (*.idf *.pcf)")
         if len(aFileName) > 0:
             self.filePath = aFileName
             self.isoGraphicsView.PreviewIso(aFileName)
