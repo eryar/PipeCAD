@@ -489,12 +489,58 @@ class DimensioningDialog(QDialog):
     # setupUi
 
     def setOptionFile(self, theFileName):
-        pass
+        self.optionFileName = theFileName
+
+        self.resetData()
     # setOptionFile
 
     def resetData(self):
-        pass
+        # Load option file.
+        with open(self.optionFileName, 'r') as aJsonFile:
+            self.jsonDict = json.load(aJsonFile)
+        # with
+
+        aDimensioning = self.jsonDict["Dimensioning"]
+
+        aDimensionComponent = aDimensioning["Component"]
+        aDimensionOverall = aDimensioning["Overall"]
+        aDimensionSupport = aDimensioning["Support"]
+
+        # Component Dimension
+        self.comboDimensionComponent.setCurrentText(aDimensionComponent["Representation"])
+        self.textDimensionComponent.setText(aDimensionComponent["Standouts"])
+
+        # Overall Dimension
+        self.comboDimensionOverall.setCurrentText(aDimensionOverall["Representation"])
+        self.textDimensionOverall.setText(aDimensionOverall["Standouts"])
+
+        # Support Dimension
+        self.comboDimensionSupport.setCurrentText(aDimensionSupport["Representation"])
+        self.textDimensionSupport.setText(aDimensionSupport["Standouts"])
     # resetData
+
+    def accept(self):
+        aDimensioning = self.jsonDict["Dimensioning"]
+
+        aDimensionComponent = aDimensioning["Component"]
+        aDimensionOverall = aDimensioning["Overall"]
+        aDimensionSupport = aDimensioning["Support"]
+
+        aDimensionComponent["Representation"] = self.comboDimensionComponent.currentText
+        aDimensionComponent["Standouts"] = float(self.textDimensionComponent.text)
+
+        aDimensionOverall["Representation"] = self.comboDimensionOverall.currentText
+        aDimensionOverall["Standouts"] = float(self.textDimensionOverall.text)
+
+        aDimensionSupport["Representation"] = self.comboDimensionSupport.currentText
+        aDimensionSupport["Standouts"] = float(self.textDimensionSupport.text)
+
+        with open(self.optionFileName, "w") as aJsonFile:
+            json.dump(self.jsonDict, aJsonFile, indent=4, ensure_ascii=False)
+        # with
+
+        QDialog.accept(self)
+    # accept
 
 # DimensionDialog
 
@@ -706,20 +752,29 @@ class IsoSetupDialog(QDialog):
         aDwgArea = {"Left": 20.0, "Bottom": 20.0, "Right": 360.0, "Top": 380 }
         aFlowArrow = {"Component": 0, "Pipeline": 8}
 
-        aSheetLayout = {"DwgSize": aDwgSize,
-                        "DwgArea": aDwgArea,
-                        "PipelineWidth": 1.0,
-                        "NorthDirection": 1,
-                        "FlowArrow": aFlowArrow
-                    }
+        aSheetLayout = {
+            "DwgSize": aDwgSize,
+            "DwgArea": aDwgArea,
+            "PipelineWidth": 1.0,
+            "NorthDirection": 1,
+            "FlowArrow": aFlowArrow
+        }
 
-        aOptionJson = {"AppName": "IsoAlgo", 
-                       "Version": PipeCad.GetVersion(),
-                       "Comments": "Comments",
-                       "PlotDirectory": QCoreApplication.applicationDirPath() + "/ISO",
-                       "OutputDXF": True,
-                       "SheetLayout": aSheetLayout
-                    }
+        aDimensioning = {
+            "Component": { "Representation": "String", "Standouts": 11.0 },
+            "Overall": { "Representation": "Normal", "Standouts": 16.0 },
+            "Support": { "Representation": "String", "Standouts": 6.0 }
+        }
+
+        aOptionJson = {
+            "AppName": "IsoAlgo", 
+            "Version": PipeCad.GetVersion(),
+            "Comments": "Comments",
+            "PlotDirectory": "",
+            "OutputDXF": True,
+            "SheetLayout": aSheetLayout,
+            "Dimensioning": aDimensioning
+        }
 
         with open(aOptionFile, "w") as aJsonFile:
             json.dump(aOptionJson, aJsonFile, indent=4, ensure_ascii=False)
