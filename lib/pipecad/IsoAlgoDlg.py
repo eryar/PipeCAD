@@ -167,10 +167,7 @@ class SheetLayoutDialog(QDialog):
         self.verticalLayout.addWidget(self.groupBox)
 
         self.groupBox = QGroupBox(QT_TRANSLATE_NOOP("IsoAlgo", "Graphics"))
-        self.verticalLayoutGraphics = QVBoxLayout(self.groupBox)
-
-        self.gridLayout = QGridLayout()
-        self.verticalLayoutGraphics.addLayout(self.gridLayout)
+        self.gridLayout = QGridLayout(self.groupBox)
 
         self.labelViewDirection = QLabel(QT_TRANSLATE_NOOP("IsoAlgo", "View direction"))
         self.comboViewDirection = QComboBox()
@@ -208,7 +205,7 @@ class SheetLayoutDialog(QDialog):
 
         self.verticalLayout.addWidget(self.groupBox)
 
-        self.groupBox = QGroupBox(QT_TRANSLATE_NOOP("IsoAlgo", "Graphics Area"))
+        self.groupBox = QGroupBox(QT_TRANSLATE_NOOP("IsoAlgo", "Margins"))
         self.gridLayout = QGridLayout(self.groupBox)
 
         self.labelDwgLeft = QLabel(QT_TRANSLATE_NOOP("IsoAlgo", "Left"))
@@ -233,12 +230,13 @@ class SheetLayoutDialog(QDialog):
         self.gridLayout.addWidget(self.labelDwgTop, 1, 2)
         self.gridLayout.addWidget(self.textDwgTop, 1, 3)
 
-        self.verticalLayoutGraphics.addWidget(self.groupBox)
+        self.verticalLayout.addWidget(self.groupBox)
 
         self.groupBox = QGroupBox(QT_TRANSLATE_NOOP("IsoAlgo", "Flow arrows"))
-        self.verticalLayoutFlow = QVBoxLayout(self.groupBox)
+        self.gridLayout = QGridLayout(self.groupBox)
 
-        self.checkComponentFlow = QCheckBox(QT_TRANSLATE_NOOP("IsoAlgo", "Component flow arrows"))
+        self.labelComponentFlow = QLabel(QT_TRANSLATE_NOOP("IsoAlgo", "Component flow arrows"))
+        self.checkComponentFlow = QCheckBox()
 
         self.labelPipelineFlow = QLabel(QT_TRANSLATE_NOOP("IsoAlgo", "Pipeline flow arrows"))
         self.comboPipelineFlow = QComboBox()
@@ -249,14 +247,16 @@ class SheetLayoutDialog(QDialog):
         self.labelArrowScale = QLabel(QT_TRANSLATE_NOOP("IsoAlgo", "Scale"))
         self.textArrowScale = QLineEdit("8")
 
-        self.horizontalLayoutFlow = QHBoxLayout()
-        self.horizontalLayoutFlow.addWidget(self.checkComponentFlow)
-        self.horizontalLayoutFlow.addWidget(self.labelPipelineFlow)
-        self.horizontalLayoutFlow.addWidget(self.comboPipelineFlow)
-        self.horizontalLayoutFlow.addWidget(self.labelArrowScale)
-        self.horizontalLayoutFlow.addWidget(self.textArrowScale)
+        self.horizontalSpacer = QSpacerItem(20, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
 
-        self.verticalLayoutFlow.addLayout(self.horizontalLayoutFlow)
+        self.gridLayout.addWidget(self.labelComponentFlow, 0, 0)
+        self.gridLayout.addWidget(self.checkComponentFlow, 0, 1)
+
+        self.gridLayout.addWidget(self.labelPipelineFlow, 1, 0)
+        self.gridLayout.addWidget(self.comboPipelineFlow, 1, 1)
+        self.gridLayout.addWidget(self.labelArrowScale, 1, 2)
+        self.gridLayout.addWidget(self.textArrowScale, 1, 3)
+        self.gridLayout.addItem(self.horizontalSpacer, 1, 4)
 
         self.verticalLayout.addWidget(self.groupBox)
 
@@ -308,12 +308,12 @@ class SheetLayoutDialog(QDialog):
         self.comboViewDirection.setCurrentIndex(aNorthDir)
         self.textPipelineThickness.setText(aSheetLayout["PipelineWidth"])
 
-        # Graphics Area
-        aDwgArea = aSheetLayout["DwgArea"]
-        self.textDwgLeft.setText(aDwgArea["Left"])
-        self.textDwgRight.setText(aDwgArea["Right"])
-        self.textDwgTop.setText(aDwgArea["Top"])
-        self.textDwgBottom.setText(aDwgArea["Bottom"])
+        # Graphics Margin
+        aMargin = aSheetLayout["Margin"]
+        self.textDwgLeft.setText(aMargin["Left"])
+        self.textDwgRight.setText(aMargin["Right"])
+        self.textDwgTop.setText(aMargin["Top"])
+        self.textDwgBottom.setText(aMargin["Bottom"])
 
         # Flow Arrow.
         aFlowArrow = aSheetLayout["FlowArrow"]
@@ -362,13 +362,13 @@ class SheetLayoutDialog(QDialog):
         aSheetLayout["PipelineWidth"] = float(self.textPipelineThickness.text)
 
         # Graphics Area
-        aDwgArea = {"Left": float(self.textDwgLeft.text), 
+        aMargin = {"Left": float(self.textDwgLeft.text), 
                     "Bottom": float(self.textDwgBottom.text),
                     "Right": float(self.textDwgRight.text),
                     "Top": float(self.textDwgTop.text)
                     }
 
-        aSheetLayout["DwgArea"] = aDwgArea
+        aSheetLayout["Margin"] = aMargin
 
         # Flow Arrow
         aFlowArrow = aSheetLayout["FlowArrow"]
@@ -554,6 +554,23 @@ class AnnotationDialog(QDialog):
 
     def setupUi(self):
         self.setWindowTitle(QT_TRANSLATE_NOOP("IsoAlgo", "Annotation Options"))
+
+        self.verticalLayout = QVBoxLayout(self)
+
+        # Buttons
+        self.horizontalLayout = QHBoxLayout()
+        self.buttonReset = QPushButton(QT_TRANSLATE_NOOP("IsoAlgo", "Reset"))
+        self.buttonReset.clicked.connect(self.resetData)
+
+        self.buttonBox = QDialogButtonBox(QDialogButtonBox.Cancel | QDialogButtonBox.Ok, self)
+
+        self.buttonBox.accepted.connect(self.accept)
+        self.buttonBox.rejected.connect(self.reject)
+
+        self.horizontalLayout.addWidget(self.buttonReset)
+        self.horizontalLayout.addWidget(self.buttonBox)
+
+        self.verticalLayout.addLayout(self.horizontalLayout)
     # setupUi
 
     def setOptionFile(self, theFileName):
@@ -1286,12 +1303,12 @@ class IsoSetupDialog(QDialog):
 
         # Create default IsoAlgo option file.
         aDwgSize = {"Height": 420, "Width": 594}
-        aDwgArea = {"Left": 20.0, "Bottom": 20.0, "Right": 360.0, "Top": 380 }
+        aMargin = {"Left": 5.0, "Bottom": 5.0, "Right": 5.0, "Top": 5.0 }
         aFlowArrow = {"Component": 0, "Pipeline": 8}
 
         aSheetLayout = {
             "DwgSize": aDwgSize,
-            "DwgArea": aDwgArea,
+            "Margin": aMargin,
             "PipelineWidth": 1.0,
             "NorthDirection": 1,
             "FlowArrow": aFlowArrow
