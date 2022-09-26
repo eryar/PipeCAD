@@ -542,7 +542,517 @@ class DimensioningDialog(QDialog):
         QDialog.accept(self)
     # accept
 
-# DimensionDialog
+# DimensioningDialog
+
+
+class AnnotationDialog(QDialog):
+    def __init__(self, theParent = None):
+        QDialog.__init__(self, theParent)
+
+        self.setupUi()
+    # __init__
+
+    def setupUi(self):
+        self.setWindowTitle(QT_TRANSLATE_NOOP("IsoAlgo", "Annotation Options"))
+    # setupUi
+
+    def setOptionFile(self, theFileName):
+        self.optionFileName = theFileName
+
+        self.resetData()
+    # setOptionFile
+
+    def resetData(self):
+        # Load option file.
+        with open(self.optionFileName, 'r') as aJsonFile:
+            self.jsonDict = json.load(aJsonFile)
+        # with
+    # resetData
+
+# AnnotationDialog
+
+
+class MaterialListDialog(QDialog):
+    def __init__(self, theParent = None):
+        QDialog.__init__(self, theParent)
+
+        self.setupUi()
+    # __init__
+
+    def setupUi(self):
+        self.setWindowTitle(QT_TRANSLATE_NOOP("IsoAlgo", "Material List Options"))
+
+        self.verticalLayout = QVBoxLayout(self)
+
+        # General options.
+        self.groupBox = QGroupBox(QT_TRANSLATE_NOOP("IsoAlgo", "Options"))
+
+        self.gridLayout = QGridLayout(self.groupBox)
+
+        self.labelPlotList = QLabel(QT_TRANSLATE_NOOP("IsoAlgo", "Plotted List"))
+        self.comboPlotList = QComboBox()
+        self.comboPlotList.addItem("Off")
+        self.comboPlotList.addItem("Left")
+        self.comboPlotList.addItem("Right")
+
+        self.labelCharSize = QLabel(QT_TRANSLATE_NOOP("IsoAlgo", "Character Size"))
+        self.textCharSize = QLineEdit("2.5")
+
+        self.gridLayout.addWidget(self.labelPlotList, 0, 0)
+        self.gridLayout.addWidget(self.comboPlotList, 0, 1)
+        self.gridLayout.addWidget(self.labelCharSize, 0, 2)
+        self.gridLayout.addWidget(self.textCharSize, 0, 3)
+
+        self.verticalLayout.addWidget(self.groupBox)
+
+        # Detail Texts
+        self.groupBox = QGroupBox(QT_TRANSLATE_NOOP("IsoAlgo", "Detail Texts"))
+
+        self.gridLayout = QGridLayout(self.groupBox)
+
+        self.labelDescription = QLabel(QT_TRANSLATE_NOOP("IsoAlgo", "Descriptions"))
+        self.comboDescription = QComboBox()
+        self.comboDescription.addItem("Off")
+        self.comboDescription.addItem("Detail & Material texts")
+        self.comboDescription.addItem("Detail text only")
+        self.comboDescription.addItem("Material text only")
+
+        self.horizontalSpacer = QSpacerItem(20, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
+
+        self.gridLayout.addWidget(self.labelDescription, 0, 0)
+        self.gridLayout.addWidget(self.comboDescription, 0, 1)
+        self.gridLayout.addItem(self.horizontalSpacer, 0, 2)
+
+        self.labelDetailText = QLabel(QT_TRANSLATE_NOOP("IsoAlgo", "Detail Text"))
+        self.comboDetailText = QComboBox()
+        self.comboDetailText.addItem("Rtext")
+        self.comboDetailText.addItem("Stext")
+        self.comboDetailText.addItem("Ttext")
+
+        self.gridLayout.addWidget(self.labelDetailText, 1, 0)
+        self.gridLayout.addWidget(self.comboDetailText, 1, 1)
+
+        self.labelMaterialText = QLabel(QT_TRANSLATE_NOOP("IsoAlgo", "Material Text"))
+        self.comboMaterialText = QComboBox()
+        self.comboMaterialText.addItem("Xtext")
+        self.comboMaterialText.addItem("Ytext")
+        self.comboMaterialText.addItem("Ztext")
+
+        self.gridLayout.addWidget(self.labelMaterialText, 2, 0)
+        self.gridLayout.addWidget(self.comboMaterialText, 2, 1)
+
+        self.verticalLayout.addWidget(self.groupBox)
+
+        # Itemcodes
+        self.groupBox = QGroupBox(QT_TRANSLATE_NOOP("IsoAlgo", "Itemcodes"))
+        self.gridLayout = QGridLayout(self.groupBox)
+
+        self.labelCodeLength = QLabel(QT_TRANSLATE_NOOP("IsoAlgo", "Length"))
+        self.textCodeLength = QLineEdit(8)
+
+        self.labelCodeDelimiter = QLabel(QT_TRANSLATE_NOOP("IsoAlgo", "Delimiter"))
+        self.comboCodeDelimiter = QComboBox()
+        self.comboCodeDelimiter.addItem("@")
+        self.comboCodeDelimiter.addItem(":")
+        self.comboCodeDelimiter.addItem("+")
+        self.comboCodeDelimiter.addItem(".")
+        self.comboCodeDelimiter.addItem("&")
+
+        self.horizontalSpacer = QSpacerItem(20, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
+
+        self.gridLayout.addWidget(self.labelCodeLength, 0, 0)
+        self.gridLayout.addWidget(self.textCodeLength, 0, 1)
+        self.gridLayout.addWidget(self.labelCodeDelimiter, 0, 2)
+        self.gridLayout.addWidget(self.comboCodeDelimiter, 0, 3)
+        self.gridLayout.addItem(self.horizontalSpacer, 0, 4)
+
+        self.verticalLayout.addWidget(self.groupBox)
+
+        # Bolting
+        self.groupBox = QGroupBox(QT_TRANSLATE_NOOP("IsoAlgo", "Bolting"))
+        self.verticalLayout.addWidget(self.groupBox)
+
+        # Buttons
+        self.horizontalLayout = QHBoxLayout()
+        self.buttonReset = QPushButton(QT_TRANSLATE_NOOP("IsoAlgo", "Reset"))
+        self.buttonReset.clicked.connect(self.resetData)
+
+        self.buttonBox = QDialogButtonBox(QDialogButtonBox.Cancel | QDialogButtonBox.Ok, self)
+
+        self.buttonBox.accepted.connect(self.accept)
+        self.buttonBox.rejected.connect(self.reject)
+
+        self.horizontalLayout.addWidget(self.buttonReset)
+        self.horizontalLayout.addWidget(self.buttonBox)
+
+        self.verticalLayout.addLayout(self.horizontalLayout)
+    # setupUi
+
+    def setOptionFile(self, theFileName):
+        self.optionFileName = theFileName
+
+        self.resetData()
+    # setOptionFile
+
+    def resetData(self):
+        # Load option file.
+        with open(self.optionFileName, 'r') as aJsonFile:
+            self.jsonDict = json.load(aJsonFile)
+        # with
+
+        aMaterialList = self.jsonDict["MaterialList"]
+        aDetailText = aMaterialList["DetailText"]
+        aItemCode = aMaterialList["ItemCode"]
+
+        self.comboPlotList.setCurrentIndex(aMaterialList["PlotList"])
+        self.textCharSize.setText(aMaterialList["CharacterSize"])
+
+        self.comboDescription.setCurrentIndex(aDetailText["Description"])
+        self.comboDetailText.setCurrentIndex(aDetailText["DetailText"])
+        self.comboMaterialText.setCurrentIndex(aDetailText["MaterialText"])
+
+        self.textCodeLength.setText(aItemCode["Length"])
+        self.comboCodeDelimiter.setCurrentIndex(aItemCode["Delimiter"])
+    # resetData
+
+    def accept(self):
+
+        aMaterialList = self.jsonDict["MaterialList"]
+        aDetailText = aMaterialList["DetailText"]
+        aItemCode = aMaterialList["ItemCode"]
+
+        aMaterialList["PlotList"] = self.comboPlotList.currentIndex
+        aMaterialList["CharacterSize"] = float(self.textCharSize.text)
+
+        aDetailText["Description"] = self.comboDescription.currentIndex
+        aDetailText["DetailText"] = self.comboDetailText.currentIndex
+        aDetailText["MaterialText"] = self.comboMaterialText.currentIndex
+
+        aItemCode["Length"] = int(self.textCodeLength.text)
+        aItemCode["Delimiter"] = self.comboCodeDelimiter.currentIndex
+
+        with open(self.optionFileName, "w") as aJsonFile:
+            json.dump(self.jsonDict, aJsonFile, indent=4, ensure_ascii=False)
+        # with
+
+        QDialog.accept(self)
+    # accept
+# MaterialListDialog
+
+class MaterialColumnDialog(QDialog):
+    def __init__(self, theParent = None):
+        QDialog.__init__(self, theParent)
+
+        self.setupUi()
+    # __init__
+
+    def setupUi(self):
+        self.setWindowTitle(QT_TRANSLATE_NOOP("IsoAlgo", "Material Column Options"))
+
+        self.textTitleList = []
+        self.textSubTitleList = []
+        self.buttonFillList = []
+        self.textWidthList = []
+
+        self.verticalLayout = QVBoxLayout(self)
+
+        self.groupBox = QGroupBox(QT_TRANSLATE_NOOP("IsoAlgo", "Columns"))
+        self.gridLayout = QGridLayout(self.groupBox)
+
+        self.label01 = QLabel("1")
+        self.label02 = QLabel("2")
+        self.label03 = QLabel("3")
+        self.label04 = QLabel("4")
+        self.label05 = QLabel("5")
+        self.label06 = QLabel("6")
+
+        self.gridLayout.addWidget(self.label01, 0, 1)
+        self.gridLayout.addWidget(self.label02, 0, 2)
+        self.gridLayout.addWidget(self.label03, 0, 3)
+        self.gridLayout.addWidget(self.label04, 0, 4)
+        self.gridLayout.addWidget(self.label05, 0, 5)
+        self.gridLayout.addWidget(self.label06, 0, 6)
+
+        self.labelTitle1 = QLabel(QT_TRANSLATE_NOOP("IsoAlgo", "Title"))
+        self.textTitleList.append(QLineEdit())
+        self.textTitleList.append(QLineEdit())
+        self.textTitleList.append(QLineEdit())
+        self.textTitleList.append(QLineEdit())
+        self.textTitleList.append(QLineEdit())
+        self.textTitleList.append(QLineEdit())
+
+        self.gridLayout.addWidget(self.labelTitle1, 1, 0)
+        self.gridLayout.addWidget(self.textTitleList[0], 1, 1)
+        self.gridLayout.addWidget(self.textTitleList[1], 1, 2)
+        self.gridLayout.addWidget(self.textTitleList[2], 1, 3)
+        self.gridLayout.addWidget(self.textTitleList[3], 1, 4)
+        self.gridLayout.addWidget(self.textTitleList[4], 1, 5)
+        self.gridLayout.addWidget(self.textTitleList[5], 1, 6)
+
+        self.labelSubTitle1 = QLabel(QT_TRANSLATE_NOOP("IsoAlgo", "Sub Title"))
+        self.textSubTitleList.append(QLineEdit())
+        self.textSubTitleList.append(QLineEdit())
+        self.textSubTitleList.append(QLineEdit())
+        self.textSubTitleList.append(QLineEdit())
+        self.textSubTitleList.append(QLineEdit())
+        self.textSubTitleList.append(QLineEdit())
+
+        self.gridLayout.addWidget(self.labelSubTitle1, 2, 0)
+        self.gridLayout.addWidget(self.textSubTitleList[0], 2, 1)
+        self.gridLayout.addWidget(self.textSubTitleList[1], 2, 2)
+        self.gridLayout.addWidget(self.textSubTitleList[2], 2, 3)
+        self.gridLayout.addWidget(self.textSubTitleList[3], 2, 4)
+        self.gridLayout.addWidget(self.textSubTitleList[4], 2, 5)
+        self.gridLayout.addWidget(self.textSubTitleList[5], 2, 6)
+
+        self.labelFill1 = QLabel(QT_TRANSLATE_NOOP("IsoAlgo", "Fill"))
+        self.buttonFillList.append(QPushButton("?"))
+        self.buttonFillList.append(QPushButton("?"))
+        self.buttonFillList.append(QPushButton("?"))
+        self.buttonFillList.append(QPushButton("?"))
+        self.buttonFillList.append(QPushButton("?"))
+        self.buttonFillList.append(QPushButton("?"))
+
+        self.gridLayout.addWidget(self.labelFill1, 3, 0)
+        self.gridLayout.addWidget(self.buttonFillList[0], 3, 1)
+        self.gridLayout.addWidget(self.buttonFillList[1], 3, 2)
+        self.gridLayout.addWidget(self.buttonFillList[2], 3, 3)
+        self.gridLayout.addWidget(self.buttonFillList[3], 3, 4)
+        self.gridLayout.addWidget(self.buttonFillList[4], 3, 5)
+        self.gridLayout.addWidget(self.buttonFillList[5], 3, 6)
+
+        self.labelWidth1 = QLabel(QT_TRANSLATE_NOOP("IsoAlgo", "Width"))
+        self.textWidthList.append(QLineEdit())
+        self.textWidthList.append(QLineEdit())
+        self.textWidthList.append(QLineEdit())
+        self.textWidthList.append(QLineEdit())
+        self.textWidthList.append(QLineEdit())
+        self.textWidthList.append(QLineEdit())
+
+        self.gridLayout.addWidget(self.labelWidth1, 4, 0)
+        self.gridLayout.addWidget(self.textWidthList[0], 4, 1)
+        self.gridLayout.addWidget(self.textWidthList[1], 4, 2)
+        self.gridLayout.addWidget(self.textWidthList[2], 4, 3)
+        self.gridLayout.addWidget(self.textWidthList[3], 4, 4)
+        self.gridLayout.addWidget(self.textWidthList[4], 4, 5)
+        self.gridLayout.addWidget(self.textWidthList[5], 4, 6)
+
+        self.label07 = QLabel("7")
+        self.label08 = QLabel("8")
+        self.label09 = QLabel("9")
+        self.label10 = QLabel("10")
+        self.label11 = QLabel("11")
+        self.label12 = QLabel("12")
+
+        self.gridLayout.addWidget(self.label07, 5, 1)
+        self.gridLayout.addWidget(self.label08, 5, 2)
+        self.gridLayout.addWidget(self.label09, 5, 3)
+        self.gridLayout.addWidget(self.label10, 5, 4)
+        self.gridLayout.addWidget(self.label11, 5, 5)
+        self.gridLayout.addWidget(self.label12, 5, 6)
+
+        self.labelTitle2 = QLabel(QT_TRANSLATE_NOOP("IsoAlgo", "Title"))
+        self.textTitleList.append(QLineEdit())
+        self.textTitleList.append(QLineEdit())
+        self.textTitleList.append(QLineEdit())
+        self.textTitleList.append(QLineEdit())
+        self.textTitleList.append(QLineEdit())
+        self.textTitleList.append(QLineEdit())
+
+        self.gridLayout.addWidget(self.labelTitle2, 6, 0)
+        self.gridLayout.addWidget(self.textTitleList[6], 6, 1)
+        self.gridLayout.addWidget(self.textTitleList[7], 6, 2)
+        self.gridLayout.addWidget(self.textTitleList[8], 6, 3)
+        self.gridLayout.addWidget(self.textTitleList[9], 6, 4)
+        self.gridLayout.addWidget(self.textTitleList[10], 6, 5)
+        self.gridLayout.addWidget(self.textTitleList[11], 6, 6)
+
+        self.labelSubTitle2 = QLabel(QT_TRANSLATE_NOOP("IsoAlgo", "Sub Title"))
+        self.textSubTitleList.append(QLineEdit())
+        self.textSubTitleList.append(QLineEdit())
+        self.textSubTitleList.append(QLineEdit())
+        self.textSubTitleList.append(QLineEdit())
+        self.textSubTitleList.append(QLineEdit())
+        self.textSubTitleList.append(QLineEdit())
+
+        self.gridLayout.addWidget(self.labelSubTitle2, 7, 0)
+        self.gridLayout.addWidget(self.textSubTitleList[6], 7, 1)
+        self.gridLayout.addWidget(self.textSubTitleList[7], 7, 2)
+        self.gridLayout.addWidget(self.textSubTitleList[8], 7, 3)
+        self.gridLayout.addWidget(self.textSubTitleList[9], 7, 4)
+        self.gridLayout.addWidget(self.textSubTitleList[10], 7, 5)
+        self.gridLayout.addWidget(self.textSubTitleList[11], 7, 6)
+
+        self.labelFill2 = QLabel(QT_TRANSLATE_NOOP("IsoAlgo", "Fill"))
+        self.buttonFillList.append(QPushButton("?"))
+        self.buttonFillList.append(QPushButton("?"))
+        self.buttonFillList.append(QPushButton("?"))
+        self.buttonFillList.append(QPushButton("?"))
+        self.buttonFillList.append(QPushButton("?"))
+        self.buttonFillList.append(QPushButton("?"))
+
+        self.gridLayout.addWidget(self.labelFill2, 8, 0)
+        self.gridLayout.addWidget(self.buttonFillList[6], 8, 1)
+        self.gridLayout.addWidget(self.buttonFillList[7], 8, 2)
+        self.gridLayout.addWidget(self.buttonFillList[8], 8, 3)
+        self.gridLayout.addWidget(self.buttonFillList[9], 8, 4)
+        self.gridLayout.addWidget(self.buttonFillList[10], 8, 5)
+        self.gridLayout.addWidget(self.buttonFillList[11], 8, 6)
+
+        self.labelWidth2 = QLabel(QT_TRANSLATE_NOOP("IsoAlgo", "Width"))
+        self.textWidthList.append(QLineEdit())
+        self.textWidthList.append(QLineEdit())
+        self.textWidthList.append(QLineEdit())
+        self.textWidthList.append(QLineEdit())
+        self.textWidthList.append(QLineEdit())
+        self.textWidthList.append(QLineEdit())
+
+        self.gridLayout.addWidget(self.labelWidth2, 9, 0)
+        self.gridLayout.addWidget(self.textWidthList[6], 9, 1)
+        self.gridLayout.addWidget(self.textWidthList[7], 9, 2)
+        self.gridLayout.addWidget(self.textWidthList[8], 9, 3)
+        self.gridLayout.addWidget(self.textWidthList[9], 9, 4)
+        self.gridLayout.addWidget(self.textWidthList[10], 9, 5)
+        self.gridLayout.addWidget(self.textWidthList[11], 9, 6)
+
+        self.verticalLayout.addWidget(self.groupBox)
+
+        self.checkGridline = QCheckBox(QT_TRANSLATE_NOOP("IsoAlgo", "Material List Gridlines"))
+        self.verticalLayout.addWidget(self.checkGridline)
+
+        self.horizontalLayout = QHBoxLayout()
+        self.buttonReset = QPushButton(QT_TRANSLATE_NOOP("IsoAlgo", "Reset"))
+        self.buttonReset.clicked.connect(self.resetData)
+
+        self.buttonPreColumns = QPushButton(QT_TRANSLATE_NOOP("IsoAlgo", "Pre 10.4 style columns"))
+        self.buttonPreColumns.clicked.connect(self.setDefaultColumns)
+
+        self.buttonEmptyColumns = QPushButton(QT_TRANSLATE_NOOP("IsoAlgo", "Empty all column data"))
+        self.buttonEmptyColumns.clicked.connect(self.clearColumns)
+
+        self.buttonBox = QDialogButtonBox(QDialogButtonBox.Cancel | QDialogButtonBox.Ok, self)
+
+        self.buttonBox.accepted.connect(self.accept)
+        self.buttonBox.rejected.connect(self.reject)
+
+        self.horizontalLayout.addWidget(self.buttonReset)
+        self.horizontalLayout.addWidget(self.buttonPreColumns)
+        self.horizontalLayout.addWidget(self.buttonEmptyColumns)
+        self.horizontalLayout.addWidget(self.buttonBox)
+
+        self.verticalLayout.addLayout(self.horizontalLayout)
+    # setupUi
+
+    def setDefaultColumns(self):
+        aColumns = [
+            {"Title": "PT", "SubTitle": "NO", "Fill": "PARTNUMBER", "Width": 6.0},
+            {"Title": "COMPONENT DESCRIPTION", "SubTitle": "", "Fill": "DESCRIPTION", "Width": 80.0},
+            { "Title": "N.S.", "SubTitle": "(INS)", "Fill": "BORE", "Width":18.0 },
+            { "Title": "ITEM CODE", "SubTitle": "", "Fill": "ITEMCODE", "Width":28.0 },
+            { "Title": "QTY", "SubTitle": "", "Fill": "QUANTITY", "Width":8.0 }
+        ]
+
+        for i in range(12):
+            if i < len(aColumns):
+                aColumn = aColumns[i]
+
+                self.textTitleList[i].setText(aColumn["Title"])
+                self.textSubTitleList[i].setText(aColumn["SubTitle"])
+                self.buttonFillList[i].setText(aColumn["Fill"])
+                self.textWidthList[i].setText(aColumn["Width"])
+            else:
+                self.textTitleList[i].setText("")
+                self.textSubTitleList[i].setText("")
+                self.buttonFillList[i].setText("?")
+                self.textWidthList[i].setText("")
+            # if
+        # for
+
+        self.checkGridline.setChecked(True)
+    # setDefaultColumns
+
+    def clearColumns(self):
+        for i in range(12):
+            self.textTitleList[i].setText("")
+            self.textSubTitleList[i].setText("")
+            self.buttonFillList[i].setText("?")
+            self.textWidthList[i].setText("")
+        # for
+
+        self.checkGridline.setChecked(True)
+    # clearColumns
+
+    def setOptionFile(self, theFileName):
+        self.optionFileName = theFileName
+
+        self.resetData()
+    # setOptionFile
+
+    def resetData(self):
+        # Load option file.
+        with open(self.optionFileName, 'r') as aJsonFile:
+            self.jsonDict = json.load(aJsonFile)
+        # with
+
+        aMaterialColumn = self.jsonDict["MaterialColumn"]
+        aColumns = aMaterialColumn["Columns"]
+
+        self.checkGridline.setChecked(aMaterialColumn["Gridline"])
+
+        for i in range(12):
+            if i < len(aColumns):
+                aColumn = aColumns[i]
+
+                self.textTitleList[i].setText(aColumn["Title"])
+                self.textSubTitleList[i].setText(aColumn["SubTitle"])
+                self.buttonFillList[i].setText(aColumn["Fill"])
+                self.textWidthList[i].setText(aColumn["Width"])
+            else:
+                self.textTitleList[i].setText("")
+                self.textSubTitleList[i].setText("")
+                self.buttonFillList[i].setText("?")
+                self.textWidthList[i].setText("")
+            # if
+        # for
+    # resetData
+
+    def accept(self):
+
+        aMaterialColumn = self.jsonDict["MaterialColumn"]
+        aMaterialColumn["Gridline"] = self.checkGridline.checked
+
+        aColumns = []
+
+        for i in range(12):
+            aTitle = self.textTitleList[i].text
+            aSubTitle = self.textSubTitleList[i].text
+            aFill = self.buttonFillList[i].text
+            aWidth = self.textWidthList[i].text
+
+            if len(aTitle) < 1 or len(aWidth) < 1:
+                break
+            # if
+
+            aColumn = {
+                "Title": aTitle,
+                "SubTitle": aSubTitle, 
+                "Fill": aFill,
+                "Width": float(aWidth)
+            }
+
+            aColumns.append(aColumn)
+        # for
+
+        aMaterialColumn["Columns"] = aColumns
+
+        with open(self.optionFileName, "w") as aJsonFile:
+            json.dump(self.jsonDict, aJsonFile, indent=4, ensure_ascii=False)
+        # with
+
+        QDialog.accept(self)
+    # accept
+
+# MaterialColumnDialog
 
 
 class IsoModifyDialog(QDialog):
@@ -579,13 +1089,22 @@ class IsoModifyDialog(QDialog):
         self.buttonDimensioning.clicked.connect(self.dimensioningOption)
         self.verticalLayout.addWidget(self.buttonDimensioning)
 
+        self.annotationDlg = AnnotationDialog(self)
+
         self.buttonAnnotation = QPushButton(QT_TRANSLATE_NOOP("IsoAlgo", "Annotation"))
+        self.buttonAnnotation.clicked.connect(self.annotationOption)
         self.verticalLayout.addWidget(self.buttonAnnotation)
 
+        self.materialListDlg = MaterialListDialog(self)
+
         self.buttonMaterialList = QPushButton(QT_TRANSLATE_NOOP("IsoAlgo", "Material List"))
+        self.buttonMaterialList.clicked.connect(self.materialListOption)
         self.verticalLayout.addWidget(self.buttonMaterialList)
 
+        self.materialColumnDlg = MaterialColumnDialog(self)
+
         self.buttonMaterialColumns = QPushButton(QT_TRANSLATE_NOOP("IsoAlgo", "Material Columns"))
+        self.buttonMaterialColumns.clicked.connect(self.materialColumnOption)
         self.verticalLayout.addWidget(self.buttonMaterialColumns)
 
         self.buttonWeldNumbering = QPushButton(QT_TRANSLATE_NOOP("IsoAlgo", "Weld Numbering"))
@@ -634,10 +1153,28 @@ class IsoModifyDialog(QDialog):
         self.dimensioningDlg.show()
     # dimensionOption
 
+    def annotationOption(self):
+        self.annotationDlg.setOptionFile(self.optionFile)
+        self.annotationDlg.show()
+    # annotationOption
+
+    def materialListOption(self):
+        self.materialListDlg.setOptionFile(self.optionFile)
+        self.materialListDlg.show()
+    # materialListOption
+
+    def materialColumnOption(self):
+        self.materialColumnDlg.setOptionFile(self.optionFile)
+        self.materialColumnDlg.show()
+    # materialColumnOption
+
     def reject(self):
         self.administrativeDlg.close()
         self.sheetLayoutDlg.close()
         self.dimensioningDlg.close()
+        self.annotationDlg.close()
+        self.materialListDlg.close()
+        self.materialColumnDlg.close()
 
         QDialog.reject(self)
     # reject
@@ -766,6 +1303,28 @@ class IsoSetupDialog(QDialog):
             "Support": { "Representation": "String", "Standouts": 6.0 }
         }
 
+        aAnnotation = {
+            "CharacterSize": 3.5
+        }
+
+        aMaterialList = {
+            "PlotList": 2,
+            "CharacterSize": 2.5,
+            "DetailText": {"Description": 1, "DetailText": 0, "MaterialText": 0},
+            "ItemCode": {"Length": 8, "Delimiter": 1}
+        }
+
+        aMaterialColumn = {
+            "Gridline": True,
+            "Columns": [
+                {"Title": "PT", "SubTitle": "NO", "Fill": "PARTNUMBER", "Width": 6.0},
+                {"Title": "COMPONENT DESCRIPTION", "SubTitle": "", "Fill": "DESCRIPTION", "Width": 80.0},
+                { "Title": "N.S.", "SubTitle": "(INS)", "Fill": "BORE", "Width":18.0 },
+                { "Title": "ITEM CODE", "SubTitle": "", "Fill": "ITEMCODE", "Width":28.0 },
+                { "Title": "QTY", "SubTitle": "", "Fill": "QUANTITY", "Width":8.0 }
+            ]
+        }
+
         aOptionJson = {
             "AppName": "IsoAlgo", 
             "Version": PipeCad.GetVersion(),
@@ -773,7 +1332,10 @@ class IsoSetupDialog(QDialog):
             "PlotDirectory": "",
             "OutputDXF": True,
             "SheetLayout": aSheetLayout,
-            "Dimensioning": aDimensioning
+            "Dimensioning": aDimensioning,
+            "Annotation": aAnnotation,
+            "MaterialList": aMaterialList,
+            "MaterialColumn": aMaterialColumn
         }
 
         with open(aOptionFile, "w") as aJsonFile:
