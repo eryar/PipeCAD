@@ -44,6 +44,8 @@ class AdministrativeDialog(QDialog):
         self.horizontalLayout = QHBoxLayout(self.groupBox)
 
         self.textComments = QPlainTextEdit()
+        self.textComments.setMaximumHeight(58)
+
         self.horizontalLayout.addWidget(self.textComments)
 
         self.verticalLayout.addWidget(self.groupBox)
@@ -205,6 +207,34 @@ class SheetLayoutDialog(QDialog):
 
         self.verticalLayout.addWidget(self.groupBox)
 
+        self.groupBox = QGroupBox(QT_TRANSLATE_NOOP("IsoAlgo", "Flow arrows"))
+        self.gridLayout = QGridLayout(self.groupBox)
+
+        self.labelComponentFlow = QLabel(QT_TRANSLATE_NOOP("IsoAlgo", "Component flow arrows"))
+        self.checkComponentFlow = QCheckBox()
+
+        self.labelPipelineFlow = QLabel(QT_TRANSLATE_NOOP("IsoAlgo", "Pipeline flow arrows"))
+        self.comboPipelineFlow = QComboBox()
+        self.comboPipelineFlow.addItem("On")
+        self.comboPipelineFlow.addItem("Automatic")
+        self.comboPipelineFlow.addItem("Off")
+
+        self.labelArrowScale = QLabel(QT_TRANSLATE_NOOP("IsoAlgo", "Scale"))
+        self.textArrowScale = QLineEdit("8")
+
+        self.horizontalSpacer = QSpacerItem(20, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
+
+        self.gridLayout.addWidget(self.labelComponentFlow, 0, 0)
+        self.gridLayout.addWidget(self.checkComponentFlow, 0, 1)
+
+        self.gridLayout.addWidget(self.labelPipelineFlow, 1, 0)
+        self.gridLayout.addWidget(self.comboPipelineFlow, 1, 1)
+        self.gridLayout.addWidget(self.labelArrowScale, 1, 2)
+        self.gridLayout.addWidget(self.textArrowScale, 1, 3)
+        self.gridLayout.addItem(self.horizontalSpacer, 1, 4)
+
+        self.verticalLayout.addWidget(self.groupBox)
+
         self.groupBox = QGroupBox(QT_TRANSLATE_NOOP("IsoAlgo", "Margins"))
         self.gridLayout = QGridLayout(self.groupBox)
 
@@ -232,31 +262,23 @@ class SheetLayoutDialog(QDialog):
 
         self.verticalLayout.addWidget(self.groupBox)
 
-        self.groupBox = QGroupBox(QT_TRANSLATE_NOOP("IsoAlgo", "Flow arrows"))
+        self.groupBox = QGroupBox(QT_TRANSLATE_NOOP("IsoAlgo", "Reserved Areas"))
         self.gridLayout = QGridLayout(self.groupBox)
 
-        self.labelComponentFlow = QLabel(QT_TRANSLATE_NOOP("IsoAlgo", "Component flow arrows"))
-        self.checkComponentFlow = QCheckBox()
-
-        self.labelPipelineFlow = QLabel(QT_TRANSLATE_NOOP("IsoAlgo", "Pipeline flow arrows"))
-        self.comboPipelineFlow = QComboBox()
-        self.comboPipelineFlow.addItem("On")
-        self.comboPipelineFlow.addItem("Automatic")
-        self.comboPipelineFlow.addItem("Off")
-
-        self.labelArrowScale = QLabel(QT_TRANSLATE_NOOP("IsoAlgo", "Scale"))
-        self.textArrowScale = QLineEdit("8")
+        self.labelReservedDrawing = QLabel(QT_TRANSLATE_NOOP("IsoAlgo", "Reserved Drawing Area Height"))
+        self.textReservedDrawing = QLineEdit()
 
         self.horizontalSpacer = QSpacerItem(20, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
 
-        self.gridLayout.addWidget(self.labelComponentFlow, 0, 0)
-        self.gridLayout.addWidget(self.checkComponentFlow, 0, 1)
+        self.gridLayout.addWidget(self.labelReservedDrawing, 0, 0)
+        self.gridLayout.addWidget(self.textReservedDrawing, 0, 1)
+        self.gridLayout.addItem(self.horizontalSpacer, 0, 2)
 
-        self.gridLayout.addWidget(self.labelPipelineFlow, 1, 0)
-        self.gridLayout.addWidget(self.comboPipelineFlow, 1, 1)
-        self.gridLayout.addWidget(self.labelArrowScale, 1, 2)
-        self.gridLayout.addWidget(self.textArrowScale, 1, 3)
-        self.gridLayout.addItem(self.horizontalSpacer, 1, 4)
+        self.labelReservedMaterial = QLabel(QT_TRANSLATE_NOOP("IsoAlgo", "Reserved Material List Height"))
+        self.textReservedMaterial = QLineEdit()
+
+        self.gridLayout.addWidget(self.labelReservedMaterial, 1, 0)
+        self.gridLayout.addWidget(self.textReservedMaterial, 1, 1)
 
         self.verticalLayout.addWidget(self.groupBox)
 
@@ -315,6 +337,10 @@ class SheetLayoutDialog(QDialog):
         self.textDwgTop.setText(aMargin["Top"])
         self.textDwgBottom.setText(aMargin["Bottom"])
 
+        aReservedArea = aSheetLayout["ReservedArea"]
+        self.textReservedDrawing.setText(aReservedArea["DrawingHeight"])
+        self.textReservedMaterial.setText(aReservedArea["MaterialHeight"])
+
         # Flow Arrow.
         aFlowArrow = aSheetLayout["FlowArrow"]
         aComponentFlow = aFlowArrow["Component"]
@@ -351,9 +377,11 @@ class SheetLayoutDialog(QDialog):
         aSheetLayout = self.jsonDict["SheetLayout"]
 
         # Drawing Size
-        aDwgSize = {"Index": self.comboDwgSize.currentIndex,
-                    "Height": float(self.textDwgHeight.text),
-                    "Width": float(self.textDwgWidth.text) }
+        aDwgSize = {
+            "Index": self.comboDwgSize.currentIndex,
+            "Height": float(self.textDwgHeight.text),
+            "Width": float(self.textDwgWidth.text) 
+        }
 
         aSheetLayout["DwgSize"] = aDwgSize
 
@@ -362,13 +390,22 @@ class SheetLayoutDialog(QDialog):
         aSheetLayout["PipelineWidth"] = float(self.textPipelineThickness.text)
 
         # Graphics Area
-        aMargin = {"Left": float(self.textDwgLeft.text), 
-                    "Bottom": float(self.textDwgBottom.text),
-                    "Right": float(self.textDwgRight.text),
-                    "Top": float(self.textDwgTop.text)
-                    }
+        aMargin = {
+            "Left": float(self.textDwgLeft.text), 
+            "Bottom": float(self.textDwgBottom.text),
+            "Right": float(self.textDwgRight.text),
+            "Top": float(self.textDwgTop.text)
+        }
 
         aSheetLayout["Margin"] = aMargin
+
+        # Reserved Areas.
+        aReservedArea = {
+            "DrawingHeight": float(self.textReservedDrawing.text),
+            "MaterialHeight": float(self.textReservedMaterial.text)
+        }
+
+        aSheetLayout["ReservedArea"] = aReservedArea
 
         # Flow Arrow
         aFlowArrow = aSheetLayout["FlowArrow"]
@@ -1072,6 +1109,130 @@ class MaterialColumnDialog(QDialog):
 # MaterialColumnDialog
 
 
+class AlternativeTextDialog(QDialog):
+    def  __init__(self, theParent = None):
+        QDialog.__init__(self, theParent)
+
+        self.setupUi()
+    # __init__
+
+    def setupUi(self):
+        self.setWindowTitle(QT_TRANSLATE_NOOP("IsoAlgo", "Alternative Texts"))
+
+        self.verticalLayout = QVBoxLayout(self)
+
+        self.groupBox = QGroupBox(QT_TRANSLATE_NOOP("IsoAlgo", "Select Atext"))
+        self.gridLayout = QGridLayout(self.groupBox)
+
+        self.comboCategory = QComboBox()
+        self.comboCategory.addItem(QT_TRANSLATE_NOOP("IsoAlgo", "Drawing Area"))
+        self.comboCategory.addItem(QT_TRANSLATE_NOOP("IsoAlgo", "Material List"))
+        self.comboCategory.addItem(QT_TRANSLATE_NOOP("IsoAlgo", "Titleblock"))
+        self.comboCategory.addItem(QT_TRANSLATE_NOOP("IsoAlgo", "Weldbox"))
+        self.comboCategory.addItem(QT_TRANSLATE_NOOP("IsoAlgo", "Line Summary"))
+        self.comboCategory.addItem(QT_TRANSLATE_NOOP("IsoAlgo", "Bend Table"))
+        self.comboCategory.addItem(QT_TRANSLATE_NOOP("IsoAlgo", "Bolt Report"))
+        self.comboCategory.currentIndexChanged.connect(self.categoryChanged)
+
+        self.tableWidget = QTableWidget()
+        self.tableWidget.setColumnCount(2)
+        self.tableWidget.setHorizontalHeaderLabels(["ID", "AText"])
+        self.tableWidget.setEditTriggers(QAbstractItemView.NoEditTriggers)
+        self.tableWidget.setAlternatingRowColors(True)
+        self.tableWidget.setGridStyle(Qt.SolidLine)
+        self.tableWidget.setSelectionBehavior(QAbstractItemView.SelectRows)
+        self.tableWidget.setSelectionMode(QAbstractItemView.SingleSelection)
+        self.tableWidget.horizontalHeader().setStretchLastSection(True)
+        self.tableWidget.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeToContents)
+        self.tableWidget.verticalHeader().setMinimumSectionSize(16)
+        self.tableWidget.verticalHeader().setDefaultSectionSize(18)
+        self.tableWidget.verticalHeader().setHidden(True)
+
+        self.gridLayout.addWidget(self.comboCategory)
+        self.gridLayout.addWidget(self.tableWidget)
+
+        self.verticalLayout.addWidget(self.groupBox)
+
+        self.groupBox = QGroupBox(QT_TRANSLATE_NOOP("IsoAlgo", "Edit Atext"))
+        self.gridLayout = QGridLayout(self.groupBox)
+
+        self.comboAtext = QComboBox()
+        self.comboAtext.addItem(QT_TRANSLATE_NOOP("IsoAlgo", "Default text"))
+        self.comboAtext.addItem(QT_TRANSLATE_NOOP("IsoAlgo", "User text"))
+        self.comboAtext.addItem(QT_TRANSLATE_NOOP("IsoAlgo", "Switched off"))
+
+        self.textAtext = QPlainTextEdit()
+        self.textAtext.setMaximumHeight(58)
+
+        self.gridLayout.addWidget(self.comboAtext)
+        self.gridLayout.addWidget(self.textAtext)
+
+        self.verticalLayout.addWidget(self.groupBox)
+
+        self.horizontalLayout = QHBoxLayout()
+        self.buttonReset = QPushButton(QT_TRANSLATE_NOOP("IsoAlgo", "Reset"))
+        self.buttonReset.clicked.connect(self.resetData)
+
+        self.buttonBox = QDialogButtonBox(QDialogButtonBox.Cancel | QDialogButtonBox.Ok, self)
+
+        self.buttonBox.accepted.connect(self.accept)
+        self.buttonBox.rejected.connect(self.reject)
+
+        self.horizontalLayout.addWidget(self.buttonReset)
+        self.horizontalLayout.addWidget(self.buttonBox)
+
+        self.verticalLayout.addLayout(self.horizontalLayout)
+    # setupUi
+
+    def categoryChanged(self):
+
+        aAlternativeTexts = self.jsonDict["AlternativeTexts"]
+
+        aIndex = self.comboCategory.currentIndex
+        if aIndex == 0:
+            # Drawing area
+            aDrawingArea = aAlternativeTexts["DrawingArea"]
+            self.tableWidget.setRowCount(len(aDrawingArea))
+
+            for i in range(self.tableWidget.rowCount):
+                aAtext = aDrawingArea[i]
+                self.tableWidget.setItem(i, 0, QTableWidgetItem(str(aAtext["Id"])))
+                self.tableWidget.setItem(i, 1, QTableWidgetItem(aAtext["DefaultText"]))
+            # for
+        elif aIndex == 1:
+            # Material list
+            aMaterialList = aAlternativeTexts["MaterialList"]
+            self.tableWidget.setRowCount(len(aMaterialList))
+
+            for i in range(self.tableWidget.rowCount):
+                aAtext = aMaterialList[i]
+                self.tableWidget.setItem(i, 0, QTableWidgetItem(str(aAtext["Id"])))
+                self.tableWidget.setItem(i, 1, QTableWidgetItem(aAtext["DefaultText"]))
+            # for
+        else:
+            self.tableWidget.setRowCount(0)
+        # if
+
+    # categoryChanged
+
+    def setOptionFile(self, theFileName):
+        self.optionFileName = theFileName
+
+        self.resetData()
+        self.categoryChanged()
+    # setOptionFile
+
+    def resetData(self):
+
+        # Load option file.
+        with open(self.optionFileName, 'r') as aJsonFile:
+            self.jsonDict = json.load(aJsonFile)
+        # with
+    # resetData
+
+# AlternativeTextDialog
+
+
 class IsoModifyDialog(QDialog):
     def __init__(self, theParent = None):
         QDialog.__init__(self, theParent)
@@ -1139,6 +1300,12 @@ class IsoModifyDialog(QDialog):
         self.buttonComponentTags = QPushButton(QT_TRANSLATE_NOOP("IsoAlgo", "Component Tags"))
         self.verticalLayout.addWidget(self.buttonComponentTags)
 
+        self.alternativeTextDlg = AlternativeTextDialog(self)
+
+        self.buttonAlternativeTexts = QPushButton(QT_TRANSLATE_NOOP("IsoAlgo", "Alternative Texts"))
+        self.buttonAlternativeTexts.clicked.connect(self.alternativeTextsOption)
+        self.verticalLayout.addWidget(self.buttonAlternativeTexts)
+
         aVerticalSpacer = QSpacerItem(10, 10, QSizePolicy.Minimum, QSizePolicy.Expanding)
         self.verticalLayout.addItem(aVerticalSpacer)
 
@@ -1185,6 +1352,11 @@ class IsoModifyDialog(QDialog):
         self.materialColumnDlg.show()
     # materialColumnOption
 
+    def alternativeTextsOption(self):
+        self.alternativeTextDlg.setOptionFile(self.optionFile)
+        self.alternativeTextDlg.show()
+    # alternativeTextsOption
+
     def reject(self):
         self.administrativeDlg.close()
         self.sheetLayoutDlg.close()
@@ -1192,6 +1364,7 @@ class IsoModifyDialog(QDialog):
         self.annotationDlg.close()
         self.materialListDlg.close()
         self.materialColumnDlg.close()
+        self.alternativeTextDlg.close()
 
         QDialog.reject(self)
     # reject
@@ -1304,13 +1477,15 @@ class IsoSetupDialog(QDialog):
         # Create default IsoAlgo option file.
         aDwgSize = {"Height": 420, "Width": 594}
         aMargin = {"Left": 5.0, "Bottom": 5.0, "Right": 5.0, "Top": 5.0 }
+        aReservedArea = { "DrawingHeight": 0.0, "MaterialHeight": 0.0}
         aFlowArrow = {"Component": 0, "Pipeline": 8}
 
         aSheetLayout = {
             "DwgSize": aDwgSize,
             "Margin": aMargin,
+            "ReservedArea": aReservedArea,
             "PipelineWidth": 1.0,
-            "NorthDirection": 1,
+            "NorthDirection": 2,
             "FlowArrow": aFlowArrow
         }
 
@@ -1342,6 +1517,35 @@ class IsoSetupDialog(QDialog):
             ]
         }
 
+        aAlternativeTexts = {
+            "DrawingArea": [
+                { "Id": 201, "Status": 1, "DefaultText": "E", "UserText": "" },
+                { "Id": 202, "Status": 1, "DefaultText": "N", "UserText": "" }
+            ],
+
+            "MaterialList": [
+                { "Id": 300, "Status": 1, "DefaultText": "FABRICATION MATERIALS", "UserText": "" },
+                { "Id": 301, "Status": 1, "DefaultText": "PT", "UserText": "" },
+                { "Id": 302, "Status": 1, "DefaultText": "NO", "UserText": "" },
+                { "Id": 303, "Status": 1, "DefaultText": "COMPONENT DESCRIPTION", "UserText": "" },
+                { "Id": 304, "Status": 1, "DefaultText": "N.S.", "UserText": "" },
+                { "Id": 305, "Status": 1, "DefaultText": "ITEM CODE", "UserText": "" },
+                { "Id": 306, "Status": 1, "DefaultText": "QTY", "UserText": "" },
+                { "Id": 307, "Status": 1, "DefaultText": "PIPE", "UserText": "" },
+                { "Id": 308, "Status": 1, "DefaultText": "FITTINGS", "UserText": "" },
+                { "Id": 309, "Status": 1, "DefaultText": "FLANGES", "UserText": "" },
+                { "Id": 310, "Status": 1, "DefaultText": "ERECTION MATERIALS", "UserText": "" },
+                { "Id": 311, "Status": 1, "DefaultText": "GASKETS", "UserText": "" },
+                { "Id": 312, "Status": 1, "DefaultText": "BOLTS", "UserText": "" },
+                { "Id": 313, "Status": 1, "DefaultText": "VALVES / IN-LINE ITEMS", "UserText": "" },
+                { "Id": 314, "Status": 1, "DefaultText": "INSTRUMENTS", "UserText": "" },
+                { "Id": 315, "Status": 1, "DefaultText": "SUPPORTS", "UserText": "" },
+                { "Id": 316, "Status": 1, "DefaultText": "PIPE SPOOLS", "UserText": "" },
+                { "Id": 339, "Status": 1, "DefaultText": "MISCELLANEOUS COMPONENTS", "UserText": "" },
+                { "Id": 371, "Status": 1, "DefaultText": "OFFSHORE MATERIALS", "UserText": "" }
+            ]
+        }
+
         aOptionJson = {
             "AppName": "IsoAlgo", 
             "Version": PipeCad.GetVersion(),
@@ -1352,7 +1556,8 @@ class IsoSetupDialog(QDialog):
             "Dimensioning": aDimensioning,
             "Annotation": aAnnotation,
             "MaterialList": aMaterialList,
-            "MaterialColumn": aMaterialColumn
+            "MaterialColumn": aMaterialColumn,
+            "AlternativeTexts": aAlternativeTexts
         }
 
         with open(aOptionFile, "w") as aJsonFile:
