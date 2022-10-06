@@ -21,9 +21,6 @@ from PythonQt.QtCore import *
 from PythonQt.QtGui import *
 from pipecad import *
 
-import omp.newproject
-
-
 import os
 import subprocess
 from functools import partial
@@ -71,8 +68,7 @@ class LoginDialog(QDialog):
         self.btnProject.setMinimumSize( 256 , 104 )
         self.btnProject.setMaximumSize( 256 , 104 )
         #Icon downloaded from <a href="https://www.flaticon.com/free-icons/factory" title="factory icons">Factory icons created by vectorsmarket15 - Flaticon</a>
-        self.btnProject.setIcon( QIcon( aCurrentPath + '/icons/login/128x128_select_project.png') )
-        
+        self.btnProject.setIcon( QIcon(aCurrentPath + '/icons/login/128x128_select_project.png') )
         self.btnProject.setIconSize( QSize(96,96) )
         self.btnProject.setStyleSheet("QPushButton { text-align: left; }")
         self.btnProject.setText(QT_TRANSLATE_NOOP("Login", "Project: %s \nCode: %s \nNumber: %s \nDescription: \n%s") % (aProject.Name, aProject.Code, aProject.Number, aProject.Description))
@@ -219,17 +215,6 @@ class LoginDialog(QDialog):
         aProject = PipeCad.Projects[self.projectIndex]
         self.btnProject.setText(QT_TRANSLATE_NOOP("Login", "Project: %s \nCode: %s \nNumber: %s \nDescription: \n%s") % (aProject.Name, aProject.Code, aProject.Number, aProject.Description))
         
-        aCurrentPath = os.path.dirname( os.path.abspath(__file__) )
-        self.btnProject.setIcon( QIcon( aCurrentPath + '/icons/login/128x128_select_project.png') )
-            
-        if os.getenv( aProject.Code + "DFLTS" ) != None: 
-            
-            project_icon_path = os.getenv( aProject.Code + "DFLTS" ) + "/" + aProject.Code + ".png" 
-            project_icon_exists = os.path.exists( project_icon_path )
-        
-            if project_icon_exists:
-                self.btnProject.setIcon( QIcon( project_icon_path ) )
-        
         self.comboBoxUser.setEnabled(True)
         self.lineEditPassword.setEnabled(True)
         self.buttonChange.setEnabled(True)
@@ -244,7 +229,7 @@ class LoginDialog(QDialog):
             return
         # if
 
-        self.setWindowTitle( QT_TRANSLATE_NOOP("Login", "PipeCAD Login - Project %s") % self.selectedProject.Code )
+        self.setWindowTitle(QT_TRANSLATE_NOOP("Login", "PipeCAD Login - Project %s") % self.selectedProject.Code)
 
         for aUser in self.selectedProject.UserList:
             self.comboBoxUser.addItem(aUser.Name)
@@ -292,12 +277,8 @@ class LoginDialog(QDialog):
     # accept
  
     def createProject(self):
-        #subprocess.Popen("ProjectCreation.bat")
-        #self.reject()
-        
-        aNewProjectDlg = omp.newproject.showNewProject()
-        #aNewProjectDlg.exec()
-        
+        subprocess.Popen("ProjectCreation.bat")
+        self.reject()
     # createProject
 
     def changePassword(self):
