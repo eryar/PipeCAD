@@ -16,6 +16,7 @@ class RevManagerDialog(QDialog):
         
         self.bAddedRev = False
         self.dictRevisions = {}
+        
         self.setupUi()
     # __init__
 
@@ -108,6 +109,9 @@ class RevManagerDialog(QDialog):
         self.btnDelRev.clicked.connect( self.callDeleteRevision )
         self.btnCE.clicked.connect( self.callCE )
         self.lstRevisions.currentItemChanged.connect( self.callSelectRevision )
+        
+        self.txtCheckerName.editingFinished.connect( self.callSaveData )
+
         self.btnApply.clicked.connect( self.callApply )
         
         self.vBoxLayMain = QVBoxLayout(self)
@@ -115,25 +119,33 @@ class RevManagerDialog(QDialog):
         self.vBoxLayMain.addWidget( self.groupRevisions )
         self.vBoxLayMain.addWidget( self.btnApply )
         
-        self.groupRevisions.setEnabled(self.bAddedRev)
+        #self.groupRevisions.setEnabled(self.bAddedRev)
         #self.btnDelRev.setEnabled(self.bAddedRev)
         #self.btnApply.setEnabled(self.bAddedRev)      
         
-    
+    def callSaveData(self):
+        self.dictRevisions[ self.lstRevisions.currentItem().text() ] = self.lblCE.text[1:] + "-R" + self.lstRevisions.currentItem().text() + ";" + \
+                                                                       self.txtDesc.text + ";" + \
+                                                                       self.txtAuthorName.text + ";" + \ 
+                                                                       self.txtAuthorDate.text + ";" + \
+                                                                       self.txtCheckerName.text + ";" + \ 
+                                                                       self.txtCheckerDate.text + ";" + \
+                                                                       self.txtApprouverName.text + ";" + \
+                                                                       self.txtAprouverDate.text
+                                                                       
+        print(self.dictRevisions[ self.lstRevisions.currentItem().text() ])
+                
     def callCreateNewRevision(self):
         self.lstRevisions.clear()
-        if len( self.dictRevisions.keys() ) == 0:
-            self.dictRevisions[ "1" ] = self.lblCE.text + "-R1;Fill Description;" + os.getlogin() + ";" + date.today().strftime("%d.%m.%Y") + ";;;;"
-     
-        else:
-            self.dictRevisions[ str( len( self.dictRevisions.keys() ) + 1 ) ] = self.lblCE.text + "-R" + str( len( self.dictRevisions.keys() ) + 1 ) + ";Fill Description;" + os.getlogin() + ";" + date.today().strftime("%d.%m.%Y") + ";;;;"
+        
+        self.dictRevisions[ str( len( self.dictRevisions.keys() ) + 1 ) ] = self.lblCE.text[1:] + "-R" + str( len( self.dictRevisions.keys() ) + 1 ) + ";Fill Description;" + os.getlogin() + ";" + date.today().strftime("%d.%m.%Y") + ";;;;"
                     
         for key in self.dictRevisions.keys():
             cur_item = QListWidgetItem( key )
             self.lstRevisions.addItem( cur_item )
         
         self.lstRevisions.setCurrentItem( cur_item )
-        self.btnAddRev.setEnabled(False)
+        #self.btnAddRev.setEnabled(False)
         #self.btnApply.setEnabled(True)
                 
     def callDeleteRevision(self):
@@ -168,17 +180,24 @@ class RevManagerDialog(QDialog):
         
         if len( revisions ) != 0:
             for i in range( len( revisions ) ):
-                self.dictRevisions[ revisions[i].Number ] = revisions[i].Name + ";" + revisions[i].Description + ";" + revisions[i].Author + ";" + revisions[i].Datetime.date().toString('dd.MM.yyyy') + ";" + revisions[i].Checker + ";" + revisions[i].Chkdate.date().toString('dd.MM.yyyy') + ";" + revisions[i].Approver + ";" + revisions[i].Appdate.date().toString('dd.MM.yyyy')
+                self.dictRevisions[ revisions[i].Number ] = revisions[i].Name + ";" + \
+                                                            revisions[i].Description + ";" + \
+                                                            revisions[i].Author + ";" + \
+                                                            revisions[i].Datetime.date().toString('dd.MM.yyyy') + ";" + \
+                                                            revisions[i].Checker + ";" + \
+                                                            revisions[i].Chkdate.date().toString('dd.MM.yyyy') + ";" + \
+                                                            revisions[i].Approver + ";" + \
+                                                            revisions[i].Appdate.date().toString('dd.MM.yyyy')
+                                                            
                 rev_element = QListWidgetItem( revisions[i].Number )
                 self.lstRevisions.addItem( rev_element )       
                     
-        self.groupRevisions.setEnabled(True)
+        #self.groupRevisions.setEnabled(True)
         
         
     def callApply(self):      
         for key in self.dictRevisions.keys():
-            rev_element =  self.dictRevisions[ key ].split(";")[0]
-                 
+            rev_element =  self.dictRevisions[ key ].split(";")[0]      
             try: 
                 PipeCad.SetCurrentItem( self.lblCE.text )
                 current_pipe = PipeCad.CurrentItem()
@@ -187,8 +206,9 @@ class RevManagerDialog(QDialog):
                 PipeCad.CommitTransaction()
                
             except NameError as e:
-                return 
+                pass
             
+            PipeCad.SetCurrentItem( "/" + rev_element )
             PipeCad.CurrentItem().Number = key
             PipeCad.CurrentItem().Description = self.dictRevisions[ key ].split(";")[1]
             PipeCad.CurrentItem().Author = self.dictRevisions[ key ].split(";")[2]
@@ -205,8 +225,7 @@ class RevManagerDialog(QDialog):
             if self.dictRevisions[ key ].split(";")[7] != "":
                 PipeCad.CurrentItem().Appdate = QDateTime( QDate( int( self.dictRevisions[ key ].split(";")[7].split(".")[2]) , int( self.dictRevisions[ key ].split(";")[7].split(".")[1] ), int( self.dictRevisions[ key ].split(";")[7].split(".")[0])), QTime( 0, 0 )  )
             
-                
-        #self.btnApply.setEnabled(False)
+        PipeCad.SaveWork() 
        
 # Singleton Instance.
 aRevManagerDialog = RevManagerDialog(PipeCad)
