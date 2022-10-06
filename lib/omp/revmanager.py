@@ -143,13 +143,6 @@ class RevManagerDialog(QDialog):
 		
     def callCE(self):
         self.lstRevisions.clear()
-        if  PipeCad.CurrentItem().Type != "PIPE":
-            QMessageBox.critical(self, "", QT_TRANSLATE_NOOP("Admin", "Please select Pipe!"))
-            return 
-                    
-        self.lblCE.text = "/" + PipeCad.CurrentItem().Name
-        revisions = PipeCad.CollectItem("REVI", PipeCad.CurrentItem() )
-        
         self.txtDesc.text = ""
         self.txtAuthorName.text = ""
         self.txtCheckerName.text = ""
@@ -158,6 +151,13 @@ class RevManagerDialog(QDialog):
         self.txtCheckerDate.text = ""
         self.txtApprouverDate.text = ""
         
+        if  PipeCad.CurrentItem().Type != "PIPE":
+            QMessageBox.critical(self, "", QT_TRANSLATE_NOOP("Admin", "Please select Pipe!"))
+            return 
+                    
+        self.lblCE.text = "/" + PipeCad.CurrentItem().Name
+        revisions = PipeCad.CollectItem("REVI", PipeCad.CurrentItem() )
+                
         if len( revisions ) != 0:
             for i in range( len( revisions ) ):
                 self.dictRevisions[ revisions[i].Number ] = revisions[i].Name + ";" + \
