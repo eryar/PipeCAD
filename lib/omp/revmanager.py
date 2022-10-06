@@ -3,21 +3,16 @@ from PythonQt.QtGui import *
 from PythonQt.QtSql import *
 
 from pipecad import *
-from datetime import date 
-from datetime import datetime
+from datetime import * 
 
 import os
-
-# import numpy as np
 
 class RevManagerDialog(QDialog):
     def __init__(self, parent = None):
         QDialog.__init__(self, parent)
-        
-        self.bAddedRev = False
         self.dictRevisions = {}
-        
         self.setupUi()
+        
     # __init__
 
     def setupUi(self):
@@ -45,21 +40,13 @@ class RevManagerDialog(QDialog):
         self.hBoxLayRevisions.addLayout( self.vBoxLayRevRight)
         
         self.lstRevisions = QListWidget()
-        self.lstRevisions.setMaximumSize( 70, 90 )
-        
-        self.hBoxLayRevLeftButtons = QHBoxLayout()
-        
+        self.lstRevisions.setMaximumSize( 40, 90 )
+                
         self.btnAddRev = QPushButton(QT_TRANSLATE_NOOP("Admin", "+") )
-        self.btnAddRev.setMaximumSize( 32 , 32 )
-
-               
-        self.btnDelRev = QPushButton(QT_TRANSLATE_NOOP("Admin", "-") )
-        self.btnDelRev.setMaximumSize( 32 , 32 )
+        self.btnAddRev.setMaximumSize( 40 , 32 )
         
-        self.vBoxLayRevLeft.addWidget(self.lstRevisions)       
-        self.vBoxLayRevLeft.addLayout( self.hBoxLayRevLeftButtons)       
-        self.hBoxLayRevLeftButtons.addWidget(self.btnAddRev)       
-        self.hBoxLayRevLeftButtons.addWidget(self.btnDelRev)       
+        self.vBoxLayRevLeft.addWidget( self.lstRevisions )       
+        self.vBoxLayRevLeft.addWidget( self.btnAddRev )       
         
         self.gridRevDetails = QGridLayout()
         
@@ -76,7 +63,7 @@ class RevManagerDialog(QDialog):
         
         self.txtAuthorDate = QLineEdit( QT_TRANSLATE_NOOP("Admin", "") )
         self.txtCheckerDate = QLineEdit( QT_TRANSLATE_NOOP("Admin", "") )
-        self.txtAprouverDate = QLineEdit( QT_TRANSLATE_NOOP("Admin", "") )
+        self.txtApprouverDate = QLineEdit( QT_TRANSLATE_NOOP("Admin", "") )
         
         self.lblName = QLabel("Name")
         self.lblDate = QLabel("Date")
@@ -99,58 +86,51 @@ class RevManagerDialog(QDialog):
         self.gridRevDetails.addWidget( self.lblDate, 3, 0 )
         self.gridRevDetails.addWidget( self.txtAuthorDate, 3, 1 )
         self.gridRevDetails.addWidget( self.txtCheckerDate, 3, 2 )
-        self.gridRevDetails.addWidget( self.txtAprouverDate, 3, 3 )
+        self.gridRevDetails.addWidget( self.txtApprouverDate, 3, 3 )
         
         self.vBoxLayRevRight.addLayout(  self.gridRevDetails )
 
         self.btnApply = QPushButton( QT_TRANSLATE_NOOP("Admin", "Apply") )
-        
+            
         self.btnAddRev.clicked.connect( self.callCreateNewRevision )
-        self.btnDelRev.clicked.connect( self.callDeleteRevision )
         self.btnCE.clicked.connect( self.callCE )
         self.lstRevisions.currentItemChanged.connect( self.callSelectRevision )
-        
-        self.txtCheckerName.editingFinished.connect( self.callSaveData )
-
         self.btnApply.clicked.connect( self.callApply )
+        
+        self.txtDesc.editingFinished.connect( self.callSaveData )
+        self.txtAuthorName.editingFinished.connect( self.callSaveData )
+        self.txtAuthorDate.editingFinished.connect( self.callSaveData )
+        self.txtCheckerName.editingFinished.connect( self.callSaveData )
+        self.txtCheckerDate.editingFinished.connect( self.callSaveData )
+        self.txtApprouverName.editingFinished.connect( self.callSaveData )
+        self.txtApprouverDate.editingFinished.connect( self.callSaveData )
         
         self.vBoxLayMain = QVBoxLayout(self)
         self.vBoxLayMain.addLayout(  self.hBoxLayPipe )
         self.vBoxLayMain.addWidget( self.groupRevisions )
         self.vBoxLayMain.addWidget( self.btnApply )
-        
-        #self.groupRevisions.setEnabled(self.bAddedRev)
-        #self.btnDelRev.setEnabled(self.bAddedRev)
-        #self.btnApply.setEnabled(self.bAddedRev)      
-        
+               
     def callSaveData(self):
         self.dictRevisions[ self.lstRevisions.currentItem().text() ] = self.lblCE.text[1:] + "-R" + self.lstRevisions.currentItem().text() + ";" + \
                                                                        self.txtDesc.text + ";" + \
-                                                                       self.txtAuthorName.text + ";" + \ 
+                                                                       self.txtAuthorName.text + ";" + \
                                                                        self.txtAuthorDate.text + ";" + \
-                                                                       self.txtCheckerName.text + ";" + \ 
+                                                                       self.txtCheckerName.text + ";" + \
                                                                        self.txtCheckerDate.text + ";" + \
                                                                        self.txtApprouverName.text + ";" + \
-                                                                       self.txtAprouverDate.text
-                                                                       
-        print(self.dictRevisions[ self.lstRevisions.currentItem().text() ])
-                
+                                                                       self.txtApprouverDate.text
+                                                                               
     def callCreateNewRevision(self):
         self.lstRevisions.clear()
         
         self.dictRevisions[ str( len( self.dictRevisions.keys() ) + 1 ) ] = self.lblCE.text[1:] + "-R" + str( len( self.dictRevisions.keys() ) + 1 ) + ";Fill Description;" + os.getlogin() + ";" + date.today().strftime("%d.%m.%Y") + ";;;;"
-                    
-        for key in self.dictRevisions.keys():
+        
+        for key in sorted(self.dictRevisions.keys()):
             cur_item = QListWidgetItem( key )
             self.lstRevisions.addItem( cur_item )
         
         self.lstRevisions.setCurrentItem( cur_item )
-        #self.btnAddRev.setEnabled(False)
-        #self.btnApply.setEnabled(True)
-                
-    def callDeleteRevision(self):
-        pass
-
+       
     def callSelectRevision(self, item):
         if item != None: 
             self.txtDesc.text = self.dictRevisions[ str( item.text() ) ].split(";")[1]
@@ -159,7 +139,7 @@ class RevManagerDialog(QDialog):
             self.txtCheckerName.text = self.dictRevisions[ str( item.text() ) ].split(";")[4]
             self.txtCheckerDate.text = self.dictRevisions[ str( item.text() ) ].split(";")[5]
             self.txtApprouverName.text = self.dictRevisions[ str( item.text() ) ].split(";")[6]
-            self.txtAprouverDate.text = self.dictRevisions[ str( item.text() ) ].split(";")[7]
+            self.txtApprouverDate.text = self.dictRevisions[ str( item.text() ) ].split(";")[7]
 		
     def callCE(self):
         self.lstRevisions.clear()
@@ -176,7 +156,7 @@ class RevManagerDialog(QDialog):
         self.txtApprouverName.text = ""
         self.txtAuthorDate.text = ""
         self.txtCheckerDate.text = ""
-        self.txtAprouverDate.text = ""
+        self.txtApprouverDate.text = ""
         
         if len( revisions ) != 0:
             for i in range( len( revisions ) ):
@@ -188,11 +168,11 @@ class RevManagerDialog(QDialog):
                                                             revisions[i].Chkdate.date().toString('dd.MM.yyyy') + ";" + \
                                                             revisions[i].Approver + ";" + \
                                                             revisions[i].Appdate.date().toString('dd.MM.yyyy')
-                                                            
+                                                                    
                 rev_element = QListWidgetItem( revisions[i].Number )
                 self.lstRevisions.addItem( rev_element )       
                     
-        #self.groupRevisions.setEnabled(True)
+        self.lstRevisions.sortItems()
         
         
     def callApply(self):      
@@ -226,6 +206,8 @@ class RevManagerDialog(QDialog):
                 PipeCad.CurrentItem().Appdate = QDateTime( QDate( int( self.dictRevisions[ key ].split(";")[7].split(".")[2]) , int( self.dictRevisions[ key ].split(";")[7].split(".")[1] ), int( self.dictRevisions[ key ].split(";")[7].split(".")[0])), QTime( 0, 0 )  )
             
         PipeCad.SaveWork() 
+            
+
        
 # Singleton Instance.
 aRevManagerDialog = RevManagerDialog(PipeCad)
