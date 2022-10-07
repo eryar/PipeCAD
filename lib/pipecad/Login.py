@@ -20,12 +20,13 @@
 from PythonQt.QtCore import *
 from PythonQt.QtGui import *
 from pipecad import *
+import omp.newproject
+
 
 import os
 import subprocess
 from functools import partial
 import sys
-
 
 class LoginDialog(QDialog):
    
@@ -277,8 +278,12 @@ class LoginDialog(QDialog):
     # accept
  
     def createProject(self):
-        subprocess.Popen("ProjectCreation.bat")
-        self.reject()
+        #subprocess.Popen("ProjectCreation.bat")
+        #self.reject()
+        
+        aNewProjectDlg = omp.newproject.showNewProject()
+        aNewProjectDlg.exec()
+        
     # createProject
 
     def changePassword(self):
