@@ -278,12 +278,8 @@ class LoginDialog(QDialog):
     # accept
  
     def createProject(self):
-        #subprocess.Popen("ProjectCreation.bat")
-        #self.reject()
-        
-        aNewProjectDlg = omp.newproject.showNewProject()
-        aNewProjectDlg.exec()
-        
+        subprocess.Popen("ProjectCreation.bat")
+        self.reject()   
     # createProject
 
     def changePassword(self):
