@@ -54,8 +54,8 @@ In result form will be shown:
 
 As during updating of python files it could be useful to reload utility during current session w/out restarting PipeCAD. To do it there will need to run next commands: 
 ```python 
-import importlib
-importlib.reload(omp.sample)
+import imp
+imp.reload(omp.sample)
 ```
 or (as it was used abbreviation sm to replace whole name omp.sample)
 ```python 

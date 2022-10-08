@@ -2,4 +2,6 @@
 <sa-ribbon-customize>
   <customize-data type="3" index="-1" key="set_increments" category="VIEW" pannel="Selection" row-prop="1"/>
   <customize-data type="3" index="-1" key="run_report" category="HOME" pannel="Search" row-prop="1"/>
+  <customize-data type="2" index="4" key="Notes" category="GENERAL" pannel="Notes" row-prop="1"/>
+  <customize-data type="3" index="-1" key="show_revision_manager" category="GENERAL" pannel="Notes" row-prop="1"/>
 </sa-ribbon-customize>
