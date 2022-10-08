@@ -20,8 +20,6 @@
 from PythonQt.QtCore import *
 from PythonQt.QtGui import *
 from pipecad import *
-import omp.newproject
-
 
 import os
 import subprocess
