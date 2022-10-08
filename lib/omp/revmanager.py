@@ -17,7 +17,7 @@ class RevManagerDialog(QDialog):
 
     def setupUi(self):
         
-        self.setWindowTitle(self.tr("PipeCAD - Revision Manager") )
+        self.setWindowTitle(QT_TRANSLATE_NOOP("Admin", "Revision Manager") )
               
         self.hBoxLayPipe = QHBoxLayout()
        
