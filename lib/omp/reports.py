@@ -17,7 +17,7 @@ class ReportDialog(QDialog):
     def setupUi(self):
         
         self.resize(500, 400)
-        self.setWindowTitle(self.tr("PipeCAD - Report"))
+        self.setWindowTitle(QT_TRANSLATE_NOOP("PipeCAD", "Quick Report"))
         
         self.vBoxLayMain = QVBoxLayout(self)        
         self.grid = QGridLayout()

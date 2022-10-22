@@ -60,6 +60,11 @@ def ExportPcf(theTreeItem, theFileName):
     aCodeDict = dict()
 
     for aBranItem in (aBranchList):
+        if aBranItem.Type != "BRAN":
+            # Ignore REVI item.
+            continue
+        #if
+        
         aHeadPoint = aBranItem.Hposition
         aTailPoint = aBranItem.Tposition
 
