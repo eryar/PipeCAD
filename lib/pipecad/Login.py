@@ -20,11 +20,14 @@
 from PythonQt.QtCore import *
 from PythonQt.QtGui import *
 from pipecad import *
+import omp
+import omp.newproject
 
 import os
 import subprocess
 from functools import partial
 import sys
+
 
 class LoginDialog(QDialog):
    
@@ -45,7 +48,7 @@ class LoginDialog(QDialog):
         self.setMaximumWidth(350)
         self.setMaximumHeight(300)
         self.setWindowTitle(QT_TRANSLATE_NOOP("Login", "PipeCAD Login"))
-        
+
         aCurrentPath = os.path.dirname(os.path.abspath(__file__))
         
         self.hBoxLayoutProjects = QHBoxLayout()
@@ -64,8 +67,8 @@ class LoginDialog(QDialog):
        
         aProject = PipeCad.Projects[self.projectIndex]
         self.btnProject = QPushButton( "", self)           
-        self.btnProject.setMinimumSize( 256 , 104 )
-        self.btnProject.setMaximumSize( 256 , 104 )
+        self.btnProject.setMinimumSize( 312 , 104 )
+        self.btnProject.setMaximumSize( 312 , 104 )
         #Icon downloaded from <a href="https://www.flaticon.com/free-icons/factory" title="factory icons">Factory icons created by vectorsmarket15 - Flaticon</a>
         self.btnProject.setIcon( QIcon(aCurrentPath + '/icons/login/128x128_select_project.png') )
         self.btnProject.setIconSize( QSize(96,96) )
@@ -97,6 +100,8 @@ class LoginDialog(QDialog):
         PipeCad.SetIndicator( self.lineEditPassword )
             
         self.buttonChange = QPushButton(QT_TRANSLATE_NOOP("Login", "Change"))
+        self.buttonChange.setMinimumSize( 120 , 26 )
+        self.buttonChange.setMaximumSize( 120 , 26 )
         
         self.labelMdb = QLabel(QT_TRANSLATE_NOOP("Login", "MDB"))
         self.comboBoxMdb = QComboBox()
@@ -276,8 +281,9 @@ class LoginDialog(QDialog):
     # accept
  
     def createProject(self):
-        subprocess.Popen("ProjectCreation.bat")
-        self.reject()   
+        #subprocess.Popen("ProjectCreation.bat")
+        #self.reject()   
+        omp.newproject.show()
     # createProject
 
     def changePassword(self):
