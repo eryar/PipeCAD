@@ -29,7 +29,7 @@ class dlgSample(QDialog):
 # Singleton Instance.
 aSample = dlgSample(PipeCad)
 
-def ShowSample():
+def show():
     aSample.show()
 # Show
 ```
@@ -41,7 +41,7 @@ import omp.sample as sm
 ```
 Abbreviation **sm** is used  to simplify next using of this module. After importing module there will be possible to show utility form on screen:
 ```python 
-sm.ShowSample()
+sm.show()
 ```
 
 ![Commands in Python console](../../images/development/new_utility/python_console.png)  
@@ -62,13 +62,26 @@ or (as it was used abbreviation sm to replace whole name omp.sample)
 import imp
 imp.reload(sm)
 ```
-In case of correct reloading of form file you will see next message:
+
+The same action can be done using menu **Development -> Reload Libraries**:
+
+![Menu for calling form for reloading python library/utility](../../images/development/new_utility/menu_library_reload_en.png) 
+
+which will show form **Reload Python Libraries**:
+
+![Form for reloading python library/utility](../../images/development/new_utility/library_reload_en.png)  
+
+Inside filter you will need to input name of python library/utility, which needs to reload (in our case developed utility **omp.sample**):
+
+![Reloading form Sample](../../images/development/new_utility/library_reload_form_sample_en.png) 
+
+In case of correct reloading of form file, you will see next message:
 
 ![Reload Modified Form](../../images/development/new_utility/reload_form_message.png)
 
 After that form can be started again via menu (if setuped) or using again coommand:
 ```python 
-sm.ShowSample()
+sm.show()
 ```
 
 
