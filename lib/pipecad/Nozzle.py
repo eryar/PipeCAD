@@ -36,7 +36,7 @@ class SpecDialog(QDialog):
 
     def setupUi(self):
         self.resize(640, 480)
-        self.setWindowTitle(self.tr("Nozzle Specification"))
+        self.setWindowTitle(QT_TRANSLATE_NOOP("Paragon", "Nozzle Specification"))
 
         self.verticalLayout = QVBoxLayout(self)
 
@@ -44,7 +44,7 @@ class SpecDialog(QDialog):
 
         self.horizontalLayout = QHBoxLayout()
 
-        self.buttonSpecCE = QPushButton(self.tr("SPEC CE"))
+        self.buttonSpecCE = QPushButton(QT_TRANSLATE_NOOP("Paragon", "SPEC CE"))
         self.labelSpecCE = QLabel()
 
         self.buttonSpecCE.clicked.connect(self.setSpec)
@@ -52,7 +52,7 @@ class SpecDialog(QDialog):
         self.formLayout.setWidget(0, QFormLayout.LabelRole, self.buttonSpecCE)
         self.formLayout.setWidget(0, QFormLayout.FieldRole, self.labelSpecCE)
         
-        self.buttonCateCE = QPushButton(self.tr("CATE CE"))
+        self.buttonCateCE = QPushButton(QT_TRANSLATE_NOOP("Paragon", "CATE CE"))
         self.labelCateCE = QLabel()
 
         self.buttonCateCE.clicked.connect(self.setCate)
@@ -60,13 +60,13 @@ class SpecDialog(QDialog):
         self.formLayout.setWidget(1, QFormLayout.LabelRole, self.buttonCateCE)
         self.formLayout.setWidget(1, QFormLayout.FieldRole, self.labelCateCE)
 
-        self.labelDescription = QLabel(self.tr("Description"))
+        self.labelDescription = QLabel(QT_TRANSLATE_NOOP("Paragon", "Description"))
         self.textDescription = QLineEdit()
 
         self.formLayout.setWidget(2, QFormLayout.LabelRole, self.labelDescription)
         self.formLayout.setWidget(2, QFormLayout.FieldRole, self.textDescription)
 
-        self.labelGenericType = QLabel(self.tr("Generic Type"))
+        self.labelGenericType = QLabel(QT_TRANSLATE_NOOP("Paragon", "Generic Type"))
         self.comboGenericType = QComboBox()
         self.comboGenericType.setEditable(True)
         self.comboGenericType.currentIndexChanged.connect(self.genericTypeChanged)
@@ -116,8 +116,8 @@ class SpecDialog(QDialog):
 
         # Actions.
         self.horizontalLayout = QHBoxLayout()
-        self.buttonAdd = QPushButton(self.tr("Add"))
-        self.buttonRem = QPushButton(self.tr("Remove"))
+        self.buttonAdd = QPushButton(QT_TRANSLATE_NOOP("Paragon", "Add"))
+        self.buttonRem = QPushButton(QT_TRANSLATE_NOOP("Paragon", "Remove"))
 
         self.buttonAdd.clicked.connect(self.addNozzle)
         self.buttonRem.clicked.connect(self.remNozzle)
@@ -138,7 +138,7 @@ class SpecDialog(QDialog):
     def setSpec(self):
         aSpecItem = PipeCad.CurrentItem()
         if aSpecItem.Type != "SPEC":
-            QMessageBox.critical(self, "", self.tr("Can only be used from a SPEC!"))
+            QMessageBox.critical(self, "", QT_TRANSLATE_NOOP("Paragon", "Can only be used from a SPEC!"))
             return
 
         self.comboGenericType.clear()
@@ -168,7 +168,7 @@ class SpecDialog(QDialog):
     def setCate(self):
         aCateItem = PipeCad.CurrentItem()
         if aCateItem.Type != "CATE":
-            QMessageBox.critical(self, "", self.tr("Please select CATE!"))
+            QMessageBox.critical(self, "", QT_TRANSLATE_NOOP("Paragon", "Please select CATE!"))
             return
 
         self.labelCateCE.setText(aCateItem.Name)
@@ -266,13 +266,13 @@ class NozzleDialog(QDialog):
 
         self.formLayout = QFormLayout()
 
-        self.labelName = QLabel(self.tr("Name"))
+        self.labelName = QLabel(QT_TRANSLATE_NOOP("Paragon", "Name"))
         self.textName = QLineEdit()
 
         self.formLayout.setWidget(0, QFormLayout.LabelRole, self.labelName)
         self.formLayout.setWidget(0, QFormLayout.FieldRole, self.textName)
 
-        self.labelSpecification = QLabel(self.tr("Specification"))
+        self.labelSpecification = QLabel(QT_TRANSLATE_NOOP("Paragon", "Specification"))
         self.comboSpecification = QComboBox()
 
         aSpecList = PipeCad.CollectItem("SPEC")
@@ -288,14 +288,14 @@ class NozzleDialog(QDialog):
         self.formLayout.setWidget(1, QFormLayout.LabelRole, self.labelSpecification)
         self.formLayout.setWidget(1, QFormLayout.FieldRole, self.comboSpecification)
 
-        self.labelGenericType = QLabel(self.tr("Generic Type"))
+        self.labelGenericType = QLabel(QT_TRANSLATE_NOOP("Paragon", "Generic Type"))
         self.comboGenericType = QComboBox()
         self.comboGenericType.currentIndexChanged.connect(self.genericTypeChanged)
 
         self.formLayout.setWidget(2, QFormLayout.LabelRole, self.labelGenericType)
         self.formLayout.setWidget(2, QFormLayout.FieldRole, self.comboGenericType)
 
-        self.labelBore = QLabel(self.tr("Bore"))
+        self.labelBore = QLabel(QT_TRANSLATE_NOOP("Paragon", "Bore"))
         self.comboBore = QComboBox()
 
         self.comboSpecification.currentIndexChanged(0)
@@ -303,31 +303,31 @@ class NozzleDialog(QDialog):
         self.formLayout.setWidget(3, QFormLayout.LabelRole, self.labelBore)
         self.formLayout.setWidget(3, QFormLayout.FieldRole, self.comboBore)
 
-        self.labelHeight = QLabel(self.tr("Height"))
+        self.labelHeight = QLabel(QT_TRANSLATE_NOOP("Paragon", "Height"))
         self.textHeight = QLineEdit("100.0")
 
         self.formLayout.setWidget(4, QFormLayout.LabelRole, self.labelHeight)
         self.formLayout.setWidget(4, QFormLayout.FieldRole, self.textHeight)
 
-        self.labelTemperature = QLabel(self.tr("Temperature"))
+        self.labelTemperature = QLabel(QT_TRANSLATE_NOOP("Paragon", "Temperature"))
         self.textTemperature = QLineEdit("0.0")
 
         self.formLayout.setWidget(5, QFormLayout.LabelRole, self.labelTemperature)
         self.formLayout.setWidget(5, QFormLayout.FieldRole, self.textTemperature)
 
-        self.labelPressure = QLabel(self.tr("Pressure"))
+        self.labelPressure = QLabel(QT_TRANSLATE_NOOP("Paragon", "Pressure"))
         self.textPressure = QLineEdit("0.0")
 
         self.formLayout.setWidget(6, QFormLayout.LabelRole, self.labelPressure)
         self.formLayout.setWidget(6, QFormLayout.FieldRole, self.textPressure)
 
-        self.labelDescription = QLabel(self.tr("Description"))
+        self.labelDescription = QLabel(QT_TRANSLATE_NOOP("Paragon", "Description"))
         self.textDescription = QLineEdit()
 
         self.formLayout.setWidget(7, QFormLayout.LabelRole, self.labelDescription)
         self.formLayout.setWidget(7, QFormLayout.FieldRole, self.textDescription)
 
-        self.labelPurpose = QLabel(self.tr("Purpose"))
+        self.labelPurpose = QLabel(QT_TRANSLATE_NOOP("Paragon", "Purpose"))
         self.textPurpose = QLineEdit()
 
         self.formLayout.setWidget(8, QFormLayout.LabelRole, self.labelPurpose)
@@ -335,7 +335,7 @@ class NozzleDialog(QDialog):
 
         self.verticalLayout.addLayout(self.formLayout)
 
-        self.groupPosition = QGroupBox(self.tr("Position"))
+        self.groupPosition = QGroupBox(QT_TRANSLATE_NOOP("Paragon", "Position"))
         self.formLayout = QFormLayout(self.groupPosition)
 
         self.labelX = QLabel("X")

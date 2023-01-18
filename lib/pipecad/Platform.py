@@ -33,7 +33,7 @@ class CircularDialog(QDialog):
     # __init__
 
     def setupUi(self):
-        self.setWindowTitle(self.tr("Circular Platform"))
+        self.setWindowTitle(QT_TRANSLATE_NOOP("Design", "Circular Platform"))
 
         self.verticalLayout = QVBoxLayout(self)
 

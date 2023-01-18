@@ -35,7 +35,7 @@ class PcfExporterDlg(QDialog):
 
     def setupUi(self):
         #self.resize(500, 360)
-        self.setWindowTitle(self.tr("Export PCF"))
+        self.setWindowTitle(QT_TRANSLATE_NOOP("Design", "Export PCF"))
         
         self.verticalLayout = QVBoxLayout(self)
 
@@ -63,7 +63,8 @@ class PcfExporterDlg(QDialog):
 
         self.verticalLayout.addLayout(self.horizontalLayout)
 
-        aIsoEnv = os.getenv(PipeCad.CurrentProject.Code + "ISO")
+        aIsoEnv = os.getenv(PipeCad.CurrentProject.Code + "ISO").replace("/","\\")
+
         if len(aIsoEnv) < 0:
             aIsoEnv = "D:/PipeCAD/PCF/"
         # if

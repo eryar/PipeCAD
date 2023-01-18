@@ -17,7 +17,7 @@ class ReportDialog(QDialog):
     def setupUi(self):
         
         self.resize(500, 400)
-        self.setWindowTitle(QT_TRANSLATE_NOOP("PipeCAD", "Quick Report"))
+        self.setWindowTitle(QT_TRANSLATE_NOOP( "Common", "Quick Report" ) )
         
         self.vBoxLayMain = QVBoxLayout(self)        
         self.grid = QGridLayout()
@@ -120,27 +120,27 @@ class ReportDialog(QDialog):
         self.lstAttributes.addItem("Lock")
         self.lstAttributes.addItem("RefNo")
         
-        self.btnAddColumn = QPushButton(QT_TRANSLATE_NOOP("Admin", "+"))
+        self.btnAddColumn = QPushButton( QT_TRANSLATE_NOOP ( "Common", "+" ) )
         self.btnAddColumn.setMaximumSize( 40 , 40 )    
         
-        self.btnRemoveColumn = QPushButton(QT_TRANSLATE_NOOP("Admin", "-"))
+        self.btnRemoveColumn = QPushButton( QT_TRANSLATE_NOOP ( "Common", "-" ) )
         self.btnRemoveColumn.setMaximumSize( 40 , 40 )
         
         self.hBoxLayoutColumns.addWidget(self.lstAttributes)
         self.hBoxLayoutColumns.addWidget(self.btnAddColumn)
         self.hBoxLayoutColumns.addWidget(self.btnRemoveColumn)
         
-        self.lblHierarchy = QLabel("Hierarchy")
+        self.lblHierarchy = QLabel( QT_TRANSLATE_NOOP ( "Common", "Hierarchy") )
         self.hBoxLayoutHierarchy = QHBoxLayout(self)  
         self.txtHierarchy = QLineEdit("/*")
-        self.btnHierarchy = QPushButton(QT_TRANSLATE_NOOP("Admin", "CE"))
+        self.btnHierarchy = QPushButton( QT_TRANSLATE_NOOP ( "Common", "CE" ) )
         self.btnHierarchy.setMaximumSize( 40 , 40 )
         
         self.hBoxLayoutHierarchy.addWidget(self.txtHierarchy)
         self.hBoxLayoutHierarchy.addWidget(self.btnHierarchy)        
      
-        self.btnRunReport = QPushButton(QT_TRANSLATE_NOOP("Admin", "Run Report"))
-        self.btnSaveToExcel = QPushButton(QT_TRANSLATE_NOOP("Admin", "Save to Excel file"))
+        self.btnRunReport = QPushButton( QT_TRANSLATE_NOOP ( "Common", "Run Report" ) )
+        self.btnSaveToExcel = QPushButton( QT_TRANSLATE_NOOP ( "Common", "Save to Excel file" ) )
 
         self.hBoxLayButtons = QHBoxLayout(self)           
         self.hBoxLayButtons.addWidget(self.btnRunReport)

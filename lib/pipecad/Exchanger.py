@@ -32,7 +32,7 @@ class ExchangerDialog(QDialog):
 
     def setupUi(self):
         #self.resize(500, 360)
-        self.setWindowTitle(self.tr("Standard Heat Exchangers"))
+        self.setWindowTitle(QT_TRANSLATE_NOOP("Design", "Standard Heat Exchangers"))
 
         self.verticalLayout = QVBoxLayout(self)
 

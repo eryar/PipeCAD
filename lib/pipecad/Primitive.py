@@ -1719,14 +1719,14 @@ class ExplicitDialog(QDialog):
     # __init__
 
     def setupUi(self):
-        self.setWindowTitle(self.tr("Explicit P-Point Connection"))
+        self.setWindowTitle(QT_TRANSLATE_NOOP("Design", "Explicit P-Point Connection"))
 
         self.verticalLayout = QVBoxLayout(self)
 
         # Grid layout.
         self.gridLayout = QGridLayout()
 
-        self.labelPoint1 = QLabel(self.tr("Connect Point"))
+        self.labelPoint1 = QLabel(QT_TRANSLATE_NOOP("Design", "Connect Point"))
         self.comboPoint1 = QComboBox()
         self.comboPoint1.setMinimumWidth(60)
         self.comboPoint1.currentIndexChanged.connect(self.point1Changed)
@@ -1745,7 +1745,7 @@ class ExplicitDialog(QDialog):
         self.gridLayout.addWidget(self.comboPoint1, 0, 1)
         self.gridLayout.addWidget(self.labelItem1, 0, 2)
 
-        self.labelPoint2 = QLabel(self.tr("To Point"))
+        self.labelPoint2 = QLabel(QT_TRANSLATE_NOOP("Design", "To Point"))
         self.comboPoint2 = QComboBox()
         self.comboPoint2.currentIndexChanged.connect(self.point2Changed)
         self.labelItem2 = QLabel("%s %d of %s" % (self.toItem.Type, self.toItem.Sequence + 1, self.toItem.RefNo))
@@ -1813,7 +1813,7 @@ class ExplicitDialog(QDialog):
         aP2 = self.comboPoint2.currentData
 
         if aP1 is None or aP2 is None:
-            QMessageBox.warning(self, "", self.tr("Please select P-Point to connect!"))
+            QMessageBox.warning(self, "", QT_TRANSLATE_NOOP("Design", "Please select P-Point to connect!"))
             return
         # if
 
