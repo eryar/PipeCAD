@@ -318,7 +318,7 @@ class TextDialog(QDialog):
 
     def setupUi(self):
         #self.resize(280, 180)
-        self.setWindowTitle(self.tr("Create 3D Text"))
+        self.setWindowTitle(QT_TRANSLATE_NOOP("Design", "Create 3D Text"))
 
         self.verticalLayout = QVBoxLayout(self)
 
@@ -363,14 +363,14 @@ class TextDialog(QDialog):
         aFont = self.comboFont.currentFont.family()
 
         if len(aText) < 1:
-            QMessageBox.warning(PipeCad, "", self.tr("Please input text!"))
+            QMessageBox.warning(PipeCad, "", QT_TRANSLATE_NOOP("Design", "Please input text!"))
         # if
 
         aTreeItem = PipeCad.CurrentItem()
         if aTreeItem.Type == "ZONE" or aTreeItem.Owner.Type == "ZONE":
             pass
         else:
-            QMessageBox.warning(self, "", self.tr("Please create 3d text in ZONE!"))
+            QMessageBox.warning(self, "", QT_TRANSLATE_NOOP("Design", "Please create 3d text in ZONE!"))
             return
         # if
 

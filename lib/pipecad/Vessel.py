@@ -32,7 +32,7 @@ class VesselDialog(QDialog):
 
     def setupUi(self):
         #self.resize(500, 360)
-        self.setWindowTitle(self.tr("Standard Vessels"))
+        self.setWindowTitle(QT_TRANSLATE_NOOP("Design", "Standard Vessels"))
 
         self.verticalLayout = QVBoxLayout(self)
 

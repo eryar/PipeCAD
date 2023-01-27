@@ -11,7 +11,7 @@ class SampleDialog(QDialog):
 
     def setupUi(self):
         self.resize(500, 30)
-        self.setWindowTitle(self.tr("PipeCAD - Sample Utility"))
+        self.setWindowTitle(QT_TRANSLATE_NOOP("Design", "PipeCAD - Sample Utility"))
 
         self.verticalLayout = QVBoxLayout(self)
         self.lblText = QLabel("Sample Form Text")
@@ -21,6 +21,6 @@ class SampleDialog(QDialog):
 # Singleton Instance.
 aSampleDlg = SampleDialog(PipeCad)
 
-def ShowSample():
+def show():
     aSampleDlg.show()
 # Show

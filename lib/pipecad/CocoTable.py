@@ -32,7 +32,7 @@ class CreateDialog(QDialog):
 
     def setupUi(self):
         self.resize(280, 100)
-        self.setWindowTitle(self.tr("Create Coco Table"))
+        self.setWindowTitle(QT_TRANSLATE_NOOP("Paragon", "Create Coco Table"))
 
         self.verticalLayout = QVBoxLayout(self)
         self.formLayout = QFormLayout()
@@ -143,7 +143,7 @@ class CocdesDialog(QDialog):
 
     def setupUi(self):
         self.resize(380, 500)
-        self.setWindowTitle(self.tr("COCO Description"))
+        self.setWindowTitle(QT_TRANSLATE_NOOP("Paragon", "COCO Description"))
 
         self.verticalLayout = QVBoxLayout(self)
 
@@ -235,7 +235,7 @@ class ModifyDialog(QDialog):
 
     def setupUi(self):
         self.resize(580, 360)
-        self.setWindowTitle(self.tr("Modify COCO Table"))
+        self.setWindowTitle(QT_TRANSLATE_NOOP("Paragon", "Modify COCO Table"))
 
         self.verticalLayout = QVBoxLayout(self)
         self.formLayout = QFormLayout()

@@ -35,7 +35,7 @@ class LoginDialog(QDialog):
 
     def setupUi(self):
         self.resize(330, 200)
-        self.setWindowTitle(self.tr("PipeCAD Login"))
+        self.setWindowTitle(QT_TRANSLATE_NOOP("PipeCAD", "PipeCAD Login" ) )
 
         self.verticalLayout = QVBoxLayout(self)
         self.verticalLayout.setSpacing(6)
@@ -44,9 +44,9 @@ class LoginDialog(QDialog):
         self.gridLayout = QGridLayout()
         self.gridLayout.setSpacing(6)
 
-        self.labelProject = QLabel(self.tr("Project"))
+        self.labelProject = QLabel( QT_TRANSLATE_NOOP( "PipeCAD", "Project" ) )
         self.comboBoxProject = QComboBox()
-        self.buttonCreate = QPushButton(self.tr("Create"))
+        self.buttonCreate = QPushButton( QT_TRANSLATE_NOOP( "PipeCAD", "Create" ) )
 
         for aProject in (PipeCad.Projects):
             self.comboBoxProject.addItem(aProject.Number)
@@ -59,14 +59,14 @@ class LoginDialog(QDialog):
         self.gridLayout.addWidget(self.comboBoxProject, 0, 1, 1, 1)
         self.gridLayout.addWidget(self.buttonCreate, 0, 2, 1, 1)
 
-        self.labelUsername = QLabel(self.tr("Username"))
+        self.labelUsername = QLabel( QT_TRANSLATE_NOOP( "PipeCAD", "Username" ) )
         self.comboBoxUser = QComboBox()
         self.comboBoxUser.setEditable(True)
 
         self.gridLayout.addWidget(self.labelUsername, 1, 0, 1, 1)
         self.gridLayout.addWidget(self.comboBoxUser, 1, 1, 1, 1)
 
-        self.labelPassword = QLabel(self.tr("Password"))
+        self.labelPassword = QLabel( QT_TRANSLATE_NOOP( "PipeCAD", "Password" ) )
         self.lineEditPassword = QLineEdit(self)
         self.lineEditPassword.setEchoMode(QLineEdit.Password)
         self.lineEditPassword.textChanged.connect(self.passwordChanged)
@@ -76,23 +76,23 @@ class LoginDialog(QDialog):
         self.gridLayout.addWidget(self.labelPassword, 2, 0, 1, 1)
         self.gridLayout.addWidget(self.lineEditPassword, 2, 1, 1, 1)
 
-        self.buttonChange = QPushButton(self.tr("Change"))
+        self.buttonChange = QPushButton( QT_TRANSLATE_NOOP( "PipeCAD", "Change" ) )
         self.buttonChange.clicked.connect(self.changePassword)
         self.gridLayout.addWidget(self.buttonChange, 2, 2, 1, 1)
 
-        self.labelMdb = QLabel(self.tr("MDB"))
+        self.labelMdb = QLabel( QT_TRANSLATE_NOOP( "PipeCAD", "MDB" ) )
         self.comboBoxMdb = QComboBox()
         self.comboBoxMdb.setEditable(True)
 
         self.gridLayout.addWidget(self.labelMdb, 3, 0, 1, 1)
         self.gridLayout.addWidget(self.comboBoxMdb, 3, 1, 1, 1)
 
-        self.labelModule = QLabel(self.tr("Module"))
+        self.labelModule = QLabel( QT_TRANSLATE_NOOP( "PipeCAD", "Module" ) )
         self.comboBoxModule = QComboBox()
         self.comboBoxModule.addItem("Admin")
         self.comboBoxModule.addItem("Paragon")
         self.comboBoxModule.addItem("Design")
-        self.checkBox = QCheckBox(self.tr("Read Only"))
+        self.checkBox = QCheckBox( QT_TRANSLATE_NOOP( "PipeCAD", "Read Only" ) )
 
         self.gridLayout.addWidget(self.labelModule, 4, 0, 1, 1)
         self.gridLayout.addWidget(self.comboBoxModule, 4, 1, 1, 1)
@@ -201,7 +201,7 @@ class PasswordDialog(QDialog):
 
     def setupUi(self):
         #self.resize(330, 200)
-        self.setWindowTitle(self.tr("Change Password"))
+        self.setWindowTitle(QT_TRANSLATE_NOOP("PipeCAD", "Change Password" ) )
 
         self.verticalLayout = QVBoxLayout(self)
         self.formLayout = QFormLayout()

@@ -1,0 +1,399 @@
+<!DOCTYPE QPH>
+<QPH sourcelanguage="en_US" language="ru_RU">
+<phrase>
+    <source>Description</source>
+    <target>Описание</target>
+</phrase>
+<phrase>
+    <source>Export</source>
+    <target>Экспорт</target>
+</phrase>
+<phrase>
+    <source>Pipe Isometrics</source>
+    <target>Изометричкий чертежы</target>
+</phrase>
+<phrase>
+    <source>Confirm</source>
+    <target>Подтвердить</target>
+</phrase>
+<phrase>
+    <source>Copy</source>
+    <target>Копировать</target>
+</phrase>
+<phrase>
+    <source>Content</source>
+    <target>Содержание</target>
+</phrase>
+<phrase>
+    <source>Delete</source>
+    <target>Удалить</target>
+</phrase>
+<phrase>
+    <source>PipeCAD Login</source>
+    <target>Авторизация PipeCAD</target>
+</phrase>
+<phrase>
+    <source>Username</source>
+    <target>Пользователь</target>
+</phrase>
+<phrase>
+    <source>Password</source>
+    <target>Пароль</target>
+</phrase>
+<phrase>
+    <source>Change</source>
+    <target>Изменить</target>
+</phrase>
+<phrase>
+    <source>Read Only</source>
+    <target>Только для чтения</target>
+</phrase>
+<phrase>
+    <source>Change Password</source>
+    <target>Изменить пароль</target>
+</phrase>
+<phrase>
+    <source>Current Password</source>
+    <target>Текущий пароль</target>
+</phrase>
+<phrase>
+    <source>New Password</source>
+    <target>Новый пароль</target>
+</phrase>
+<phrase>
+    <source>The passwords you typed do not match!</source>
+    <target>Пароли не совпадают!</target>
+</phrase>
+<phrase>
+    <source>Password Changed!</source>
+    <target>Пароль изменен!</target>
+</phrase>
+<phrase>
+    <source>MDB</source>
+    <target>MDB</target>
+</phrase>
+<phrase>
+    <source>View Left</source>
+    <target>Вид слева</target>
+</phrase>
+<phrase>
+    <source>View Right</source>
+    <target>Вид справа</target>
+</phrase>
+<phrase>
+    <source>View Front</source>
+    <target>Вид спереди</target>
+</phrase>
+<phrase>
+    <source>View Back</source>
+    <target>Вид сзади</target>
+</phrase>
+<phrase>
+    <source>View Top</source>
+    <target>Вид сверху</target>
+</phrase>
+<phrase>
+    <source>View Bottom</source>
+    <target>Вид снизу</target>
+</phrase>
+<phrase>
+    <source>Information</source>
+    <target>Информация о проекте</target>
+</phrase>
+<phrase>
+    <source>Refresh List</source>
+    <target>Обновить список</target>
+</phrase>
+<phrase>
+    <source>Please input database name!</source>
+    <target>Пожалуйста, введите номер базы данных!</target>
+</phrase>
+<phrase>
+    <source>Please input MDB name!</source>
+    <target>Пожалуйста, введите имя MDB!</target>
+</phrase>
+<phrase>
+    <source>Project Information</source>
+    <target>Информация о проекте</target>
+</phrase>
+<phrase>
+    <source>Confirm Password</source>
+    <target>Подтверждение пароля</target>
+</phrase>
+<phrase>
+    <source>Loading Python...</source>
+    <target>Загрузка Python...</target>
+</phrase>
+<phrase>
+    <source>Loading Modules...</source>
+    <target>Загрузка модулей...</target>
+</phrase>
+<phrase>
+    <source>Property List</source>
+    <target>Список аттрибутов</target>
+</phrase>
+<phrase>
+    <source>Explorer</source>
+    <target>Проводник</target>
+</phrase>
+<phrase>
+    <source>Properties</source>
+    <target>Аттрибуты</target>
+</phrase>
+<phrase>
+    <source>The name %1 already exits!</source>
+    <target>Имя %1 уже существует!</target>
+</phrase>
+<phrase>
+    <source>HOME</source>
+    <target>ГЛАВНАЯ</target>
+</phrase>
+<phrase>
+    <source>DESIGN</source>
+    <target>DESIGN</target>
+</phrase>
+<phrase>
+    <source>Heat Exchanger</source>
+    <target>Теплообменник</target>
+</phrase>
+<phrase>
+    <source>Standard Storage Vessels</source>
+    <target>Стандартные емкости для хранения</target>
+</phrase>
+<phrase>
+    <source>Background Color</source>
+    <target>Фоновый цвет</target>
+</phrase>
+<phrase>
+    <source>Show Axis</source>
+    <target>Показать оси</target>
+</phrase>
+<phrase>
+    <source>Center on Selection</source>
+    <target>Центрировать по выбранному</target>
+</phrase>
+<phrase>
+    <source>Shaded/Wireframe</source>
+    <target>Окрашенный/Каркасный</target>
+</phrase>
+<phrase>
+    <source>ID.Point</source>
+    <target>Точка привязки</target>
+</phrase>
+<phrase>
+    <source>Explicit</source>
+    <target>Явно</target>
+</phrase>
+<phrase>
+    <source>Connect</source>
+    <target>Соединить</target>
+</phrase>
+<phrase>
+    <source>Setup</source>
+    <target>Настройки</target>
+</phrase>
+<phrase>
+    <source>Pipeline</source>
+    <target>Трубопровод</target>
+</phrase>
+<phrase>
+    <source>PipeCAD</source>
+    <target>PipeCAD</target>
+</phrase>
+<phrase>
+    <source>Preview</source>
+    <target>Предварительный просмотр</target>
+</phrase>
+<phrase>
+    <source>Preview Pipe Isometrics</source>
+    <target>Предварительный просмотр изометрического чертежа</target>
+</phrase>
+<phrase>
+    <source>Export Pipe Isometrics to DXF</source>
+    <target>Экспорт изометрического чертежа в формате DXF</target>
+</phrase>
+<phrase>
+    <source>Pipe Isometrics: </source>
+    <target>Изометричкий чертежы:</target>
+</phrase>
+<phrase>
+    <source>Expunge</source>
+    <target>Завершить сессию</target>
+</phrase>
+<phrase>
+    <source>Expunge User Process</source>
+    <target>Завершение пользователькой сессии</target>
+</phrase>
+<phrase>
+    <source>Admin module is only available to users with FREE access!</source>
+    <target>Модуль ADMIN доступен только для пользователей с правам администратора!</target>
+</phrase>
+<phrase>
+    <source>Cannot delete the World!</source>
+    <target>Нельзя удалить элемент World!</target>
+</phrase>
+<phrase>
+    <source>Create Item</source>
+    <target>Создать элемент</target>
+</phrase>
+<phrase>
+    <source>Database number %1 error!</source>
+    <target>Ошибка базы данных %1!</target>
+</phrase>
+<phrase>
+    <source>Text</source>
+    <target>Текст</target>
+</phrase>
+<phrase>
+    <source>Material Text</source>
+    <target>Описание материала</target>
+</phrase>
+<phrase>
+    <source>Detail Text</source>
+    <target>Описание компонента</target>
+</phrase>
+<phrase>
+    <source>Create Spwl</source>
+    <target>Создать мир спецификаций - SPWL</target>
+</phrase>
+<phrase>
+    <source>Nozzle Spec</source>
+    <target>Спецификация штуцеров</target>
+</phrase>
+<phrase>
+    <source>Create COCO</source>
+    <target>Создать соединение - COCO</target>
+</phrase>
+<phrase>
+    <source>Modify COCO</source>
+    <target>Редактировать соединение</target>
+</phrase>
+<phrase>
+    <source>Create Bolt</source>
+    <target>Создать болт - BOLT</target>
+</phrase>
+<phrase>
+    <source>Modify Bolt</source>
+    <target>Редактировать боль</target>
+</phrase>
+<phrase>
+    <source>COCO Table</source>
+    <target>Таблица соединений</target>
+</phrase>
+<phrase>
+    <source>Bolt Table</source>
+    <target>Таблица болтов</target>
+</phrase>
+<phrase>
+    <source>Specification</source>
+    <target>Спецификация</target>
+</phrase>
+<phrase>
+    <source>Show Console Option</source>
+    <target>Показать аргументы консоли</target>
+</phrase>
+<phrase>
+    <source>Cannot create a %1 at this level.</source>
+    <target>Невозможно создать элемент %1 на данном уровне!</target>
+</phrase>
+<phrase>
+    <source>Please select item to Delete!</source>
+    <target>Выберите элемент для удаления!</target>
+</phrase>
+<phrase>
+    <source>Ok to Delete %1</source>
+    <target>Подтвердить удаление элемента %1</target>
+</phrase>
+<phrase>
+    <source>Pick Item, Press Escape to Cancel</source>
+    <target>Выберите элемент, нажмите Escape для отмены операции</target>
+</phrase>
+<phrase>
+    <source>Undefined name %1!</source>
+    <target>Неопределенный элемент %1!</target>
+</phrase>
+<phrase>
+    <source>Build 3d text failed!</source>
+    <target>Ошибка создания 3D текста!</target>
+</phrase>
+<phrase>
+    <source>Save changes before Exiting?</source>
+    <target>Сохранить изменения перед выходом из программы?</target>
+</phrase>
+<phrase>
+    <source>Leave PipeCAD and Exit?</source>
+    <target>Закрыть PipeCAD?</target>
+</phrase>
+<phrase>
+    <source>Please set MDB to login!</source>
+    <target>Выберите MDB для входа в систему!</target>
+</phrase>
+<phrase>
+    <source>Only FREE user can perform expunge!</source>
+    <target>Только пользователь с правами администратора может закрыть пользовательские сессии!</target>
+</phrase>
+<phrase>
+    <source>The current process cannot be expunged!</source>
+    <target>Текущая пользовательская сессия не может быть закрыта!</target>
+</phrase>
+<phrase>
+    <source>Invalid username or password!</source>
+    <target>Ошибка в имени пользователя или пароле!</target>
+</phrase>
+<phrase>
+    <source>Undefined P-Point!</source>
+    <target>Неопределенная точка привязки!</target>
+</phrase>
+<phrase>
+    <source>Undefined Point or Direction!</source>
+    <target>Неопределенная точка или направление!</target>
+</phrase>
+<phrase>
+    <source>Isometrics</source>
+    <target>Изометрический чертеж</target>
+</phrase>
+<phrase>
+    <source>ADMIN</source>
+    <target>ADMIN</target>
+</phrase>
+<phrase>
+    <source>Project</source>
+    <target>Проект</target>
+</phrase>
+<phrase>
+    <source>Expunge</source>
+    <target>Завершить сессию</target>
+</phrase>
+<phrase>
+    <source>DESIGN</source>
+    <target>DESIGN</target>
+</phrase>
+<phrase>
+    <source>HOME</source>
+    <target>ГЛАВНАЯ</target>
+</phrase>
+<phrase>
+    <source>VIEW</source>
+    <target>ВИД</target>
+</phrase>
+<phrase>
+    <source>GENERAL</source>
+    <target>ОБЩИЕ</target>
+</phrase>
+<phrase>
+    <source>STRUCTURE</source>
+    <target>СТРОИТЕЛЬСТВО</target>
+</phrase>
+<phrase>
+    <source>Editor</source>
+    <target>Редактор 3D модели</target>
+</phrase>
+<phrase>
+    <source>Delete</source>
+    <target>Удалить</target>
+</phrase>
+<phrase>
+    <source>Search</source>
+    <target>Поиск</target>
+</phrase>
+</QPH>
