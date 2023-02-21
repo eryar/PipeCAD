@@ -1,344 +1,968 @@
 <!DOCTYPE QPH>
 <QPH sourcelanguage="en_US" language="ru_RU">
 <phrase>
-    <source>Description</source>
-    <target>Описание</target>
+    <source>About PipeCAD</source>
+    <target>О PipeCAD</target>
 </phrase>
 <phrase>
-    <source>Export</source>
-    <target>Экспорт</target>
+    <source>Add CE</source>
+    <target>Добавить текущий элемент</target>
 </phrase>
 <phrase>
-    <source>Pipe Isometrics</source>
-    <target>Изометричкий чертежы</target>
-</phrase>
-<phrase>
-    <source>Confirm</source>
-    <target>Подтвердить</target>
-</phrase>
-<phrase>
-    <source>Copy</source>
-    <target>Копировать</target>
-</phrase>
-<phrase>
-    <source>Content</source>
-    <target>Содержание</target>
-</phrase>
-<phrase>
-    <source>Delete</source>
-    <target>Удалить</target>
-</phrase>
-<phrase>
-    <source>PipeCAD Login</source>
-    <target>Авторизация PipeCAD</target>
-</phrase>
-<phrase>
-    <source>Username</source>
-    <target>Пользователь</target>
-</phrase>
-<phrase>
-    <source>Password</source>
-    <target>Пароль</target>
-</phrase>
-<phrase>
-    <source>Change</source>
-    <target>Изменить</target>
-</phrase>
-<phrase>
-    <source>Read Only</source>
-    <target>Только для чтения</target>
-</phrase>
-<phrase>
-    <source>Change Password</source>
-    <target>Изменить пароль</target>
-</phrase>
-<phrase>
-    <source>Current Password</source>
-    <target>Текущий пароль</target>
-</phrase>
-<phrase>
-    <source>New Password</source>
-    <target>Новый пароль</target>
-</phrase>
-<phrase>
-    <source>The passwords you typed do not match!</source>
-    <target>Пароли не совпадают!</target>
-</phrase>
-<phrase>
-    <source>Password Changed!</source>
-    <target>Пароль изменен!</target>
-</phrase>
-<phrase>
-    <source>MDB</source>
-    <target>MDB</target>
-</phrase>
-<phrase>
-    <source>View Left</source>
-    <target>Вид слева</target>
-</phrase>
-<phrase>
-    <source>View Right</source>
-    <target>Вид справа</target>
-</phrase>
-<phrase>
-    <source>View Front</source>
-    <target>Вид спереди</target>
-</phrase>
-<phrase>
-    <source>View Back</source>
-    <target>Вид сзади</target>
-</phrase>
-<phrase>
-    <source>View Top</source>
-    <target>Вид сверху</target>
-</phrase>
-<phrase>
-    <source>View Bottom</source>
-    <target>Вид снизу</target>
-</phrase>
-<phrase>
-    <source>Information</source>
-    <target>Информация о проекте</target>
-</phrase>
-<phrase>
-    <source>Refresh List</source>
-    <target>Обновить список</target>
-</phrase>
-<phrase>
-    <source>Please input database name!</source>
-    <target>Пожалуйста, введите номер базы данных!</target>
-</phrase>
-<phrase>
-    <source>Please input MDB name!</source>
-    <target>Пожалуйста, введите имя MDB!</target>
-</phrase>
-<phrase>
-    <source>Project Information</source>
-    <target>Информация о проекте</target>
-</phrase>
-<phrase>
-    <source>Confirm Password</source>
-    <target>Подтверждение пароля</target>
-</phrase>
-<phrase>
-    <source>Loading Python...</source>
-    <target>Загрузка Python...</target>
-</phrase>
-<phrase>
-    <source>Loading Modules...</source>
-    <target>Загрузка модулей...</target>
-</phrase>
-<phrase>
-    <source>Property List</source>
-    <target>Список аттрибутов</target>
-</phrase>
-<phrase>
-    <source>Explorer</source>
-    <target>Проводник</target>
-</phrase>
-<phrase>
-    <source>Properties</source>
-    <target>Аттрибуты</target>
-</phrase>
-<phrase>
-    <source>The name %1 already exits!</source>
-    <target>Имя %1 уже существует!</target>
-</phrase>
-<phrase>
-    <source>HOME</source>
-    <target>ГЛАВНАЯ</target>
-</phrase>
-<phrase>
-    <source>DESIGN</source>
-    <target>DESIGN</target>
-</phrase>
-<phrase>
-    <source>Heat Exchanger</source>
-    <target>Теплообменник</target>
-</phrase>
-<phrase>
-    <source>Standard Storage Vessels</source>
-    <target>Стандартные емкости для хранения</target>
-</phrase>
-<phrase>
-    <source>Background Color</source>
-    <target>Фоновый цвет</target>
-</phrase>
-<phrase>
-    <source>Show Axis</source>
-    <target>Показать оси</target>
-</phrase>
-<phrase>
-    <source>Center on Selection</source>
-    <target>Центрировать по выбранному</target>
-</phrase>
-<phrase>
-    <source>Shaded/Wireframe</source>
-    <target>Окрашенный/Каркасный</target>
-</phrase>
-<phrase>
-    <source>ID.Point</source>
-    <target>Точка привязки</target>
-</phrase>
-<phrase>
-    <source>Explicit</source>
-    <target>Явно</target>
-</phrase>
-<phrase>
-    <source>Connect</source>
-    <target>Соединить</target>
-</phrase>
-<phrase>
-    <source>Setup</source>
-    <target>Настройки</target>
-</phrase>
-<phrase>
-    <source>Pipeline</source>
-    <target>Трубопровод</target>
-</phrase>
-<phrase>
-    <source>PipeCAD</source>
-    <target>PipeCAD</target>
-</phrase>
-<phrase>
-    <source>Preview</source>
-    <target>Предварительный просмотр</target>
-</phrase>
-<phrase>
-    <source>Preview Pipe Isometrics</source>
-    <target>Предварительный просмотр изометрического чертежа</target>
-</phrase>
-<phrase>
-    <source>Export Pipe Isometrics to DXF</source>
-    <target>Экспорт изометрического чертежа в формате DXF</target>
-</phrase>
-<phrase>
-    <source>Pipe Isometrics: </source>
-    <target>Изометричкий чертежы:</target>
-</phrase>
-<phrase>
-    <source>Expunge</source>
-    <target>Завершить сессию</target>
-</phrase>
-<phrase>
-    <source>Expunge User Process</source>
-    <target>Завершение пользователькой сессии</target>
+    <source>Admin Explorer</source>
+    <target>Проводник модуля Admin</target>
 </phrase>
 <phrase>
     <source>Admin module is only available to users with FREE access!</source>
     <target>Модуль ADMIN доступен только для пользователей с правам администратора!</target>
 </phrase>
 <phrase>
-    <source>Cannot delete the World!</source>
-    <target>Нельзя удалить элемент World!</target>
+    <source>ADMIN</source>
+    <target>ADMIN</target>
 </phrase>
 <phrase>
-    <source>Create Item</source>
-    <target>Создать элемент</target>
+    <source>Background Color</source>
+    <target>Фоновый цвет</target>
 </phrase>
 <phrase>
-    <source>Database number %1 error!</source>
-    <target>Ошибка базы данных %1!</target>
-</phrase>
-<phrase>
-    <source>Text</source>
-    <target>Текст</target>
-</phrase>
-<phrase>
-    <source>Material Text</source>
-    <target>Описание материала</target>
-</phrase>
-<phrase>
-    <source>Detail Text</source>
-    <target>Описание компонента</target>
-</phrase>
-<phrase>
-    <source>Create Spwl</source>
-    <target>Создать мир спецификаций - SPWL</target>
-</phrase>
-<phrase>
-    <source>Nozzle Spec</source>
-    <target>Спецификация штуцеров</target>
-</phrase>
-<phrase>
-    <source>Create COCO</source>
-    <target>Создать соединение - COCO</target>
-</phrase>
-<phrase>
-    <source>Modify COCO</source>
-    <target>Редактировать соединение</target>
-</phrase>
-<phrase>
-    <source>Create Bolt</source>
-    <target>Создать болт - BOLT</target>
-</phrase>
-<phrase>
-    <source>Modify Bolt</source>
-    <target>Редактировать боль</target>
-</phrase>
-<phrase>
-    <source>COCO Table</source>
-    <target>Таблица соединений</target>
+    <source>Bends</source>
+    <target>Изгиб трубы</target>
 </phrase>
 <phrase>
     <source>Bolt Table</source>
     <target>Таблица болтов</target>
 </phrase>
 <phrase>
-    <source>Specification</source>
-    <target>Спецификация</target>
+    <source>Box</source>
+    <target>Куб</target>
 </phrase>
 <phrase>
-    <source>Show Console Option</source>
-    <target>Показать аргументы консоли</target>
-</phrase>
-<phrase>
-    <source>Cannot create a %1 at this level.</source>
-    <target>Невозможно создать элемент %1 на данном уровне!</target>
-</phrase>
-<phrase>
-    <source>Please select item to Delete!</source>
-    <target>Выберите элемент для удаления!</target>
-</phrase>
-<phrase>
-    <source>Ok to Delete %1</source>
-    <target>Подтвердить удаление элемента %1</target>
-</phrase>
-<phrase>
-    <source>Pick Item, Press Escape to Cancel</source>
-    <target>Выберите элемент, нажмите Escape для отмены операции</target>
-</phrase>
-<phrase>
-    <source>Undefined name %1!</source>
-    <target>Неопределенный элемент %1!</target>
+    <source>Bracing</source>
+    <target>Связи жесткости</target>
 </phrase>
 <phrase>
     <source>Build 3d text failed!</source>
     <target>Ошибка создания 3D текста!</target>
 </phrase>
 <phrase>
-    <source>Save changes before Exiting?</source>
-    <target>Сохранить изменения перед выходом из программы?</target>
+    <source>Cannot create a %1 at this level!</source>
+    <target>Невозможно создать %1 на этом уровне!</target>
+</phrase>
+<phrase>
+    <source>Cannot create a %1 at this level!</source>
+    <target>Невозможно создать элемент %1 на данном уровне!</target>
+</phrase>
+<phrase>
+    <source>Cannot delete the World!</source>
+    <target>Нельзя удалить элемент World!</target>
+</phrase>
+<phrase>
+    <source>Caps</source>
+    <target>Заглушки</target>
+</phrase>
+<phrase>
+    <source>Catalogue Explorer</source>
+    <target>Проводник каталогов</target>
+</phrase>
+<phrase>
+    <source>Catalogue</source>
+    <target>Каталог</target>
+</phrase>
+<phrase>
+    <source>Category</source>
+    <target>Категория</target>
+</phrase>
+<phrase>
+    <source>Center on Selection</source>
+    <target>Центрировать по выбранному</target>
+</phrase>
+<phrase>
+    <source>Change Password</source>
+    <target>Изменить пароль</target>
+</phrase>
+<phrase>
+    <source>Change</source>
+    <target>Изменить</target>
+</phrase>
+<phrase>
+    <source>Chinese</source>
+    <target>Китайский</target>
+</phrase>
+<phrase>
+    <source>Circular Torus</source>
+    <target>Цилиндрический тор</target>
+</phrase>
+<phrase>
+    <source>Claimlist</source>
+    <target>Лист заблокированных элементов</target>
+</phrase>
+<phrase>
+    <source>Clear Filter</source>
+    <target>Очистить фильтр</target>
+</phrase>
+<phrase>
+    <source>Clear Sheet</source>
+    <target>Очистить лист</target>
+</phrase>
+<phrase>
+    <source>Clear</source>
+    <target>Очистить</target>
+</phrase>
+<phrase>
+    <source>COCO Table</source>
+    <target>Таблица соединений</target>
+</phrase>
+<phrase>
+    <source>Code</source>
+    <target>Код</target>
+</phrase>
+<phrase>
+    <source>Component</source>
+    <target>Компонент</target>
+</phrase>
+<phrase>
+    <source>Components</source>
+    <target>Компоненты</target>
+</phrase>
+<phrase>
+    <source>Cone</source>
+    <target>Конус</target>
+</phrase>
+<phrase>
+    <source>Confirm Password</source>
+    <target>Подтверждение пароля</target>
+</phrase>
+<phrase>
+    <source>Confirm</source>
+    <target>Подтвердить</target>
+</phrase>
+<phrase>
+    <source>Connect</source>
+    <target>Соединить</target>
+</phrase>
+<phrase>
+    <source>Console</source>
+    <target>Консоль</target>
+</phrase>
+<phrase>
+    <source>Content</source>
+    <target>Содержание</target>
+</phrase>
+<phrase>
+    <source>Copy</source>
+    <target>Копировать</target>
+</phrase>
+<phrase>
+    <source>Create Bolt</source>
+    <target>Создать болт - BOLT</target>
+</phrase>
+<phrase>
+    <source>Create CATA</source>
+    <target>Создать CATA</target>
+</phrase>
+<phrase>
+    <source>Create COCO</source>
+    <target>Создать соединение - COCO</target>
+</phrase>
+<phrase>
+    <source>Create Database</source>
+    <target>Создать базу данных</target>
+</phrase>
+<phrase>
+    <source>Create Item</source>
+    <target>Создать элемент</target>
+</phrase>
+<phrase>
+    <source>Create MDB</source>
+    <target>Создать MDB</target>
+</phrase>
+<phrase>
+    <source>Create New Project</source>
+    <target>Создать новый проект</target>
+</phrase>
+<phrase>
+    <source>Create Option</source>
+    <target>Создать параметры</target>
+</phrase>
+<phrase>
+    <source>Create SITE</source>
+    <target>Создать сайт</target>
+</phrase>
+<phrase>
+    <source>Create Spec</source>
+    <target>Создать SPEC</target>
+</phrase>
+<phrase>
+    <source>Create Spwl</source>
+    <target>Создать мир спецификаций - SPWL</target>
+</phrase>
+<phrase>
+    <source>Create Team</source>
+    <target>Создать группу</target>
+</phrase>
+<phrase>
+    <source>Create User</source>
+    <target>Создать пользователя</target>
+</phrase>
+<phrase>
+    <source>Create</source>
+    <target>Создать</target>
+</phrase>
+<phrase>
+    <source>Current Databases</source>
+    <target>Текущие базы данных</target>
+</phrase>
+<phrase>
+    <source>Current Password</source>
+    <target>Текущий пароль</target>
+</phrase>
+<phrase>
+    <source>Cylinder</source>
+    <target>Цилиндр</target>
+</phrase>
+<phrase>
+    <source>Database number %1 error!</source>
+    <target>Ошибка базы данных %1!</target>
+</phrase>
+<phrase>
+    <source>Database Number range is [1~8000]!</source>
+    <target>Диапазон номеров баз данных - [1~8000]!</target>
+</phrase>
+<phrase>
+    <source>Database Type</source>
+    <target>Тип базы данных</target>
+</phrase>
+<phrase>
+    <source>Database</source>
+    <target>База данных</target>
+</phrase>
+<phrase>
+    <source>Databases</source>
+    <target>Базы данных</target>
+</phrase>
+<phrase>
+    <source>DB Number</source>
+    <target>Номер базы данных</target>
+</phrase>
+<phrase>
+    <source>Default</source>
+    <target>По умолчанию</target>
+</phrase>
+<phrase>
+    <source>Delete</source>
+    <target>Удалить</target>
+</phrase>
+<phrase>
+    <source>Description</source>
+    <target>Описание</target>
+</phrase>
+<phrase>
+    <source>Design Aids</source>
+    <target>Вспомогательная графика</target>
+</phrase>
+<phrase>
+    <source>Design Explorer</source>
+    <target>Проводник модели</target>
+</phrase>
+<phrase>
+    <source>DESIGN</source>
+    <target>DESIGN</target>
+</phrase>
+<phrase>
+    <source>Detail Text</source>
+    <target>Описание компонента</target>
+</phrase>
+<phrase>
+    <source>Dimensioned</source>
+    <target>Указать размеры</target>
+</phrase>
+<phrase>
+    <source>Dish</source>
+    <target>Полусфера</target>
+</phrase>
+<phrase>
+    <source>Display</source>
+    <target>Показать</target>
+</phrase>
+<phrase>
+    <source>Distance</source>
+    <target>Расстояние</target>
+</phrase>
+<phrase>
+    <source>Draw Additional Connection Point</source>
+    <target>Нарисовать точку дополнительного подключения</target>
+</phrase>
+<phrase>
+    <source>Draw Arrive Connection Point</source>
+    <target>Нарисовать точку входа</target>
+</phrase>
+<phrase>
+    <source>Draw Dish</source>
+    <target>Нарисовать полусферу</target>
+</phrase>
+<phrase>
+    <source>Draw Hexagone</source>
+    <target>Нарисовать шестигранник</target>
+</phrase>
+<phrase>
+    <source>Draw Leave Connection Point</source>
+    <target>Нарисовать точку выхода</target>
+</phrase>
+<phrase>
+    <source>Draw Line</source>
+    <target>Нарисовать линию</target>
+</phrase>
+<phrase>
+    <source>Draw Rectangle</source>
+    <target>Нарисовать прямоугольник</target>
+</phrase>
+<phrase>
+    <source>Draw Spindle Connection Point</source>
+    <target>Нарисовать точку установки шпинделя</target>
+</phrase>
+<phrase>
+    <source>Draw Triangle</source>
+    <target>Нарисовать треугольник</target>
+</phrase>
+<phrase>
+    <source>Editor</source>
+    <target>Редактор 3D модели</target>
+</phrase>
+<phrase>
+    <source>Elements</source>
+    <target>Элементы</target>
+</phrase>
+<phrase>
+    <source>English</source>
+    <target>Английский</target>
+</phrase>
+<phrase>
+    <source>Enter Password</source>
+    <target>Введите пароль</target>
+</phrase>
+<phrase>
+    <source>EQUIPMENT</source>
+    <target>ОБОРУДОВАНИЕ</target>
+</phrase>
+<phrase>
+    <source>Equipment</source>
+    <target>Оборудование</target>
+</phrase>
+<phrase>
+    <source>Exchanger</source>
+    <target>Теплообменник</target>
+</phrase>
+<phrase>
+    <source>Existing Projects</source>
+    <target>Существующие проекты</target>
+</phrase>
+<phrase>
+    <source>Explicit</source>
+    <target>Явно</target>
+</phrase>
+<phrase>
+    <source>Explorer</source>
+    <target>Проводник</target>
+</phrase>
+<phrase>
+    <source>Export Pipe Isometrics to DXF</source>
+    <target>Экспорт изометрического чертежа в формате DXF</target>
+</phrase>
+<phrase>
+    <source>Export</source>
+    <target>Экспорт</target>
+</phrase>
+<phrase>
+    <source>Expunge User Process</source>
+    <target>Завершение пользователькой сессии</target>
+</phrase>
+<phrase>
+    <source>Expunge</source>
+    <target>Завершить сессию</target>
+</phrase>
+<phrase>
+    <source>Filter</source>
+    <target>Фильтр</target>
+</phrase>
+<phrase>
+    <source>Fit All</source>
+    <target>Показать все</target>
+</phrase>
+<phrase>
+    <source>Fit Selection</source>
+    <target>Показать выбранное</target>
+</phrase>
+<phrase>
+    <source>Flow Arrow</source>
+    <target>Указать направление потока</target>
+</phrase>
+<phrase>
+    <source>Folder</source>
+    <target>Папка</target>
+</phrase>
+<phrase>
+    <source>GENERAL</source>
+    <target>ОБЩИЕ</target>
+</phrase>
+<phrase>
+    <source>Grid</source>
+    <target>Сетка</target>
+</phrase>
+<phrase>
+    <source>Group</source>
+    <target>Группа</target>
+</phrase>
+<phrase>
+    <source>Heat Exchanger</source>
+    <target>Теплообменник</target>
+</phrase>
+<phrase>
+    <source>Helix</source>
+    <target>Винтовая лестница</target>
+</phrase>
+<phrase>
+    <source>Help</source>
+    <target>Справка</target>
+</phrase>
+<phrase>
+    <source>HOME</source>
+    <target>ГЛАВНАЯ</target>
+</phrase>
+<phrase>
+    <source>ID.Point</source>
+    <target>Точка привязки</target>
+</phrase>
+<phrase>
+    <source>Import from AVEVA IDF</source>
+    <target>Импортировать из файла IDF (AVEVA)</target>
+</phrase>
+<phrase>
+    <source>Import from Integraph ASCII</source>
+    <target>Импортировать из файла ASCII (Intergraph)</target>
+</phrase>
+<phrase>
+    <source>Invalid username or password!</source>
+    <target>Ошибка в имени пользователя или пароле!</target>
+</phrase>
+<phrase>
+    <source>ISO1</source>
+    <target>ИЗО1</target>
+</phrase>
+<phrase>
+    <source>ISO2</source>
+    <target>ИЗО2</target>
+</phrase>
+<phrase>
+    <source>ISO3</source>
+    <target>ИЗО3</target>
+</phrase>
+<phrase>
+    <source>ISO4</source>
+    <target>ИЗО4</target>
+</phrase>
+<phrase>
+    <source>Isometrics</source>
+    <target>Изометрический чертеж</target>
+</phrase>
+<phrase>
+    <source>Ladder</source>
+    <target>Маршевая лестница</target>
+</phrase>
+<phrase>
+    <source>Language</source>
+    <target>Язык</target>
 </phrase>
 <phrase>
     <source>Leave PipeCAD and Exit?</source>
     <target>Закрыть PipeCAD?</target>
 </phrase>
 <phrase>
-    <source>Please set MDB to login!</source>
-    <target>Выберите MDB для входа в систему!</target>
+    <source>Loading Modules...</source>
+    <target>Загрузка модулей...</target>
+</phrase>
+<phrase>
+    <source>Loading Python...</source>
+    <target>Загрузка Python...</target>
+</phrase>
+<phrase>
+    <source>Lock</source>
+    <target>Заблокировать</target>
+</phrase>
+<phrase>
+    <source>Lstube</source>
+    <target>Lstube</target>
+</phrase>
+<phrase>
+    <source>Material Text</source>
+    <target>Описание материала</target>
+</phrase>
+<phrase>
+    <source>Message</source>
+    <target>Сообщение</target>
+</phrase>
+<phrase>
+    <source>Modify Bolt</source>
+    <target>Редактировать болт</target>
+</phrase>
+<phrase>
+    <source>Modify COCO</source>
+    <target>Редактировать соединение</target>
+</phrase>
+<phrase>
+    <source>Modify Database</source>
+    <target>Изменить базу данных</target>
+</phrase>
+<phrase>
+    <source>Modify Multiple Database</source>
+    <target>Изменить MDB</target>
+</phrase>
+<phrase>
+    <source>Modify Spec</source>
+    <target>Редактировать SPEC</target>
+</phrase>
+<phrase>
+    <source>Modify Team</source>
+    <target>Изменить группу</target>
+</phrase>
+<phrase>
+    <source>Modify User</source>
+    <target>Изменить пользователя</target>
+</phrase>
+<phrase>
+    <source>Modify</source>
+    <target>Изменить</target>
+</phrase>
+<phrase>
+    <source>Module</source>
+    <target>Модуль</target>
+</phrase>
+<phrase>
+    <source>Name</source>
+    <target>Название</target>
+</phrase>
+<phrase>
+    <source>New Password</source>
+    <target>Новый пароль</target>
+</phrase>
+<phrase>
+    <source>Nozzle Spec</source>
+    <target>Спецификация штуцеров</target>
+</phrase>
+<phrase>
+    <source>Nozzle</source>
+    <target>Штуцер</target>
+</phrase>
+<phrase>
+    <source>Number</source>
+    <target>Номер</target>
+</phrase>
+<phrase>
+    <source>Ok to delete %1</source>
+    <target>Подтвердить удаление элемента %1</target>
+</phrase>
+<phrase>
+    <source>Ok to delete database %s</source>
+    <target>Подтвердить удаление базы данных %1</target>
+</phrase>
+<phrase>
+    <source>Ok to delete mdb %s</source>
+    <target>Подтвердить удаление MDB %1</target>
+</phrase>
+<phrase>
+    <source>Ok to delete team %s</source>
+    <target>Подтвердить удаление группы %1</target>
+</phrase>
+<phrase>
+    <source>Ok to delete user %s</source>
+    <target>Подтвердить удаление пользователя %1</target>
 </phrase>
 <phrase>
     <source>Only FREE user can perform expunge!</source>
     <target>Только пользователь с правами администратора может закрыть пользовательские сессии!</target>
 </phrase>
 <phrase>
+    <source>Operations</source>
+    <target>Операции</target>
+</phrase>
+<phrase>
+    <source>Orientation</source>
+    <target>Направление</target>
+</phrase>
+<phrase>
+    <source>Owner</source>
+    <target>Владелец</target>
+</phrase>
+<phrase>
+    <source>Pan</source>
+    <target>Переместить вид</target>
+</phrase>
+<phrase>
+    <source>PARAGON</source>
+    <target>КАТАЛОГ</target>
+</phrase>
+<phrase>
+    <source>Password Changed!</source>
+    <target>Пароль изменен!</target>
+</phrase>
+<phrase>
+    <source>Password</source>
+    <target>Пароль</target>
+</phrase>
+<phrase>
+    <source>Path</source>
+    <target>Путь</target>
+</phrase>
+<phrase>
+    <source>Pick Item</source>
+    <target>Выбрать элемент</target>
+</phrase>
+<phrase>
+    <source>Pipe Isometrics</source>
+    <target>Изометричкие чертежы</target>
+</phrase>
+<phrase>
+    <source>Pipe Isometrics: </source>
+    <target>Изометричкие чертежы:</target>
+</phrase>
+<phrase>
+    <source>PipeCAD - Admin</source>
+    <target>PipeCAD - Модуль ADMIN</target>
+</phrase>
+<phrase>
+    <source>PipeCAD - Iso Symbols Library</source>
+    <target>PipeCAD - Библиотека изометрических символов</target>
+</phrase>
+<phrase>
+    <source>PipeCAD - Paragon</source>
+    <target>PipeCAD - Paragon</target>
+</phrase>
+<phrase>
+    <source>PipeCAD - Piping Design Software.</source>
+    <target>PipeCAD - ПО для 3D-проектирования трубопроводов.</target>
+</phrase>
+<phrase>
+    <source>PipeCAD Login - Project %s</source>
+    <target>Авторизация PipeCAD - Проект %s</target>
+</phrase>
+<phrase>
+    <source>PipeCAD Login</source>
+    <target>Авторизация PipeCAD</target>
+</phrase>
+<phrase>
+    <source>PipeCAD Project Creation</source>
+    <target>Создать проект в PipeCAD</target>
+</phrase>
+<phrase>
+    <source>PipeCAD</source>
+    <target>PipeCAD</target>
+</phrase>
+<phrase>
+    <source>Pipeline</source>
+    <target>Трубопровод</target>
+</phrase>
+<phrase>
+    <source>PIPING</source>
+    <target>ТРУБОПРОВОДЫ</target>
+</phrase>
+<phrase>
+    <source>Platform</source>
+    <target>Платформа</target>
+</phrase>
+<phrase>
+    <source>Please input database name!</source>
+    <target>&quot;Пожалуйста</target>
+</phrase>
+<phrase>
+    <source>Please input MDB name!</source>
+    <target>&quot;Пожалуйста</target>
+</phrase>
+<phrase>
+    <source>Please input team name!</source>
+    <target>&quot;Пожалуйста</target>
+</phrase>
+<phrase>
+    <source>Please input user name and password!</source>
+    <target>&quot;Пожалуйста</target>
+</phrase>
+<phrase>
+    <source>Please select item to Delete!</source>
+    <target>Выберите элемент для удаления!</target>
+</phrase>
+<phrase>
+    <source>Please set MDB to login!</source>
+    <target>Выберите MDB для входа в систему!</target>
+</phrase>
+<phrase>
+    <source>PML</source>
+    <target>PML</target>
+</phrase>
+<phrase>
+    <source>Position</source>
+    <target>Позиция</target>
+</phrase>
+<phrase>
+    <source>Preview Pipe Isometrics</source>
+    <target>Предварительный просмотр изометрического чертежа</target>
+</phrase>
+<phrase>
+    <source>Preview</source>
+    <target>Предварительный просмотр</target>
+</phrase>
+<phrase>
+    <source>Primitive</source>
+    <target>Примитив</target>
+</phrase>
+<phrase>
+    <source>Project Code 3 Letters [A-Z] only</source>
+    <target>Код проекта должен содержать только 3 буквы!</target>
+</phrase>
+<phrase>
+    <source>Project Code is empty!</source>
+    <target>Не заполнен код проекта!</target>
+</phrase>
+<phrase>
+    <source>Project Databases</source>
+    <target>Базы данных проекта</target>
+</phrase>
+<phrase>
+    <source>Project Details</source>
+    <target>Детали проекта</target>
+</phrase>
+<phrase>
+    <source>Project has been created successfully!</source>
+    <target>Проект был успешно создан!</target>
+</phrase>
+<phrase>
+    <source>Project Information</source>
+    <target>Информация о проекте</target>
+</phrase>
+<phrase>
+    <source>Project Name is empty!</source>
+    <target>Не указано имя проекта!</target>
+</phrase>
+<phrase>
+    <source>Project Number is empty!</source>
+    <target>Не заполнен номер проекта!</target>
+</phrase>
+<phrase>
+    <source>Project Teams</source>
+    <target>Группы проекта</target>
+</phrase>
+<phrase>
+    <source>Project Users</source>
+    <target>Пользователи проекта</target>
+</phrase>
+<phrase>
+    <source>Project Variables</source>
+    <target>Переменные проекта</target>
+</phrase>
+<phrase>
+    <source>Project</source>
+    <target>Проект</target>
+</phrase>
+<phrase>
+    <source>Project: %s</source>
+    <target>Проект: %s</target>
+</phrase>
+<phrase>
+    <source>Properties</source>
+    <target>Аттрибуты</target>
+</phrase>
+<phrase>
+    <source>Property List</source>
+    <target>Список аттрибутов</target>
+</phrase>
+<phrase>
+    <source>Pump</source>
+    <target>Насос</target>
+</phrase>
+<phrase>
+    <source>Python Console</source>
+    <target>Консоль Python</target>
+</phrase>
+<phrase>
+    <source>Query</source>
+    <target>Запросы</target>
+</phrase>
+<phrase>
+    <source>Read Only</source>
+    <target>Только для чтения</target>
+</phrase>
+<phrase>
+    <source>Rectangular Torus</source>
+    <target>Прямоугольный тор</target>
+</phrase>
+<phrase>
+    <source>Rectangular</source>
+    <target>Прямоугольный</target>
+</phrase>
+<phrase>
+    <source>RefNo</source>
+    <target>RefNo</target>
+</phrase>
+<phrase>
+    <source>Refresh List</source>
+    <target>Обновить список</target>
+</phrase>
+<phrase>
+    <source>Remove</source>
+    <target>Убрать</target>
+</phrase>
+<phrase>
+    <source>Rotate</source>
+    <target>Повернуть</target>
+</phrase>
+<phrase>
+    <source>Run Report</source>
+    <target>Запустить отчет</target>
+</phrase>
+<phrase>
+    <source>Save changes before Exiting?</source>
+    <target>Сохранить изменения перед выходом из программы?</target>
+</phrase>
+<phrase>
+    <source>Save Changes to Skey File</source>
+    <target>Сохранить изменения в файл</target>
+</phrase>
+<phrase>
+    <source>Save to Excel file</source>
+    <target>Сохранить в файл Excel</target>
+</phrase>
+<phrase>
+    <source>Save Work</source>
+    <target>Сохранить</target>
+</phrase>
+<phrase>
+    <source>Save</source>
+    <target>Сохранить</target>
+</phrase>
+<phrase>
+    <source>Scale</source>
+    <target>Масштаб</target>
+</phrase>
+<phrase>
+    <source>Search</source>
+    <target>Поиск</target>
+</phrase>
+<phrase>
+    <source>Section</source>
+    <target>Раздел</target>
+</phrase>
+<phrase>
+    <source>Security</source>
+    <target>Безопасность</target>
+</phrase>
+<phrase>
+    <source>Select Element</source>
+    <target>Выбрать элемент</target>
+</phrase>
+<phrase>
+    <source>Select File</source>
+    <target>Выбрать файл</target>
+</phrase>
+<phrase>
+    <source>Setup</source>
+    <target>Настройки</target>
+</phrase>
+<phrase>
+    <source>Shaded/Wireframe</source>
+    <target>Окрашенный/Каркасный</target>
+</phrase>
+<phrase>
+    <source>Shape</source>
+    <target>Символ</target>
+</phrase>
+<phrase>
+    <source>Show Axis</source>
+    <target>Показать оси</target>
+</phrase>
+<phrase>
+    <source>Show Console Option</source>
+    <target>Показать аргументы консоли</target>
+</phrase>
+<phrase>
+    <source>Show</source>
+    <target>Показать</target>
+</phrase>
+<phrase>
+    <source>Site</source>
+    <target>Сайт</target>
+</phrase>
+<phrase>
+    <source>Skey</source>
+    <target>Код символа</target>
+</phrase>
+<phrase>
+    <source>Skeys</source>
+    <target>Коды символов</target>
+</phrase>
+<phrase>
+    <source>Sort</source>
+    <target>Сортировать</target>
+</phrase>
+<phrase>
+    <source>Specification</source>
+    <target>Спецификация</target>
+</phrase>
+<phrase>
+    <source>Spindle Skey</source>
+    <target>Код символа шпинделя</target>
+</phrase>
+<phrase>
+    <source>Spref</source>
+    <target>Каталожная ссылка</target>
+</phrase>
+<phrase>
+    <source>Standard Component</source>
+    <target>Стандартный компонент</target>
+</phrase>
+<phrase>
+    <source>Standaipment</source>
+    <target>Дополнительное оборудование</target>
+</phrase>
+<phrase>
+    <source>Subgroup</source>
+    <target>Подгруппа</target>
+</phrase>
+<phrase>
+    <source>System</source>
+    <target>Системный</target>
+</phrase>
+<phrase>
+    <source>Team Members</source>
+    <target>Члены группы</target>
+</phrase>
+<phrase>
+    <source>Team Membership</source>
+    <target>Членство в группах</target>
+</phrase>
+<phrase>
+    <source>Teams</source>
+    <target>Группы</target>
+</phrase>
+<phrase>
+    <source>Text</source>
+    <target>Текст</target>
+</phrase>
+<phrase>
     <source>The current process cannot be expunged!</source>
     <target>Текущая пользовательская сессия не может быть закрыта!</target>
 </phrase>
 <phrase>
-    <source>Invalid username or password!</source>
-    <target>Ошибка в имени пользователя или пароле!</target>
+    <source>The name %1 already exits!</source>
+    <target>Имя %1 уже существует!</target>
+</phrase>
+<phrase>
+    <source>The passwords do not match!</source>
+    <target>Введенный пароль и подтверждение не совпадают!</target>
+</phrase>
+<phrase>
+    <source>Type</source>
+    <target>Тип</target>
+</phrase>
+<phrase>
+    <source>Undefined name %1!</source>
+    <target>Неопределенный элемент %1!</target>
 </phrase>
 <phrase>
     <source>Undefined P-Point!</source>
@@ -349,51 +973,87 @@
     <target>Неопределенная точка или направление!</target>
 </phrase>
 <phrase>
-    <source>Isometrics</source>
-    <target>Изометрический чертеж</target>
+    <source>User Membership</source>
+    <target>Членство пользователя</target>
 </phrase>
 <phrase>
-    <source>ADMIN</source>
-    <target>ADMIN</target>
+    <source>User Process</source>
+    <target>Пользовательские сессии</target>
 </phrase>
 <phrase>
-    <source>Project</source>
-    <target>Проект</target>
+    <source>Username</source>
+    <target>Имя пользователь</target>
 </phrase>
 <phrase>
-    <source>Expunge</source>
-    <target>Завершить сессию</target>
+    <source>Users</source>
+    <target>Пользователи</target>
 </phrase>
 <phrase>
-    <source>DESIGN</source>
-    <target>DESIGN</target>
+    <source>Values</source>
+    <target>Значения</target>
 </phrase>
 <phrase>
-    <source>HOME</source>
-    <target>ГЛАВНАЯ</target>
+    <source>Variables</source>
+    <target>Переменные</target>
+</phrase>
+<phrase>
+    <source>Vessel</source>
+    <target>Резервуар</target>
+</phrase>
+<phrase>
+    <source>View Back</source>
+    <target>Вид сзади</target>
+</phrase>
+<phrase>
+    <source>View Bottom</source>
+    <target>Вид снизу</target>
+</phrase>
+<phrase>
+    <source>View Front</source>
+    <target>Вид спереди</target>
+</phrase>
+<phrase>
+    <source>View Left</source>
+    <target>Вид слева</target>
+</phrase>
+<phrase>
+    <source>View Right</source>
+    <target>Вид справа</target>
+</phrase>
+<phrase>
+    <source>View Top</source>
+    <target>Вид сверху</target>
 </phrase>
 <phrase>
     <source>VIEW</source>
     <target>ВИД</target>
 </phrase>
 <phrase>
-    <source>GENERAL</source>
-    <target>ОБЩИЕ</target>
+    <source>View</source>
+    <target>Вид</target>
 </phrase>
 <phrase>
-    <source>STRUCTURE</source>
-    <target>СТРОИТЕЛЬСТВО</target>
+    <source>Zone</source>
+    <target>Зона</target>
 </phrase>
 <phrase>
-    <source>Editor</source>
-    <target>Редактор 3D модели</target>
+    <source>Zoom</source>
+    <target>Масштабировать</target>
 </phrase>
 <phrase>
-    <source>Delete</source>
-    <target>Удалить</target>
+    <source>Length Table</source>
+    <target>Таблица длин болтов</target>
 </phrase>
 <phrase>
-    <source>Search</source>
-    <target>Поиск</target>
+    <source>Modify Bolt Table</source>
+    <target>Редактировать таблицу болтов</target>
+</phrase>
+<phrase>
+    <source>Pressure</source>
+    <target>Давление</target>
+</phrase>
+<phrase>
+    <source>Wall Thickness</source>
+    <target>Толщина стенки</target>
 </phrase>
 </QPH>
